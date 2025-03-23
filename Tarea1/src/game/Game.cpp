@@ -8,10 +8,16 @@ Game::~Game() {
     std::cout << "Se destruye un game" << std::endl;
 }
 
-void Game::initWindow(int red, int green, int blue) {
+void Game::initWindow(std::string reader[10]) {
+
+    this->windowWidth = std::stoi(reader[1]);
+    this->windowHeight = std::stoi(reader[2]);
+    int red = std::stoi(reader[3]);
+    int green = std::stoi(reader[4]);
+    int blue = std::stoi(reader[5]);
 
     this->window = SDL_CreateWindow(
-        "Intro a SDL", // Titulo
+        "Tarea 1 - C27058", // Titulo
         SDL_WINDOWPOS_CENTERED, //Pos en X
         SDL_WINDOWPOS_CENTERED, // Pos en Y
         this->windowWidth,
@@ -28,38 +34,62 @@ void Game::initWindow(int red, int green, int blue) {
     SDL_SetRenderDrawColor(this->renderer, red, green, blue, 255);
 }
 
-void Game::initFont(std::string path) {
-    //Cargar texto
+void Game::initFont(std::string reader[10]) {
+
+    this->fontColor.r = std::stoi(reader[2]);
+    this->fontColor.g = std::stoi(reader[3]);
+    this->fontColor.b = std::stoi(reader[4]);
+    this->fontSize = std::stoi(reader[5]);
+    this->font = TTF_OpenFont(reader[1].c_str(), this->fontSize);
+
+    if (!this->font) {
+        std::cerr << "Failed to load font: " << TTF_GetError() << std::endl;
+        exit(EXIT_FAILURE);
+    }
+}
+
+void Game::initEntity(Entity* entity, std::string reader[10]) {
     
-    this->font = TTF_OpenFont(path.c_str(), this->fontSize);
-
-
-}
-
-void Game::initEntity() {
+    entity->label = reader[1];
+    entity->imgPath = reader[2];
+    entity->imgWidth = std::stoi(reader[3]);
+    entity->imgHeight = std::stoi(reader[4]);
+    entity->pX  = std::stod(reader[5]);
+    entity->pY = std::stod(reader[6]);
+    entity->vX  = std::stod(reader[7]);
+    entity->vY = std::stod(reader[8]);
+    entity->angle  = std::stod(reader[9]);
+    
     // Inicializar imagen
-    SDL_Surface* imgSurface = IMG_Load(this->entity->imgPath.c_str());
-    this->entity->imgTexture = SDL_CreateTextureFromSurface(this->renderer, imgSurface);
+    SDL_Surface* imgSurface = IMG_Load(entity->imgPath.c_str());
+    entity->imgTexture = SDL_CreateTextureFromSurface(this->renderer, imgSurface);
     SDL_FreeSurface(imgSurface);
-    this->srcRect.x = 0;
-    this->srcRect.y = 0;
-    this->srcRect.w = this->entity->imgWidth;
-    this->srcRect.h = this->entity->imgHeight;
+    entity->srcRect.x = 0;
+    entity->srcRect.y = 0;
+    entity->srcRect.w = entity->imgWidth;
+    entity->srcRect.h = entity->imgHeight;
+
+    if(entity->vX >= 0) entity->imgFlip = SDL_FLIP_NONE;
+    else entity->imgFlip = SDL_FLIP_HORIZONTAL;
 }
 
-void Game::initText() {
-        // Inicializar Texto
-
+void Game::initText(Entity* entity) {
+    
+    // Inicializar Texto
     SDL_Surface* txtSurface = TTF_RenderText_Solid(
         this->font, 
-        this->entity->label.c_str(), 
+        entity->label.c_str(), 
         this->fontColor
     );
-    this->entity->txtTexture = SDL_CreateTextureFromSurface(this->renderer, txtSurface);
-    this->entity->txtWidth = txtSurface->w;
-    this->entity->txtHeight = txtSurface->h;
-    this->entity->txtPos.x = this->entity->pX  - (this->entity->txtWidth / 2) + (this->entity->imgWidth / 2);
-    this->entity->txtPos.y = this->entity->pY - 20;
+    if (!txtSurface) {
+        std::cerr << "Failed to create text surface: " << TTF_GetError() << std::endl;
+        return; // Or handle error appropriately
+    }
+    entity->txtTexture = SDL_CreateTextureFromSurface(this->renderer, txtSurface);
+    entity->txtWidth = txtSurface->w;
+    entity->txtHeight = txtSurface->h;
+    entity->txtPos.x = entity->pX  - (entity->txtWidth / 2) + (entity->imgWidth / 2);
+    entity->txtPos.y = entity->pY;
 
     SDL_FreeSurface(txtSurface);
 }
@@ -67,51 +97,24 @@ void Game::initText() {
 void Game::readConfig() {
 
     std::ifstream configArchive("assets/config/config.txt");
-    std::string reader;
-    configArchive >> reader;
-    this->windowWidth = std::stoi(reader);
-    configArchive >> reader;
-    this->windowHeight = std::stoi(reader);
-    configArchive >> reader;
-    int red = std::stoi(reader);
-    configArchive >> reader;
-    int green = std::stoi(reader);
-    configArchive >> reader;
-    int blue = std::stoi(reader);
-    initWindow(red, green, blue);
-
-    std::string path;
-    configArchive >> path;
-    configArchive >> reader;
-    this->fontColor.r = std::stoi(reader);
-    configArchive >> reader;
-    this->fontColor.g = std::stoi(reader);
-    configArchive >> reader;
-    this->fontColor.b = std::stoi(reader);
-    configArchive >> reader;
-    this->fontSize = std::stoi(reader);
-    initFont(path);
-
+    std::string reader[10];
     
-    this->entity = new Entity();
-    configArchive >> this->entity->label;
-    configArchive >> this->entity->imgPath;
-    configArchive >> reader;
-    this->entity->imgWidth = std::stoi(reader);
-    configArchive >> reader;
-    this->entity->imgHeight = std::stoi(reader);
-    configArchive >> reader;
-    this->entity->pX  = std::stod(reader);
-    configArchive >> reader;
-    this->entity->pY = std::stod(reader);
-    configArchive >> reader;
-    this->entity->vX  = std::stod(reader);
-    configArchive >> reader;
-    this->entity->vY = std::stod(reader);
-    configArchive >> reader;
-    this->entity->angle  = std::stod(reader);
-    initEntity();
-    initText();
+    configArchive >> reader[0] >> reader[1] >> reader[2] >> reader[3] >> reader[4] >> reader[5];
+    initWindow(reader);
+    
+
+    configArchive >> reader[0] >> reader[1] >> reader[2] >> reader[3] >> reader[4] >> reader[5];
+    initFont(reader);
+
+    Entity* newEntity = nullptr;
+    while(configArchive >> reader[0]) {
+        newEntity = new Entity();
+        configArchive >> reader[1] >> reader[2] >> reader[3] >> reader[4] >> reader[5]
+                    >> reader[6] >> reader[7] >> reader[8] >> reader[9];
+        initEntity(newEntity, reader);
+        initText(newEntity);
+        this->entities.push_back(newEntity);
+    }
 }
 
 void Game::init() {
@@ -143,15 +146,22 @@ void Game::run() {
 }
 
 void Game::destroy() {
-    SDL_DestroyTexture(this->entity->imgTexture);
-    SDL_DestroyTexture(this->entity->txtTexture);
+    for (int i = 0; i < int(this->entities.size()); i++) {
+        SDL_DestroyTexture(this->entities[i]->imgTexture);
+        SDL_DestroyTexture(this->entities[i]->txtTexture);
+    }
     
     SDL_DestroyRenderer(this->renderer);
     SDL_DestroyWindow(this->window);
 
     TTF_CloseFont(this->font);
     
-    delete this->entity;
+    Entity* currentEntity;
+    while(this->entities.size() > 0) {
+        currentEntity = this->entities.back();
+        this->entities.pop_back();
+        delete currentEntity;
+    }
 
     SDL_Quit();
     TTF_Quit();
@@ -175,20 +185,22 @@ void Game::update() {
 }
 
 void Game::moveEntity(double deltaTime) {
-    this->entity->pX += this->entity->vX * deltaTime;
-    this->entity->pY += this->entity->vY * deltaTime;
-    
-    if(this->entity->pX >= (this->windowWidth-this->entity->imgWidth) || this->entity->pX <= 0) {
-        this->entity->vX *= -1;
-        if(this->entity->imgFlip == SDL_FLIP_NONE) this->entity->imgFlip = SDL_FLIP_HORIZONTAL;
-        else this->entity->imgFlip = SDL_FLIP_NONE;
+    for (int i = 0; i < int(this->entities.size()); i++) {
+        this->entities[i]->pX += this->entities[i]->vX * deltaTime;
+        this->entities[i]->pY += this->entities[i]->vY * deltaTime;
+        
+        if(this->entities[i]->pX >= (this->windowWidth - this->entities[i]->imgWidth) || this->entities[i]->pX <= 0) {
+            this->entities[i]->vX *= -1;
+            if(this->entities[i]->imgFlip == SDL_FLIP_NONE) this->entities[i]->imgFlip = SDL_FLIP_HORIZONTAL;
+            else this->entities[i]->imgFlip = SDL_FLIP_NONE;
+        }
+
+        if(this->entities[i]->pY >= (this->windowHeight - this->entities[i]->imgHeight) || this->entities[i]->pY <= 0)
+        this->entities[i]->vY *= -1;
+
+        this->entities[i]->txtPos.x = this->entities[i]->pX  - (this->entities[i]->txtWidth / 2) + (this->entities[i]->imgWidth / 2);
+        this->entities[i]->txtPos.y = this->entities[i]->pY ;
     }
-
-    if(this->entity->pY >= (this->windowHeight-this->entity->imgHeight) || this->entity->pY <= 0)
-    this->entity->vY *= -1;
-
-    this->entity->txtPos.x = this->entity->pX  - (this->entity->txtWidth / 2) + (this->entity->imgWidth / 2);
-    this->entity->txtPos.y = this->entity->pY - 20;
 
 }
 
@@ -216,45 +228,46 @@ void Game::processInput() {
 
 void Game::render() {
     SDL_RenderClear(this->renderer);
-    
-    SDL_Rect imgDstRect = {
-        int(this->entity->pX),
-        int(this->entity->pY),
-        this->entity->imgWidth,
-        this->entity->imgHeight
-    };
+    SDL_Rect imgDstRect, txtDstRect;
+    for (int i = 0; i < int(this->entities.size()); i++) {
+        imgDstRect = {
+            int(this->entities[i]->pX),
+            int(this->entities[i]->pY),
+            this->entities[i]->imgWidth,
+            this->entities[i]->imgHeight
+        };
 
-    SDL_Rect txtDstRect = {
-        int(this->entity->txtPos.x),
-        int(this->entity->txtPos.y),
-        this->entity->txtWidth,
-        this->entity->txtHeight
-    };
-    
-    // Dibujar imagen
-    
-    SDL_RenderCopyEx(
-        this->renderer,
-        this->entity->imgTexture,
-        &this->srcRect,
-        &imgDstRect,
-        this->entity->angle,
-        NULL,
-        this->entity->imgFlip
-    );
+        txtDstRect = {
+            int(this->entities[i]->txtPos.x),
+            int(this->entities[i]->txtPos.y),
+            this->entities[i]->txtWidth,
+            this->entities[i]->txtHeight
+        };
+        
+        // Dibujar imagen
+        
+        SDL_RenderCopyEx(
+            this->renderer,
+            this->entities[i]->imgTexture,
+            &this->entities[i]->srcRect,
+            &imgDstRect,
+            this->entities[i]->angle,
+            NULL,
+            this->entities[i]->imgFlip
+        );
 
-    // Dibujar Texto
+        // Dibujar Texto
 
-    SDL_RenderCopyEx(
-        this->renderer,
-        this->entity->txtTexture,
-        NULL, // El null dibuja toda la textura
-        &txtDstRect,
-        this->entity->txtAngle,
-        NULL,
-        SDL_FLIP_NONE
-    );
-
+        SDL_RenderCopyEx(
+            this->renderer,
+            this->entities[i]->txtTexture,
+            NULL, // El null dibuja toda la textura
+            &txtDstRect,
+            this->entities[i]->txtAngle,
+            NULL,
+            SDL_FLIP_NONE
+        );
+    }
 
     SDL_RenderPresent(this->renderer);
 }

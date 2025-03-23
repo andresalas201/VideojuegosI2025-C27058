@@ -14,6 +14,7 @@ struct Entity{
     double vX;
     double vY;
     double angle;
+    SDL_Rect srcRect = {0,0,0,0};
     SDL_Texture* imgTexture = nullptr;
     SDL_RendererFlip imgFlip = SDL_FLIP_NONE;
 

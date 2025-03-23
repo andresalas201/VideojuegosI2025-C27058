@@ -8,6 +8,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <glm/glm.hpp>
 #include <string>
+#include <vector>
 #include "Entity.h"
 const int FPS = 60;
 const int MILLISEC_PER_FRAME = 1000 / FPS;
@@ -24,10 +25,10 @@ class Game {
         void update();
         void render();
 
-        void initWindow(int red, int green, int blue);
-        void initFont(std::string path);
-        void initEntity();
-        void initText();
+        void initWindow(std::string reader[10]);
+        void initFont(std::string reader[10]);
+        void initEntity(Entity* entity, std::string reader[10]);
+        void initText(Entity* entity);
         void readConfig();
         void moveEntity(double deltaTime);
 
@@ -42,8 +43,7 @@ class Game {
         int mPrvsFrame = 0;
         
         // Atributos de la imagen
-        Entity* entity = nullptr; 
-        SDL_Rect srcRect = {0,0,0,0};
+        std::vector<Entity*> entities; 
 
 
         // Font
