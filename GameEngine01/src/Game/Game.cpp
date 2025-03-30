@@ -1,12 +1,24 @@
 #include "Game.hpp"
+
 #include <iostream>
+#include "../Components/TransformComponent.hpp"
+#include "../Components/SpriteComponent.hpp"
+#include "../Components/RigidBodyComponent.hpp"
+#include "../Systems/RenderSystem.hpp"
+#include "../Systems/MovementSystem.hpp"
+
 
 Game::Game() {
     std::cout <<"[GAME] se ejecuta\n";
+
+    registry = std::make_unique<Registry>();
+    assetManager = std::make_unique<AssetManager>();
 }
 
 Game::~Game() {
-
+    registry.reset();
+    assetManager.reset();
+    std::cout << "[GAME] se destruye\n";
 }
 
 Game& Game::GetInstance() {
@@ -46,6 +58,7 @@ void Game::Init() {
 }
 
 void Game::Run() {
+    Setup();
     while (this->isRunning) {
         ProcessInput();
         Update();
@@ -61,6 +74,13 @@ void Game::ProcessInput() {
         {
             case SDL_QUIT:
                 this->isRunning = false;
+                break;
+            case SDL_KEYDOWN:
+                if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
+                    this->isRunning = false;
+                }
+                break;
+
             default:
                 break;
         }
@@ -68,12 +88,39 @@ void Game::ProcessInput() {
 }
 
 void Game::Update() {
-    // TODO
+    int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks())
+        - milisecsPreviousFrame;
+        if(0 < timeToWait && timeToWait <= MILLISECS_PER_FRAME) {
+            SDL_Delay(timeToWait);
+        }
+        double deltaTime = (SDL_GetTicks() - milisecsPreviousFrame) / 1000.0;
+        // TODO: Agregar esta variable al estado de LUA
+
+        milisecsPreviousFrame = SDL_GetTicks();
+
+        registry->Update();
+        registry->GetSystem<MovementSystem>().Update(deltaTime);
+}
+
+void Game::Setup() {
+    registry->AddSystem<RenderSystem>();
+    registry->AddSystem<MovementSystem>();
+    assetManager->AddTexture(renderer, 
+        "enemy_alan", "assets/images/enemy_alan.png");
+    Entity enemy = registry->CreateEntity();
+    enemy.AddComponent<TransformComponent>(glm::vec2(100.0,100.0), 
+        glm::vec2(2.0, 2.0), 0.0);
+    enemy.AddComponent<SpriteComponent>("enemy_alan", 16, 16, 0, 0);
+    enemy.AddComponent<RigidBodyComponent>(glm::vec2(50, 0));
+    registry->AddEntityToSystems(enemy);
+    
 }
 
 void Game::Render() {
     SDL_SetRenderDrawColor(this->renderer, 31, 31, 31, 255);
     SDL_RenderClear(this->renderer);
+    registry->GetSystem<RenderSystem>().Update(renderer, assetManager);
+
     SDL_RenderPresent(this->renderer);
 }
 

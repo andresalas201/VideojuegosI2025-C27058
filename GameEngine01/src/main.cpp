@@ -6,9 +6,7 @@
 #include "Game/Game.hpp"
 
 int main (int argc, char* argv[]) {
-    
-    std::cout << "Skibidi\n";
-  
+      
     Game& game = Game::GetInstance();
     game.Init();
     game.Run();

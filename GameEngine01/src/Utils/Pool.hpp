@@ -13,7 +13,7 @@ class Pool : public IPool {
     private:
         std::vector<TComponent> data;
     public:
-        Pool (int size = 1000) {data.rend(size);}
+        Pool (int size = 1000) {data.resize(size);}
 
         virtual ~Pool() = default;
 
@@ -22,7 +22,7 @@ class Pool : public IPool {
         }
 
         int GetSize() const {
-            return data.size();
+            return static_cast<int>(data.size());
         }
 
         void Resize(int n) {
