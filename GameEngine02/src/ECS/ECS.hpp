@@ -40,6 +40,7 @@ class Entity {
     public:
         Entity(int id): id(id){}
         int GetId() const;
+        void Kill();
         bool operator==(const Entity& other) const { return id == other.id;}
         bool operator!=(const Entity& other) const { return id != other.id;}
         bool operator<(const Entity& other) const { return id < other.id;}

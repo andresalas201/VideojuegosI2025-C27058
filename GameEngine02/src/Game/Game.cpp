@@ -1,11 +1,17 @@
 #include "Game.hpp"
 
 #include <iostream>
+#include "../Components/CircleColliderComponent.hpp"
 #include "../Components/TransformComponent.hpp"
 #include "../Components/SpriteComponent.hpp"
 #include "../Components/RigidBodyComponent.hpp"
+#include "../Components/AnimationComponent.hpp"
+
 #include "../Systems/RenderSystem.hpp"
+#include "../Systems/CollisionSystem.hpp"
 #include "../Systems/MovementSystem.hpp"
+#include "../Systems/DamageSystem.hpp"
+#include "../Systems/AnimationSystem.hpp"
 
 
 Game::Game() {
@@ -13,6 +19,7 @@ Game::Game() {
 
     registry = std::make_unique<Registry>();
     assetManager = std::make_unique<AssetManager>();
+    eventManager = std::make_unique<EventManager>();
 }
 
 Game::~Game() {
@@ -90,29 +97,51 @@ void Game::ProcessInput() {
 void Game::Update() {
     int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks())
         - milisecsPreviousFrame;
-        if(0 < timeToWait && timeToWait <= MILLISECS_PER_FRAME) {
-            SDL_Delay(timeToWait);
-        }
-        double deltaTime = (SDL_GetTicks() - milisecsPreviousFrame) / 1000.0;
-        // TODO: Agregar esta variable al estado de LUA
+    if(0 < timeToWait && timeToWait <= MILLISECS_PER_FRAME) {
+        SDL_Delay(timeToWait);
+    }
+    double deltaTime = (SDL_GetTicks() - milisecsPreviousFrame) / 1000.0;
+    // TODO: Agregar esta variable al estado de LUA
 
-        milisecsPreviousFrame = SDL_GetTicks();
+    milisecsPreviousFrame = SDL_GetTicks();
 
-        registry->Update();
-        registry->GetSystem<MovementSystem>().Update(deltaTime);
+
+    // Reiniciar las subscripciones
+    eventManager->Reset();
+    registry->GetSystem<DamageSystem>().SubscribeToCollisionEvent(eventManager);
+
+    registry->Update();
+    registry->GetSystem<MovementSystem>().Update(deltaTime);
+    registry->GetSystem<CollisionSystem>().Update(eventManager);
+    registry->GetSystem<AnimationSystem>().Update();
 }
 
 void Game::Setup() {
     registry->AddSystem<RenderSystem>();
     registry->AddSystem<MovementSystem>();
+    registry->AddSystem<CollisionSystem>();
+    registry->AddSystem<DamageSystem>();
+    registry->AddSystem<AnimationSystem>();
     assetManager->AddTexture(renderer, 
         "enemy_alan", "assets/images/enemy_alan.png");
-    Entity enemy = registry->CreateEntity();
-    enemy.AddComponent<TransformComponent>(glm::vec2(100.0,100.0), 
+
+    Entity enemy01 = registry->CreateEntity();
+    enemy01.AddComponent<TransformComponent>(glm::vec2(100.0,100.0), 
         glm::vec2(2.0, 2.0), 0.0);
-    enemy.AddComponent<SpriteComponent>("enemy_alan", 16, 16, 0, 0);
-    enemy.AddComponent<RigidBodyComponent>(glm::vec2(50, 0));
-    registry->AddEntityToSystems(enemy);
+    enemy01.AddComponent<SpriteComponent>("enemy_alan", 16, 16, 0, 0);
+    enemy01.AddComponent<RigidBodyComponent>(glm::vec2(50, 0));
+    enemy01.AddComponent<CircleColliderComponent>(8, 16, 16);
+    enemy01.AddComponent<AnimationComponent>(6,10, true);
+    registry->AddEntityToSystems(enemy01);
+
+    Entity enemy02 = registry->CreateEntity();
+    enemy02.AddComponent<TransformComponent>(glm::vec2(600.0,100.0), 
+        glm::vec2(2.0, 2.0), 0.0);
+    enemy02.AddComponent<SpriteComponent>("enemy_alan", 16, 16, 0, 0);
+    enemy02.AddComponent<RigidBodyComponent>(glm::vec2(-50, 0));
+    enemy02.AddComponent<CircleColliderComponent>(8, 16, 16);
+    enemy02.AddComponent<AnimationComponent>(6,10, true);
+    registry->AddEntityToSystems(enemy02);
     
 }
 

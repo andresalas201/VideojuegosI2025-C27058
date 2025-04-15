@@ -8,6 +8,7 @@
 
 
 #include "../AssetManager/AssetManager.hpp"
+#include "../EventManager/EventManager.hpp"
 #include "../ECS/ECS.hpp"
 
 const int FPS = 30;
@@ -26,6 +27,7 @@ class Game {
         bool isRunning = false;
 
         std::unique_ptr<AssetManager> assetManager;
+        std::unique_ptr<EventManager> eventManager;
         std::unique_ptr<Registry> registry;
 
         void Setup();
