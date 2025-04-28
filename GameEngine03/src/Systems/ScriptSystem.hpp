@@ -27,8 +27,10 @@ class ScriptSystem : public System {
 
         void CreateLuaBinding(sol::state& lua) {
             lua.new_usertype<Entity>("entity");
+            
             lua.set_function("is_action_activated", IsActionActivated);
             lua.set_function("set_velocity", SetVelocity);
+            lua.set_function("go_to_scene", GoToScene);
         }
 };
 

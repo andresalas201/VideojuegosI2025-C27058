@@ -1,13 +1,8 @@
 #include "Game.hpp"
 
 #include <iostream>
-#include "../Components/CircleColliderComponent.hpp"
-#include "../Components/TransformComponent.hpp"
-#include "../Components/SpriteComponent.hpp"
-#include "../Components/RigidBodyComponent.hpp"
-#include "../Components/AnimationComponent.hpp"
-#include "../Components/ScriptComponent.hpp"
 
+#include "../Events/ClickEvent.hpp"
 
 #include "../Systems/RenderSystem.hpp"
 #include "../Systems/CollisionSystem.hpp"
@@ -15,6 +10,8 @@
 #include "../Systems/DamageSystem.hpp"
 #include "../Systems/AnimationSystem.hpp"
 #include "../Systems/ScriptSystem.hpp"
+#include "../Systems/RenderTextSystem.hpp"
+#include "../Systems/UISystem.hpp"
 
 
 Game::Game() {
@@ -24,12 +21,14 @@ Game::Game() {
     assetManager = std::make_unique<AssetManager>();
     eventManager = std::make_unique<EventManager>();
     controllerManager = std::make_unique<ControllerManager>();
+    sceneManager = std::make_unique<SceneManager>();
 }
 
 Game::~Game() {
     registry.reset();
     assetManager.reset();
     controllerManager.reset();
+    sceneManager.reset();
     std::cout << "[GAME] se destruye\n";
 }
 
@@ -72,10 +71,22 @@ void Game::Init() {
 void Game::Run() {
     Setup();
     while (this->isRunning) {
+        sceneManager->StartScene();
+        RunScene();
+    }
+}
+
+void Game::RunScene() {
+    sceneManager->LoadScene();
+    
+    while(isRunning && sceneManager->IsSceneRunning()) {
         ProcessInput();
         Update();
         Render();
     }
+
+    assetManager->ClearAssets();
+    registry->ClearAllEntities();
 }
 
 void Game::ProcessInput() {
@@ -86,16 +97,35 @@ void Game::ProcessInput() {
         {
             case SDL_QUIT:
                 this->isRunning = false;
+                sceneManager->StopScene();
                 break;
             case SDL_KEYDOWN:
                 if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
                     this->isRunning = false;
+                    sceneManager->StopScene();
                     break;
                 }
                 controllerManager->KeyDown(sdlEvent.key.keysym.sym);
                 break;
             case SDL_KEYUP:
                 controllerManager->KeyUp(sdlEvent.key.keysym.sym);
+                break;
+            case SDL_MOUSEMOTION:
+                int x,y;
+                SDL_GetMouseState(&x, &y);
+                controllerManager->SetMousePosition(x, y);
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                controllerManager->SetMousePosition(sdlEvent.button.x,
+                    sdlEvent.button.y);
+                controllerManager->MouseButtonDown(static_cast<int>(sdlEvent.button.button));
+                eventManager->EmitEvent<ClickEvent>(static_cast<int>(sdlEvent.button.button),
+                    sdlEvent.button.x, sdlEvent.button.y);
+                break;
+            case SDL_MOUSEBUTTONUP:
+            controllerManager->SetMousePosition(sdlEvent.button.x,
+                sdlEvent.button.y);
+            controllerManager->MouseButtonUp(static_cast<int>(sdlEvent.button.button));
                 break;
             default:
                 break;
@@ -118,6 +148,7 @@ void Game::Update() {
     // Reiniciar las subscripciones
     eventManager->Reset();
     registry->GetSystem<DamageSystem>().SubscribeToCollisionEvent(eventManager);
+    registry->GetSystem<UISystem>().SubscribeToClicEvent(eventManager);
 
     registry->Update();
     registry->GetSystem<ScriptSystem>().Update(lua);
@@ -133,59 +164,20 @@ void Game::Setup() {
     registry->AddSystem<DamageSystem>();
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<ScriptSystem>();
+    registry->AddSystem<RenderTextSystem>();
+    registry->AddSystem<UISystem>();
     
+    sceneManager->LoadSceneFromScript("assets/scripts/scenes.lua", lua);
+
     lua.open_libraries(sol::lib::base, sol::lib::math);
     registry->GetSystem<ScriptSystem>().CreateLuaBinding(lua);
-    
-    assetManager->AddTexture(renderer, 
-        "enemy_alan", "assets/images/enemy_alan.png");
-    assetManager->AddTexture(renderer,
-        "player_ship", "assets/images/player_ship.png");
-
-    
-    controllerManager->AddActionKey("up", 119); // SDLK_w
-    controllerManager->AddActionKey("left", 97); // SDLK_a
-    controllerManager->AddActionKey("down", 115); // SDLK_s
-    controllerManager->AddActionKey("right", 100); // SDLK_d
-    
-
-    Entity player = registry->CreateEntity();
-    lua.script_file("assets/scripts/player.lua");
-    sol::function update = lua["update"];
-    update();
-    player.AddComponent<ScriptComponent>(update);
-    player.AddComponent<TransformComponent>(glm::vec2(400.0,300.0), 
-        glm::vec2(2.0, 2.0), 0.0);
-    player.AddComponent<SpriteComponent>("player_ship", 16, 16, 16, 0);
-    player.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
-    player.AddComponent<CircleColliderComponent>(8, 16, 16);
-    registry->AddEntityToSystems(player);
-
-    Entity enemy01 = registry->CreateEntity();
-    enemy01.AddComponent<TransformComponent>(glm::vec2(100.0,100.0), 
-        glm::vec2(2.0, 2.0), 0.0);
-    enemy01.AddComponent<SpriteComponent>("enemy_alan", 16, 16, 0, 0);
-    enemy01.AddComponent<RigidBodyComponent>(glm::vec2(50, 0));
-    enemy01.AddComponent<CircleColliderComponent>(8, 16, 16);
-    enemy01.AddComponent<AnimationComponent>(6,10, true);
-    registry->AddEntityToSystems(enemy01);
-
-    Entity enemy02 = registry->CreateEntity();
-    enemy02.AddComponent<TransformComponent>(glm::vec2(600.0,100.0), 
-        glm::vec2(2.0, 2.0), 0.0);
-    enemy02.AddComponent<SpriteComponent>("enemy_alan", 16, 16, 0, 0);
-    enemy02.AddComponent<RigidBodyComponent>(glm::vec2(-50, 0));
-    enemy02.AddComponent<CircleColliderComponent>(8, 16, 16);
-    enemy02.AddComponent<AnimationComponent>(6,10, true);
-    registry->AddEntityToSystems(enemy02);
-    
 }
 
 void Game::Render() {
     SDL_SetRenderDrawColor(this->renderer, 31, 31, 31, 255);
     SDL_RenderClear(this->renderer);
     registry->GetSystem<RenderSystem>().Update(renderer, assetManager);
-
+    registry->GetSystem<RenderTextSystem>().update(renderer, assetManager);
     SDL_RenderPresent(this->renderer);
 }
 

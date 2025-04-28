@@ -126,7 +126,8 @@ class Registry {
         template <typename TSystem>
         TSystem& GetSystem() const;
 
-        // Add an remove entities to systems
+        // Reset Registry
+        void ClearAllEntities();
 
         void AddEntityToSystems(Entity entity);
         void RemoveEntityFromSystem(Entity entity);

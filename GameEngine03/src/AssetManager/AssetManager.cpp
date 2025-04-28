@@ -3,11 +3,11 @@
 #include <SDL2/SDL_image.h>
 
 AssetManager::AssetManager() {
-    std::cout <<"[AssetManager] se crea\n";
+    std::cout <<"[ASSETMANAGER] se crea\n";
 }
 
 AssetManager::~AssetManager() {
-    std::cout <<"[AssetManager] se destruye\n";
+    std::cout <<"[ASSETMANAGER] se destruye\n";
 }
 
 void AssetManager::ClearAssets() {
@@ -15,6 +15,11 @@ void AssetManager::ClearAssets() {
         SDL_DestroyTexture(texture.second);
     }
     textures.clear();
+
+    for (auto font : fonts) {
+        TTF_CloseFont(font.second);
+    }
+    fonts.clear();
 }
 
 void AssetManager::AddTexture(SDL_Renderer* renderer, const std::string& textureId,
@@ -29,4 +34,20 @@ void AssetManager::AddTexture(SDL_Renderer* renderer, const std::string& texture
 
 SDL_Texture* AssetManager::GetTexture(const std::string& textureId){
     return textures[textureId];
+}
+
+void AssetManager::AddFont(const std::string& fontId, const std::string& filePath,
+    int fontSize) {
+
+    TTF_Font* font = TTF_OpenFont(filePath.c_str(), fontSize);
+    if (font == NULL) {
+        std::string error = TTF_GetError();
+        std::cerr << "[ASSETMANAGER] " << error << std::endl;
+        return;
+    }
+    fonts.emplace(fontId, font);
+}
+
+TTF_Font* AssetManager::GetFont(const std::string& fontId) {
+    return fonts[fontId];
 }

@@ -106,3 +106,10 @@ void Registry::Update() {
 
 }
 
+void Registry::ClearAllEntities() {
+    for (int i = 0; i < numEntity; i++) {
+        RemoveEntityFromSystem(Entity(i));
+        entityComponentSignature[i].reset();
+        freeIds.push_back(i);
+    }
+}

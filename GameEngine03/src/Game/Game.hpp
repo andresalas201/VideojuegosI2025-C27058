@@ -12,6 +12,7 @@
 #include "../EventManager/EventManager.hpp"
 #include "../ControllerManager/ControllerManager.hpp"
 #include "../ECS/ECS.hpp"
+#include "../SceneManager/SceneManager.hpp"
 
 const int FPS = 30;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
@@ -19,7 +20,6 @@ const int MILLISECS_PER_FRAME = 1000 / FPS;
 class Game {
     private:
         SDL_Window* window = nullptr;
-        SDL_Renderer* renderer = nullptr;
     
         int windowWidth = 0;
         int windowHeight = 0;
@@ -27,14 +27,9 @@ class Game {
         int milisecsPreviousFrame = 0;
 
         bool isRunning = false;
-
-        std::unique_ptr<AssetManager> assetManager;
-        std::unique_ptr<EventManager> eventManager;
-        std::unique_ptr<Registry> registry;
-
-        sol::state lua;
         
         void Setup();
+        void RunScene();
         void ProcessInput();
         void Update();
         void Render();
@@ -43,8 +38,16 @@ class Game {
         ~Game();
 
     public:
-        static Game& GetInstance();
+        
+        std::unique_ptr<AssetManager> assetManager;
+        std::unique_ptr<EventManager> eventManager;
+        std::unique_ptr<Registry> registry;
+        std::unique_ptr<SceneManager> sceneManager;
+        sol::state lua;
+        SDL_Renderer* renderer = nullptr;
         std::unique_ptr<ControllerManager> controllerManager;
+
+        static Game& GetInstance();
 
         void Init();
         void Run();
