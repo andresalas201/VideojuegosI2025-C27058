@@ -1,18 +1,18 @@
 #include "Game.hpp"
 
 #include <iostream>
-#include "../Components/CircleColliderComponent.hpp"
-#include "../Components/TransformComponent.hpp"
-#include "../Components/SpriteComponent.hpp"
-#include "../Components/RigidBodyComponent.hpp"
-#include "../Components/AnimationComponent.hpp"
+
+#include "../Events/ClickEvent.hpp"
 
 #include "../Systems/RenderSystem.hpp"
 #include "../Systems/CollisionSystem.hpp"
 #include "../Systems/MovementSystem.hpp"
 #include "../Systems/DamageSystem.hpp"
 #include "../Systems/AnimationSystem.hpp"
-#include "../Systems/DeathSystem.hpp
+#include "../Systems/ScriptSystem.hpp"
+#include "../Systems/RenderTextSystem.hpp"
+#include "../Systems/UISystem.hpp"
+#include "../Systems/DeathSystem.hpp"
 
 
 Game::Game() {
@@ -21,11 +21,15 @@ Game::Game() {
     registry = std::make_unique<Registry>();
     assetManager = std::make_unique<AssetManager>();
     eventManager = std::make_unique<EventManager>();
+    controllerManager = std::make_unique<ControllerManager>();
+    sceneManager = std::make_unique<SceneManager>();
 }
 
 Game::~Game() {
     registry.reset();
     assetManager.reset();
+    controllerManager.reset();
+    sceneManager.reset();
     std::cout << "[GAME] se destruye\n";
 }
 
@@ -41,8 +45,8 @@ void Game::Init() {
         return;
     }
 
-    this->windowWidth = 800;
-    this->windowHeight = 600;
+    this->windowWidth = 1280;
+    this->windowHeight = 720;
     this->window = SDL_CreateWindow(
         "Motor de juegos",
         SDL_WINDOWPOS_CENTERED,
@@ -68,10 +72,22 @@ void Game::Init() {
 void Game::Run() {
     Setup();
     while (this->isRunning) {
+        sceneManager->StartScene();
+        RunScene();
+    }
+}
+
+void Game::RunScene() {
+    sceneManager->LoadScene();
+    
+    while(isRunning && sceneManager->IsSceneRunning()) {
         ProcessInput();
         Update();
         Render();
     }
+
+    assetManager->ClearAssets();
+    registry->ClearAllEntities();
 }
 
 void Game::ProcessInput() {
@@ -82,13 +98,36 @@ void Game::ProcessInput() {
         {
             case SDL_QUIT:
                 this->isRunning = false;
+                sceneManager->StopScene();
                 break;
             case SDL_KEYDOWN:
                 if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
                     this->isRunning = false;
+                    sceneManager->StopScene();
+                    break;
                 }
+                controllerManager->KeyDown(sdlEvent.key.keysym.sym);
                 break;
-
+            case SDL_KEYUP:
+                controllerManager->KeyUp(sdlEvent.key.keysym.sym);
+                break;
+            case SDL_MOUSEMOTION:
+                int x,y;
+                SDL_GetMouseState(&x, &y);
+                controllerManager->SetMousePosition(x, y);
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                controllerManager->SetMousePosition(sdlEvent.button.x,
+                    sdlEvent.button.y);
+                controllerManager->MouseButtonDown(static_cast<int>(sdlEvent.button.button));
+                eventManager->EmitEvent<ClickEvent>(static_cast<int>(sdlEvent.button.button),
+                    sdlEvent.button.x, sdlEvent.button.y);
+                break;
+            case SDL_MOUSEBUTTONUP:
+            controllerManager->SetMousePosition(sdlEvent.button.x,
+                sdlEvent.button.y);
+            controllerManager->MouseButtonUp(static_cast<int>(sdlEvent.button.button));
+                break;
             default:
                 break;
         }
@@ -96,8 +135,8 @@ void Game::ProcessInput() {
 }
 
 void Game::Update() {
-    int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks())
-        - milisecsPreviousFrame;
+    int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks()
+        - milisecsPreviousFrame);
     if(0 < timeToWait && timeToWait <= MILLISECS_PER_FRAME) {
         SDL_Delay(timeToWait);
     }
@@ -110,9 +149,11 @@ void Game::Update() {
     // Reiniciar las subscripciones
     eventManager->Reset();
     registry->GetSystem<DamageSystem>().SubscribeToCollisionEvent(eventManager);
-    registry->GetSystem<DeathSys>
+    registry->GetSystem<UISystem>().SubscribeToClicEvent(eventManager);
+    registry->GetSystem<DeathSystem>().SubscribeToDeathEvent(eventManager);
 
     registry->Update();
+    registry->GetSystem<ScriptSystem>().Update(lua);
     registry->GetSystem<MovementSystem>().Update(deltaTime);
     registry->GetSystem<CollisionSystem>().Update(eventManager);
     registry->GetSystem<AnimationSystem>().Update();
@@ -124,34 +165,22 @@ void Game::Setup() {
     registry->AddSystem<CollisionSystem>();
     registry->AddSystem<DamageSystem>();
     registry->AddSystem<AnimationSystem>();
-    assetManager->AddTexture(renderer, 
-        "enemy_alan", "assets/images/enemy_alan.png");
-
-    Entity enemy01 = registry->CreateEntity();
-    enemy01.AddComponent<TransformComponent>(glm::vec2(100.0,100.0), 
-        glm::vec2(2.0, 2.0), 0.0);
-    enemy01.AddComponent<SpriteComponent>("enemy_alan", 16, 16, 0, 0);
-    enemy01.AddComponent<RigidBodyComponent>(glm::vec2(50, 0));
-    enemy01.AddComponent<CircleColliderComponent>(8, 16, 16);
-    enemy01.AddComponent<AnimationComponent>(6,10, true);
-    registry->AddEntityToSystems(enemy01);
-
-    Entity enemy02 = registry->CreateEntity();
-    enemy02.AddComponent<TransformComponent>(glm::vec2(600.0,100.0), 
-        glm::vec2(2.0, 2.0), 0.0);
-    enemy02.AddComponent<SpriteComponent>("enemy_alan", 16, 16, 0, 0);
-    enemy02.AddComponent<RigidBodyComponent>(glm::vec2(-50, 0));
-    enemy02.AddComponent<CircleColliderComponent>(8, 16, 16);
-    enemy02.AddComponent<AnimationComponent>(6,10, true);
-    registry->AddEntityToSystems(enemy02);
+    registry->AddSystem<ScriptSystem>();
+    registry->AddSystem<RenderTextSystem>();
+    registry->AddSystem<UISystem>();
+    registry->AddSystem<DeathSystem>();
     
+    sceneManager->LoadSceneFromScript("assets/scripts/scenes.lua", lua);
+
+    lua.open_libraries(sol::lib::base, sol::lib::math);
+    registry->GetSystem<ScriptSystem>().CreateLuaBinding(lua);
 }
 
 void Game::Render() {
     SDL_SetRenderDrawColor(this->renderer, 31, 31, 31, 255);
     SDL_RenderClear(this->renderer);
     registry->GetSystem<RenderSystem>().Update(renderer, assetManager);
-
+    registry->GetSystem<RenderTextSystem>().update(renderer, assetManager);
     SDL_RenderPresent(this->renderer);
 }
 
