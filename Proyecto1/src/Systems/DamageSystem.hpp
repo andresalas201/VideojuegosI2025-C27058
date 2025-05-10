@@ -8,6 +8,7 @@
 #include "../Components/HealthComponent.hpp"
 #include "../EventManager/EventManager.hpp"
 #include "../Events/CollisionEvent.hpp"
+#include "../Events/DeathEvent.hpp"
 
 class DamageSystem : public System {
 
@@ -22,21 +23,25 @@ class DamageSystem : public System {
                 &DamageSystem::OnCollision);
         }
 
+        void Update(std::unique_ptr<EventManager>& eventManager) {
+            auto entities = GetSystemEntities();
+
+            for (auto i = entities.begin(); i != entities.end(); i++) {
+                Entity a = *i;
+                if(a.GetComponent<HealthComponent>().health <= 0) {
+                    eventManager->EmitEvent<DeathEvent>(a); 
+                    a.Kill();
+                }
+            }
+            
+        }
+
         void OnCollision(CollisionEvent& e) {
             std::cout << "[DAMAGESYSTEM] Colision de entidad " << e.a.GetId() << " y " << e.b.GetId() << std::endl;
             e.a.GetComponent<HealthComponent>().health -= e.b.GetComponent<HealthComponent>().damage;
             e.b.GetComponent<HealthComponent>().health -= e.a.GetComponent<HealthComponent>().damage; 
-            if(e.a.GetComponent<HealthComponent>().health <= 0) {
-                this->eventManager->EmitEvent<DeathEvent>(e.a); 
-                e.a.Kill();
-            }
-            if(e.b.GetComponent<HealthComponent>().health <= 0) {
-                this->eventManager->EmitEvent<DeathEvent>(e.a);
-                e.b.Kill();
-            }
         }
     private:
-        std::unique_ptr<EventManager>& eventManager;
 };
 
 #endif // DAMAGESYSTEM_HPP
