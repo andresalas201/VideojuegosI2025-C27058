@@ -1,5 +1,7 @@
 #include "SceneLoader.hpp"
 
+#include "../Systems/AudioSystem.hpp"
+
 #include "../Components/CircleColliderComponent.hpp"
 #include "../Components/TransformComponent.hpp"
 #include "../Components/SpriteComponent.hpp"
@@ -27,6 +29,9 @@ void SceneLoader::LoadScene(const std::string& scenePath, sol::state& lua,
     std::unique_ptr<Registry>& registry,
     SDL_Renderer* renderer) {
 
+    
+    std::cout << "[SCENELOADER] Se carga la escena: " << scenePath << 
+        std::endl;
     sol::load_result script_result = lua.load_file(scenePath);
     if (!script_result.valid()) {
         sol::error err = script_result;
@@ -54,6 +59,9 @@ void SceneLoader::LoadScene(const std::string& scenePath, sol::state& lua,
 
     sol::table buttons = scene["buttons"];
     LoadButtons(buttons, controllerManager);
+
+    sol::table music = scene["music"];
+    StartMusic(music, registry);
 }
 
 void SceneLoader::LoadSprites(SDL_Renderer* renderer, 
@@ -247,7 +255,7 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
 
             //* HealthComponent
             sol::optional<sol::table> hasHealth = components["health"];
-            if (hasClickable != sol::nullopt) {
+            if (hasHealth != sol::nullopt) {
                 newEntity.AddComponent<HealthComponent>(components["health"]["max_health"],
                     components["health"]["damage"]);
             }
@@ -256,6 +264,12 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
         registry->AddEntityToSystems(newEntity);
         index++;
     }
+}
+
+void SceneLoader::StartMusic(const sol::table& music, std::unique_ptr<Registry>& registry) {
+    std::string musicPath = music["filePath"];
+    registry->GetSystem<AudioSystem>().playMusic(musicPath);
+
 }
 
 

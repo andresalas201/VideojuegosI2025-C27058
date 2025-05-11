@@ -28,6 +28,10 @@ scene = {
         {name = "mouse_left_button", button = 1},
 
     },
+    music = {
+        filePath = "assets/music/TestMusic2.wav",
+        length = 2000,
+    },
 
     -- Tabla de entidades
     entities = {

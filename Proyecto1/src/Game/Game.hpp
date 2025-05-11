@@ -45,6 +45,7 @@ class Game {
         std::unique_ptr<SceneManager> sceneManager;
         sol::state lua;
         SDL_Renderer* renderer = nullptr;
+        SDL_AudioDeviceID* audioDevice = nullptr;
         std::unique_ptr<ControllerManager> controllerManager;
 
         static Game& GetInstance();
@@ -54,4 +55,4 @@ class Game {
         void Destroy();
 };
 
-#endif // GAME_HPP
+#endif // GAME_HPH

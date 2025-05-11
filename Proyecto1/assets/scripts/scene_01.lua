@@ -8,7 +8,7 @@ scene = {
         },
         {
             assetId = "player_ship",
-            filePath = "assets/images/Ship.png"
+            filePath = "assets/images/player_ship.png"
         },
         {
             assetId = "enemy_alan",
@@ -33,6 +33,8 @@ scene = {
         {name = "left", key=97},
         {name = "down", key=115},
         {name = "right", key=100},
+        {name = "shoot", key=106},
+        {name = "upgrade", key=107}
     },
 
     -- Tabla de acciones y botones del ratón
@@ -41,6 +43,10 @@ scene = {
         [0] =
         {name = "mouse_left_button", button = 1},
 
+    },
+    music = {
+        filePath = "assets/music/TestMusic.wav",
+        length = 300,
     },
 
     -- Tabla de entidades
@@ -78,12 +84,12 @@ scene = {
                     assetId = "player_ship",
                     width = 16,
                     height = 16,
-                    src_rect = {x = 0, y = 0 }
+                    src_rect = {x = 16, y = 0 }
                 },
                 transform = {
                     position = {x = 400.0, y = 300.0},
                     scale = {x = 2.0, y = 2.0},
-                    rotation = 0.0
+                    rotation = 90.0
                 },
                 health = {
                     max_health = 10,

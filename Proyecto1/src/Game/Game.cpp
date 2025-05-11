@@ -13,6 +13,7 @@
 #include "../Systems/RenderTextSystem.hpp"
 #include "../Systems/UISystem.hpp"
 #include "../Systems/DeathSystem.hpp"
+#include "../Systems/AudioSystem.hpp"
 
 
 Game::Game() {
@@ -70,6 +71,7 @@ void Game::Init() {
 }
 
 void Game::Run() {
+    if (!this->isRunning) return;
     Setup();
     while (this->isRunning) {
         sceneManager->StartScene();
@@ -92,7 +94,6 @@ void Game::RunScene() {
 
 void Game::ProcessInput() {
     SDL_Event sdlEvent;
-    
     while (SDL_PollEvent(&sdlEvent)) {
         switch (sdlEvent.type)
         {
@@ -170,6 +171,7 @@ void Game::Setup() {
     registry->AddSystem<RenderTextSystem>();
     registry->AddSystem<UISystem>();
     registry->AddSystem<DeathSystem>();
+    registry->AddSystem<AudioSystem>();
     
     sceneManager->LoadSceneFromScript("assets/scripts/scenes.lua", lua);
 
@@ -188,6 +190,8 @@ void Game::Render() {
 void Game::Destroy() {
     SDL_DestroyRenderer(this->renderer);
     SDL_DestroyWindow(this->window);
+    registry->GetSystem<AudioSystem>().stopMusic();
+    registry->GetSystem<AudioSystem>().stopSound();
     TTF_Quit();
     SDL_Quit();
 }
