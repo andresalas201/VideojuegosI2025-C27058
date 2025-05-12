@@ -1,6 +1,9 @@
 #include "SceneManager.hpp"
 #include "../Game/Game.hpp"
 
+int FPS = 0;
+int MILLISECS_PER_FRAME = 0;
+
 #include <iostream>
 
 SceneManager::SceneManager() {

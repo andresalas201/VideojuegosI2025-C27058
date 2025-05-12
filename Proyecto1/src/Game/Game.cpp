@@ -14,6 +14,7 @@
 #include "../Systems/UISystem.hpp"
 #include "../Systems/DeathSystem.hpp"
 #include "../Systems/AudioSystem.hpp"
+#include "../Systems/CleanShotSystem.hpp"
 
 
 Game::Game() {
@@ -159,6 +160,7 @@ void Game::Update() {
     registry->GetSystem<CollisionSystem>().Update(eventManager);
     registry->GetSystem<AnimationSystem>().Update();
     registry->GetSystem<DamageSystem>().Update(eventManager);
+    registry->GetSystem<CleanShotSystem>().Update(MILLISECS_PER_FRAME, FPS);
 }
 
 void Game::Setup() {
@@ -172,11 +174,22 @@ void Game::Setup() {
     registry->AddSystem<UISystem>();
     registry->AddSystem<DeathSystem>();
     registry->AddSystem<AudioSystem>();
+    registry->AddSystem<CleanShotSystem>();
     
+    LoadConfig();
     sceneManager->LoadSceneFromScript("assets/scripts/scenes.lua", lua);
 
     lua.open_libraries(sol::lib::base, sol::lib::math);
     registry->GetSystem<ScriptSystem>().CreateLuaBinding(lua);
+}
+
+void Game::LoadConfig() {
+    lua.script_file("assets/scripts/config.lua");
+    sol::table config = lua["config"];
+    FPS = config["fps"];
+    MILLISECS_PER_FRAME = 1000 / FPS;
+    int secondsPerShot = config["seconds_per_shot"];
+    registry->GetSystem<CleanShotSystem>().setSecondsPerShot(secondsPerShot);
 }
 
 void Game::Render() {

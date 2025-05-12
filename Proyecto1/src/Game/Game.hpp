@@ -14,8 +14,8 @@
 #include "../ECS/ECS.hpp"
 #include "../SceneManager/SceneManager.hpp"
 
-const int FPS = 30;
-const int MILLISECS_PER_FRAME = 1000 / FPS;
+extern int FPS;
+extern int MILLISECS_PER_FRAME;
 
 class Game {
     private:
@@ -33,6 +33,7 @@ class Game {
         void ProcessInput();
         void Update();
         void Render();
+        void LoadConfig();
 
         Game();
         ~Game();

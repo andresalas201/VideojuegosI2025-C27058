@@ -11,6 +11,9 @@
 #include "../Components/TextComponent.hpp"
 #include "../Components/ClickableComponent.hpp"
 #include "../Components/HealthComponent.hpp"
+#include "../Components/UpgradeComponent.hpp"
+#include "../Components/PlayerComponent.hpp"
+#include "../Components/AttackComponent.hpp"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -259,6 +262,37 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
                 newEntity.AddComponent<HealthComponent>(components["health"]["max_health"],
                     components["health"]["damage"]);
             }
+
+            //* UpgradeComponent
+            sol::optional<sol::table> hasUpgrade = components["upgrade"];
+            if(hasUpgrade != sol::nullopt) {
+                int inc = components["upgrade"]["increase"];
+                newEntity.AddComponent<UpgradeComponent>(inc);
+            }
+
+
+            //* PlayerComponent
+            sol::optional<sol::table> hasPlayer = components["player"];
+            if(hasPlayer != sol::nullopt) {
+                int num = components["player"]["number"];
+                newEntity.AddComponent<PlayerComponent>(num);
+            }
+
+
+            //* AttackComponent
+            sol::optional<sol::table> hasAttack = components["attack"];
+            if (hasAttack != sol::nullopt) {
+                    newEntity.AddComponent<AttackComponent>(components["attack"]["damage"],
+                    components["attack"]["radius"], components["attack"]["width"],
+                    components["attack"]["height"], components["attack"]["texture_id"],
+                    components["attack"]["src_x"], components["attack"]["src_y"],
+                    glm::vec2(components["attack"]["vel_x"], components["attack"]["vel_y"]),
+                    components["attack"]["sound_path"], components["attack"]["hit_path"],
+                    components["attack"]["max_shots"], components["attack"]["left"],
+                    glm::vec2(components["attack"]["scale"]["x"], components["attack"]["scale"]["y"]),
+                    components["attack"]["rotation"]);
+            }
+            
         }
 
         registry->AddEntityToSystems(newEntity);

@@ -6,6 +6,7 @@
 #include "../ECS/ECS.hpp"
 #include "../Components/CircleColliderComponent.hpp"
 #include "../Components/TransformComponent.hpp"
+#include "../Components/ShotComponent.hpp"
 #include "../EventManager/EventManager.hpp"
 #include "../Events/CollisionEvent.hpp"
 
@@ -25,8 +26,9 @@ class CollisionSystem : public System {
             
                 for (auto j = i; j!= entities.end(); j++) {
                     Entity b = *j;
-
-                    if (a == b) {
+                    
+                    if (a == b || (a.HasComponent<ShotComponent>() && 
+                        b.HasComponent<ShotComponent>())) {
                         continue;
                     }
                     auto bCollider = b.GetComponent<CircleColliderComponent>();

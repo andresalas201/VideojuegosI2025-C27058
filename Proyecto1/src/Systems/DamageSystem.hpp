@@ -6,6 +6,7 @@
 #include "../ECS/ECS.hpp"
 #include "../Components/CircleColliderComponent.hpp"
 #include "../Components/HealthComponent.hpp"
+#include "../Components/ShotComponent.hpp"
 #include "../EventManager/EventManager.hpp"
 #include "../Events/CollisionEvent.hpp"
 #include "../Events/DeathEvent.hpp"
@@ -29,7 +30,7 @@ class DamageSystem : public System {
             for (auto i = entities.begin(); i != entities.end(); i++) {
                 Entity a = *i;
                 if(a.GetComponent<HealthComponent>().health <= 0) {
-                    eventManager->EmitEvent<DeathEvent>(a); 
+                    eventManager->EmitEvent<DeathEvent>(a);
                     a.Kill();
                 }
             }

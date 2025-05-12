@@ -19,6 +19,9 @@ function update()
     if is_action_activated("down") then
         vel_y = vel_y + 1
     end
+    if is_action_activated("shoot") then
+        shoot(this)
+    end
  
     if vel_x ~= 0 and vel_y ~= 0 then
         vel_x = vel_x * fixed_player_velocity

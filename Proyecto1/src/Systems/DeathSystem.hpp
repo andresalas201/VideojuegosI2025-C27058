@@ -5,6 +5,7 @@
 #include "../Components/SpriteComponent.hpp"
 #include "../EventManager/EventManager.hpp"
 #include "../Events/DeathEvent.hpp"
+#include "AudioSystem.hpp"
 
 class DeathSystem : public System {
     public:
@@ -19,6 +20,10 @@ class DeathSystem : public System {
 
         void OnDeath(DeathEvent& e) {
             // TODO(any) Implementar la muerte
+            if(e.a.HasComponent<SoundComponent>()) {
+                e.a.registry->GetSystem<AudioSystem>().playSound(
+                        e.a.GetComponent<SoundComponent>().soundPath);
+            }
         }
 };
 

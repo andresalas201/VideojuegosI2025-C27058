@@ -1,12 +1,13 @@
 #ifndef SOUNDCOMPONENT_HPP
 #define SOUNDCOMPONENT_HPP
 
-#include <SDL2/SDL_mixer.h>
+#include <string>
 
 struct SoundComponent {
-    SoundComponent() {
+    
+    std::string soundPath;
 
-    }
+    SoundComponent(const std::string& soundPath = "") : soundPath(soundPath) {}
 
 };
 
