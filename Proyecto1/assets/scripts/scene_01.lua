@@ -106,17 +106,44 @@ scene = {
                     width = 16,
                     height = 16,
                     texture_id = "energy_shot",
-                    src_x = 0,
+                    src_x = 16,
                     src_y = 0,
-                    vel_x = 1,
+                    vel_x = 100,
                     vel_y = 0,
                     sound_path = "assets/sounds/shot.wav",
                     hit_path = "assets/sounds/shot.wav",
                     max_shots = 5,
                     left = false,
-                    scale = {x = 2, y = 2},
+                    scale = {x = 1, y = 1},
                     rotation = 0
                 }
+            }
+        },
+        {
+            components = {
+                circle_collider = {
+                    radius = 8,
+                    width = 16,
+                    height = 16
+                },
+                rigidBody = {
+                    velocity = {x = -1, y = 0}
+                },
+                sprite = {
+                    assetId = "enemy_alan",
+                    width = 16,
+                    height = 16,
+                    src_rect = {x = 16, y = 0 }
+                },
+                transform = {
+                    position = {x = 800.0, y = 300.0},
+                    scale = {x = 4.0, y = 4.0},
+                    rotation = 180.0
+                },
+                health = {
+                    max_health = 1,
+                    damage = 1
+                },
             }
         },
         {

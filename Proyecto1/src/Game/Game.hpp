@@ -23,6 +23,7 @@ class Game {
     
         int windowWidth = 0;
         int windowHeight = 0;
+        int secondsPerShot = 0;
         
         int milisecsPreviousFrame = 0;
 

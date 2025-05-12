@@ -28,16 +28,15 @@ void SetVelocity(Entity entity, float x, float y) {
     rigidBody.velocity.y = y;
 }
 
-glm::vec2 CalculatePosition(Entity e, bool left, int width, double scale) {
-
+glm::vec2 CalculatePosition(Entity e, bool left) {
     double direction;
     if (left) direction = -1.0;
     else direction = 1.0;
     glm::vec2 entityPosition = e.GetComponent<TransformComponent>().position;
     int entityWidth = e.GetComponent<SpriteComponent>().width;
     int entityHeight = e.GetComponent<SpriteComponent>().height;
-    double x = (entityPosition.x + (entityWidth * scale / 2)) + 
-        ((entityWidth + (width/2)) * direction);
+    double x = (entityPosition.x + (entityWidth / 2)) + 
+        ((entityWidth) * direction);
     double y = entityPosition.y + (entityHeight / 2);
     glm::vec2 result = glm::vec2(x, y);
     return result;
@@ -50,16 +49,17 @@ bool CanShoot(AttackComponent* attack) {
 }
 
 void Shoot(Entity shooter) {
-    // TODO(any): Arreglar el que las balas no se vean
+    // TODO(any): Optimizar para que no se lagee al disparar
+    // TODO(any): Arreglar la colision
+    // TODO(any): Implementar la colision de upgrades que revisa si es un jugador y si es le sube el daño
     if(!shooter.HasComponent<AttackComponent>()) return;
     AttackComponent* attack = &shooter.GetComponent<AttackComponent>();
     if (attack && attack->currentShots < attack->maxShots && CanShoot(attack)) {
-        std::cout << "Shots\n";
         Entity shot = Game::GetInstance().registry->CreateEntity();
         shot.AddComponent<CircleColliderComponent>(attack->radius, attack->width,
             attack->height);
         shot.AddComponent<RigidBodyComponent>(attack->velocity);
-        shot.AddComponent<TransformComponent>(CalculatePosition(shooter, attack->left, attack->width, attack->scale.x),
+        shot.AddComponent<TransformComponent>(CalculatePosition(shooter, attack->left), 
             attack->scale, attack->rotation);
         shot.AddComponent<HealthComponent>(1, attack->damage);
         shot.AddComponent<CircleColliderComponent>(attack->radius, attack->width,
@@ -73,8 +73,7 @@ void Shoot(Entity shooter) {
         attack->lastShotTick = SDL_GetTicks();
         Game::GetInstance().registry->GetSystem<AudioSystem>().playSound(attack->shootSoundFilePath);
         Game::GetInstance().registry->AddEntityToSystems(shot);
-    } else if (attack->currentShots >= attack->maxShots) std::cout << "Cant keep shooting\n";
-    else if (!CanShoot(attack)) std::cout << "Pere\n";
+    }
 }
 
 void Upgrade(Entity upgraded, int increase) {

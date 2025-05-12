@@ -47,8 +47,8 @@ void Game::Init() {
         return;
     }
 
-    this->windowWidth = 1280;
-    this->windowHeight = 720;
+    LoadConfig();
+
     this->window = SDL_CreateWindow(
         "Motor de juegos",
         SDL_WINDOWPOS_CENTERED,
@@ -69,6 +69,16 @@ void Game::Init() {
         return;
     }
     this->isRunning = true;
+}
+
+void Game::LoadConfig() {
+    lua.script_file("assets/scripts/config.lua");
+    sol::table config = lua["config"];
+    FPS = config["fps"];
+    MILLISECS_PER_FRAME = 1000 / FPS;
+    secondsPerShot = config["seconds_per_shot"];
+    windowWidth = config["width"];
+    windowHeight = config["height"];
 }
 
 void Game::Run() {
@@ -176,21 +186,14 @@ void Game::Setup() {
     registry->AddSystem<AudioSystem>();
     registry->AddSystem<CleanShotSystem>();
     
-    LoadConfig();
+    registry->GetSystem<CleanShotSystem>().setSecondsPerShot(secondsPerShot);
     sceneManager->LoadSceneFromScript("assets/scripts/scenes.lua", lua);
 
     lua.open_libraries(sol::lib::base, sol::lib::math);
     registry->GetSystem<ScriptSystem>().CreateLuaBinding(lua);
 }
 
-void Game::LoadConfig() {
-    lua.script_file("assets/scripts/config.lua");
-    sol::table config = lua["config"];
-    FPS = config["fps"];
-    MILLISECS_PER_FRAME = 1000 / FPS;
-    int secondsPerShot = config["seconds_per_shot"];
-    registry->GetSystem<CleanShotSystem>().setSecondsPerShot(secondsPerShot);
-}
+
 
 void Game::Render() {
     SDL_SetRenderDrawColor(this->renderer, 31, 31, 31, 255);
