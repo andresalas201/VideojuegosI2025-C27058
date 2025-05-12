@@ -35,7 +35,7 @@ glm::vec2 CalculatePosition(Entity e, bool left) {
     glm::vec2 entityPosition = e.GetComponent<TransformComponent>().position;
     int entityWidth = e.GetComponent<SpriteComponent>().width;
     int entityHeight = e.GetComponent<SpriteComponent>().height;
-    double x = (entityPosition.x + (entityWidth / 2)) + 
+    double x = (entityPosition.x + (entityWidth)) + 
         ((entityWidth) * direction);
     double y = entityPosition.y + (entityHeight / 2);
     glm::vec2 result = glm::vec2(x, y);
@@ -50,7 +50,6 @@ bool CanShoot(AttackComponent* attack) {
 
 void Shoot(Entity shooter) {
     // TODO(any): Optimizar para que no se lagee al disparar
-    // TODO(any): Arreglar la colision
     // TODO(any): Implementar la colision de upgrades que revisa si es un jugador y si es le sube el daño
     if(!shooter.HasComponent<AttackComponent>()) return;
     AttackComponent* attack = &shooter.GetComponent<AttackComponent>();
