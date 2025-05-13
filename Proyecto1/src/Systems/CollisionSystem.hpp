@@ -7,6 +7,8 @@
 #include "../Components/CircleColliderComponent.hpp"
 #include "../Components/TransformComponent.hpp"
 #include "../Components/ShotComponent.hpp"
+#include "../Components/UpgradeComponent.hpp"
+#include "../Components/PlayerComponent.hpp"
 #include "../EventManager/EventManager.hpp"
 #include "../Events/CollisionEvent.hpp"
 
@@ -27,8 +29,9 @@ class CollisionSystem : public System {
                 for (auto j = i; j!= entities.end(); j++) {
                     Entity b = *j;
                     
-                    if (a == b || (a.HasComponent<ShotComponent>() && 
-                        b.HasComponent<ShotComponent>())) {
+                    if (a == b || 
+                        (a.HasComponent<ShotComponent>() && b.HasComponent<ShotComponent>()) ||
+                        (a.HasComponent<UpgradeComponent>())) {
                         continue;
                     }
                     auto bCollider = b.GetComponent<CircleColliderComponent>();

@@ -50,7 +50,6 @@ bool CanShoot(AttackComponent* attack) {
 
 void Shoot(Entity shooter) {
     // TODO(any): Optimizar para que no se lagee al disparar
-    // TODO(any): Implementar la colision de upgrades que revisa si es un jugador y si es le sube el daño
     if(!shooter.HasComponent<AttackComponent>()) return;
     AttackComponent* attack = &shooter.GetComponent<AttackComponent>();
     if (attack && attack->currentShots < attack->maxShots && CanShoot(attack)) {
@@ -73,11 +72,6 @@ void Shoot(Entity shooter) {
         Game::GetInstance().registry->GetSystem<AudioSystem>().playSound(attack->shootSoundFilePath);
         Game::GetInstance().registry->AddEntityToSystems(shot);
     }
-}
-
-void Upgrade(Entity upgraded, int increase) {
-    if(!upgraded.HasComponent<AttackComponent>()) return;
-    upgraded.GetComponent<AttackComponent>().damage += increase;
 }
 
 // Scenes

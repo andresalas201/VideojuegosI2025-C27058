@@ -17,7 +17,11 @@ scene = {
         {
             assetId = "energy_shot",
             filePath = "assets/images/energy_shot.png"
-        }
+        },
+        {
+            assetId = "icons",
+            filePath = "assets/images/icons.png"
+        },
 
     },
     -- Tabla de fuentes
@@ -144,6 +148,93 @@ scene = {
                     max_health = 1,
                     damage = 1
                 },
+            }
+        },
+        {
+            components = {
+                circle_collider = {
+                    radius = 8,
+                    width = 16,
+                    height = 16
+                },
+                rigidBody = {
+                    velocity = {x = -1, y = 0}
+                },
+                sprite = {
+                    assetId = "enemy_alan",
+                    width = 16,
+                    height = 16,
+                    src_rect = {x = 16, y = 0 }
+                },
+                transform = {
+                    position = {x = 800.0, y = 400.0},
+                    scale = {x = 4.0, y = 4.0},
+                    rotation = 0.0
+                },
+                health = {
+                    max_health = 2,
+                    damage = 1
+                },
+            }
+        },
+        {
+            components = {
+                circle_collider = {
+                    radius = 8,
+                    width = 16,
+                    height = 16
+                },
+                rigidBody = {
+                    velocity = {x = -1, y = 0}
+                },
+                sprite = {
+                    assetId = "enemy_alan",
+                    width = 16,
+                    height = 16,
+                    src_rect = {x = 16, y = 0 }
+                },
+                transform = {
+                    position = {x = 800.0, y = 500.0},
+                    scale = {x = 4.0, y = 4.0},
+                    rotation = 0.0
+                },
+                health = {
+                    max_health = 2,
+                    damage = 1
+                },
+            }
+        },
+        {
+            components = {
+                circle_collider = {
+                    radius = 16,
+                    width = 32,
+                    height = 32
+                },
+                rigidBody = {
+                    velocity = {x = -10, y = 0}
+                },
+                sprite = {
+                    assetId = "icons",
+                    width = 32,
+                    height = 32,
+                    src_rect = {x = 2*32, y = 8*32 }
+                },
+                transform = {
+                    position = {x = 800.0, y = 250.0},
+                    scale = {x = 1.0, y = 1.0},
+                    rotation = 0.0
+                },
+                health = {
+                    max_health = 1,
+                    damage = 0
+                },
+                upgrade = {
+                    increase = 1
+                },
+                sound = {
+                    sound_path = "assets/sounds/upgrade.wav"
+                }
             }
         },
         {

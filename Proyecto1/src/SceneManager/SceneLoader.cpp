@@ -292,6 +292,13 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
                     glm::vec2(components["attack"]["scale"]["x"], components["attack"]["scale"]["y"]),
                     components["attack"]["rotation"]);
             }
+
+            //* SoundComponent
+            sol::optional<sol::table> hasSound = components["sound"];
+            if (hasSound != sol::nullopt) {
+                std::string soundPath = components["sound"]["sound_path"];
+                newEntity.AddComponent<SoundComponent>(soundPath);
+            }
             
         }
 
