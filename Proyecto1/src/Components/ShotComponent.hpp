@@ -5,11 +5,13 @@
 
 struct ShotComponent {
     bool isShot;
+    bool playerShot;
     int shotTime;
 
-    ShotComponent (bool isShot = true) {
+    ShotComponent (bool isShot = true, bool playerShot = false) {
         this->isShot = isShot;
         this->shotTime = SDL_GetTicks();
+        this->playerShot = playerShot;
     }
 };
 

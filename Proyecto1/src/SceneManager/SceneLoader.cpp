@@ -54,6 +54,14 @@ void SceneLoader::LoadScene(const std::string& scenePath, sol::state& lua,
     sol::table keys = scene["keys"];
     this->LoadKeys(keys, controllerManager);
 
+    sol::optional<sol::table> hasSounds = scene["sound"];
+    if (hasSounds != sol::nullopt) {
+        std::cout << "sonido\n";
+        sol::table sounds = scene["sound"];
+        LoadSound(sounds, assetManager);
+        std::cout << "sale de sonido\n";
+    }
+
     sol::table entities = scene["entities"];
     LoadEntities(lua, entities, registry);
 
@@ -142,6 +150,22 @@ void SceneLoader::LoadButtons(const sol::table& buttons,
         index++;
     }
     
+}
+
+void SceneLoader::LoadSound(const sol::table& sounds, std::unique_ptr<AssetManager>& assetManager) {
+    int index = 0;
+    while (true) {
+        sol::optional<sol::table> hasSound = sounds[index];
+        if (hasSound == sol::nullopt) break;
+        
+        sol::table sound = sounds[index];
+
+        std::string name = sound["name"];
+        std::string filePath = sound["file_path"];
+
+        assetManager->AddSound(name, filePath);
+        index++;
+    }
 }
 
 

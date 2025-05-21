@@ -31,7 +31,8 @@ class SceneLoader {
             std::unique_ptr<Registry>& registry);
 
         void StartMusic(const sol::table& music, std::unique_ptr<Registry>& registry);
-
+        
+        void LoadSound(const sol::table& sounds, std::unique_ptr<AssetManager>& assetManager);
 
     public:
         SceneLoader();

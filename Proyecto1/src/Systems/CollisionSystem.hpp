@@ -31,7 +31,9 @@ class CollisionSystem : public System {
                     
                     if (a == b || 
                         (a.HasComponent<ShotComponent>() && b.HasComponent<ShotComponent>()) ||
-                        (a.HasComponent<UpgradeComponent>())) {
+                        (a.HasComponent<UpgradeComponent>()) ||
+                        (b.HasComponent<ShotComponent>() && (a.HasComponent<PlayerComponent>()) &&
+                        (b.GetComponent<ShotComponent>().playerShot))) {
                         continue;
                     }
                     auto bCollider = b.GetComponent<CircleColliderComponent>();

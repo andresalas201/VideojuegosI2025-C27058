@@ -5,9 +5,9 @@
 
 struct SoundComponent {
     
-    std::string soundPath;
+    std::string soundName;
 
-    SoundComponent(const std::string& soundPath = "none") : soundPath(soundPath) {}
+    SoundComponent(const std::string& soundPath = "none") : soundName(soundPath) {}
 
 };
 

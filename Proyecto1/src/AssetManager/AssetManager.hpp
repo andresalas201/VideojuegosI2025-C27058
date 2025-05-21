@@ -7,11 +7,22 @@
 #include <map>
 #include <string>
 
+struct SoundStruct {
+    std::string filePath;
+    SDL_AudioSpec soundSpec;
+    SDL_AudioDeviceID soundDevice;
+    Uint8* soundBuffer;
+    Uint32 soundLength;
+    Uint32 soundPosition;
+    bool isPlayingSound;
+};
+
 class AssetManager {
     private:
 
         std::map<std::string, SDL_Texture*> textures;
         std::map<std::string, TTF_Font*> fonts;
+        std::map<std::string, SoundStruct*> sounds;
 
     public:
 
@@ -28,6 +39,9 @@ class AssetManager {
             int fontSize);
 
         TTF_Font* GetFont(const std::string& fontId);
+
+        void AddSound(const std::string& soundId, const std::string& filePath);
+        SoundStruct* GetSound(const std::string& soundId);
 };
 
 #endif // ASSETMANAGER_HPP

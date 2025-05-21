@@ -55,6 +55,17 @@ scene = {
         filePath = "assets/music/TestMusic.wav",
         length = 300,
     },
+    sound = {
+        [0] = {
+            name = "laser_shot",
+            file_path = "assets/sounds/shot.wav"
+        },
+        {
+            name = "upgrade",
+            file_path = "assets/sounds/upgrade.wav"
+        },
+
+    },
     -- Tabla de entidades
     entities = {
         [0] = {
@@ -114,8 +125,8 @@ scene = {
                     src_y = 0,
                     vel_x = 100,
                     vel_y = 0,
-                    sound_path = "assets/sounds/shot.wav",
-                    hit_path = "assets/sounds/shot.wav",
+                    sound_path = "laser_shot",
+                    hit_path = "laser_shot",
                     max_shots = 5,
                     left = false,
                     scale = {x = 1, y = 1},
@@ -233,7 +244,7 @@ scene = {
                     increase = 1
                 },
                 sound = {
-                    sound_path = "assets/sounds/upgrade.wav"
+                    sound_path = "upgrade"
                 }
             }
         },

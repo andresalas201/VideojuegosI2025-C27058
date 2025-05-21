@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "../ECS/ECS.hpp"
+#include "../AssetManager/AssetManager.hpp"
 #include "../Components/SoundComponent.hpp"
 
 class AudioSystem : public System {
@@ -43,32 +44,20 @@ class AudioSystem : public System {
             soundPosition = 0;
         }
 
-        void playSound(std::string filePath) {
-            if(this->isPlayingSound) stopSound();
-
-            soundLength = 0;
-            if (SDL_LoadWAV(filePath.c_str(), &soundSpec, &soundBuffer, &soundLength) == NULL) {
-                std::cerr << "[AUDIOSYSTEM] Error al cargar sonido: " << SDL_GetError() << std::endl;
-                return;
-            }
-            soundSpec.callback = soundCallback;
-            soundSpec.userdata = this;
+        void playSound(SoundStruct* sound) {
+            if(sound->isPlayingSound) stopSound(sound);
             
-            soundDevice = SDL_OpenAudioDevice(NULL, 0, &this->soundSpec, NULL, 0);
-            std::cout << "[AUDIOSYSTEM] Se reproduce el sonido: " << filePath.c_str() << std::endl;
-            SDL_PauseAudioDevice(soundDevice, 0);
+            std::cout << "[AUDIOSYSTEM] Se reproduce el sonido: " << sound->filePath.c_str() << std::endl;
+            SDL_PauseAudioDevice(sound->soundDevice, 0);
 
-            this->isPlayingSound = true;
+            sound->isPlayingSound = true;
         }
 
-        void stopSound() {
-            if (this->isPlayingSound) {
-                SDL_CloseAudioDevice(soundDevice);
-                SDL_FreeWAV(soundBuffer);
-                soundBuffer = NULL;
-                soundLength = 0;
-                soundPosition = 0;
-                this->isPlayingSound = false;
+        void stopSound(SoundStruct* sound) {
+            if (sound->isPlayingSound) {
+                SDL_PauseAudioDevice(sound->soundDevice, 1);
+                sound->soundPosition = 0;
+                sound->isPlayingSound = false;
             }
         }
 
@@ -122,21 +111,7 @@ class AudioSystem : public System {
             }
         }
 
-        static void soundCallback(void* voidSystem, Uint8* stream, int len) {
-            AudioSystem* audioSystem = static_cast<AudioSystem*>(voidSystem);
-            if (audioSystem->soundBuffer == nullptr || audioSystem->soundLength == 0) {
-                SDL_memset(stream, 0, len);
-                return;
-            }
         
-            Uint32 remaining = audioSystem->soundLength - audioSystem->soundPosition;
-            if (remaining > (Uint32)len) {
-                remaining = len;
-            }
-        
-            SDL_memcpy(stream, audioSystem->soundBuffer + audioSystem->soundPosition, remaining);
-            audioSystem->soundPosition += remaining;
-        }
 };
 
 

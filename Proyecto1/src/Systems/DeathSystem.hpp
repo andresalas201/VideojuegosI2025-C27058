@@ -21,8 +21,9 @@ class DeathSystem : public System {
         void OnDeath(DeathEvent& e) {
             // TODO(any) Implementar la muerte
             if(e.a.HasComponent<SoundComponent>()) {
+                std::string soundPath = e.a.GetComponent<SoundComponent>().soundName;
                 e.a.registry->GetSystem<AudioSystem>().playSound(
-                        e.a.GetComponent<SoundComponent>().soundPath);
+                        Game::GetInstance().assetManager->GetSound(soundPath));
             }
         }
 };

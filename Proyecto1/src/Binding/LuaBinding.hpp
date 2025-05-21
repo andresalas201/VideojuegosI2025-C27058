@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 
 #include "../ECS/ECS.hpp"
+#include "../AssetManager/AssetManager.hpp"
 #include "../Game/Game.hpp"
 #include "../Systems/AudioSystem.hpp"
 #include "../Components/RigidBodyComponent.hpp"
@@ -49,7 +50,6 @@ bool CanShoot(AttackComponent* attack) {
 }
 
 void Shoot(Entity shooter) {
-    // TODO(any): Optimizar para que no se lagee al disparar
     if(!shooter.HasComponent<AttackComponent>()) return;
     AttackComponent* attack = &shooter.GetComponent<AttackComponent>();
     if (attack && attack->currentShots < attack->maxShots && CanShoot(attack)) {
@@ -66,10 +66,12 @@ void Shoot(Entity shooter) {
             attack->srcRect.x, attack->srcRect.y);
         shot.AddComponent<SoundComponent>(attack->hitSoundFilePath);
         shot.AddComponent<FatherComponent>(attack);
-        shot.AddComponent<ShotComponent>(true);
+        shot.AddComponent<ShotComponent>(true, shooter.HasComponent<PlayerComponent>());
         attack->currentShots++;
         attack->lastShotTick = SDL_GetTicks();
-        Game::GetInstance().registry->GetSystem<AudioSystem>().playSound(attack->shootSoundFilePath);
+        Game::GetInstance().registry->GetSystem<AudioSystem>().playSound(
+            Game::GetInstance().assetManager->GetSound(attack->shootSoundFilePath)
+        );
         Game::GetInstance().registry->AddEntityToSystems(shot);
     }
 }

@@ -207,7 +207,6 @@ void Game::Destroy() {
     SDL_DestroyRenderer(this->renderer);
     SDL_DestroyWindow(this->window);
     registry->GetSystem<AudioSystem>().stopMusic();
-    registry->GetSystem<AudioSystem>().stopSound();
     TTF_Quit();
     SDL_Quit();
 }
