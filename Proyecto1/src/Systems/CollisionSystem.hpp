@@ -25,6 +25,7 @@ class CollisionSystem : public System {
                 Entity a = *i;
                 auto aCollider = a.GetComponent<CircleColliderComponent>();
                 auto aTransform = a.GetComponent<TransformComponent>();
+                if (aCollider.isDead) continue;
             
                 for (auto j = i; j!= entities.end(); j++) {
                     Entity b = *j;
@@ -38,6 +39,8 @@ class CollisionSystem : public System {
                     }
                     auto bCollider = b.GetComponent<CircleColliderComponent>();
                     auto bTransform = b.GetComponent<TransformComponent>();
+                    
+                    if (bCollider.isDead) continue;
 
                     glm::vec2 aCenterPos = glm::vec2{
                         aTransform.position.x + (aCollider.width / 2) * aTransform.scale.x,

@@ -25,6 +25,7 @@ class AnimationSystem : public System {
                 
                 sprite.srcRect.x = sprite.srcRectBase + animation.currentFrame * sprite.width;
                 sprite.hitSrcRect.x = sprite.hitSrcRectBase + animation.currentFrame * sprite.width;
+                sprite.deathRect.x = sprite.deathBaseX + animation.currentFrame * sprite.width;
             }
         }
 

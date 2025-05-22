@@ -173,6 +173,7 @@ void Game::Update() {
     registry->GetSystem<DamageSystem>().Update(eventManager);
     registry->GetSystem<CleanShotSystem>().Update(MILLISECS_PER_FRAME, FPS, secondsPerShot);
     registry->GetSystem<ClearHitSystem>().Update(MILLISECS_PER_FRAME, FPS);
+    registry->GetSystem<DeathSystem>().Update(MILLISECS_PER_FRAME, FPS);
 }
 
 void Game::Setup() {

@@ -15,7 +15,7 @@ class RenderSystem : public System {
             RequireComponent<TransformComponent>();
         }
 
-        void Update(SDL_Renderer* renderer, 
+        void Update(SDL_Renderer* renderer,
             const std::unique_ptr<AssetManager>& assetManager) {
             
             
@@ -25,7 +25,9 @@ class RenderSystem : public System {
                 auto& sprite = entity.GetComponent<SpriteComponent>();
                 const auto transform = entity.GetComponent<TransformComponent>();
                 SDL_Rect srcRect = sprite.srcRect;
-                if (sprite.isHit) {
+                if (sprite.isDead) {
+                    srcRect = sprite.deathRect;
+                } else if (sprite.isHit) {
                     if (sprite.showHitCounter % 4 == 0) {
                         srcRect = sprite.hitSrcRect;
                     }

@@ -19,11 +19,16 @@ struct SpriteComponent {
     int downX;
     int hitUpX;
     int hitDownX;
+    int deathBaseX;
+    SDL_Rect deathRect;
+    bool isDead;
+    int deathTime;
 
     SpriteComponent(const std::string& textureId = "none", int width = 0, 
         int height = 0, int srcRectX = 0, int srcRectY = 0,
         int hitRectX = 0, int hitRectY = 0, int upX = 0, int downX = 0,
-        int hitUpX = 0, int hitDownX = 0) {
+        int hitUpX = 0, int hitDownX = 0, int deathBaseX = 0,
+        int deathRectX = 0, int deathRectY = 0) {
         
         this->textureId = textureId;
         this->width = width;
@@ -38,6 +43,9 @@ struct SpriteComponent {
         this->downX = downX;
         this->hitUpX = hitUpX;
         this->hitDownX = hitDownX;
+        this->deathRect = {deathRectX, deathRectY, width, height};
+        this->deathBaseX = deathBaseX;
+        this->isDead = false;
     }
 
 };

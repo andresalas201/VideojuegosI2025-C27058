@@ -18,12 +18,38 @@ class DeathSystem : public System {
             eventManager->SubscribeToEvent<DeathEvent, DeathSystem>(this, &DeathSystem::OnDeath);
         }
 
+        void Update(int MILISECS_PER_FRAME, int FPS) {
+            Uint32 maxTime = MILISECS_PER_FRAME * FPS * 2;
+            for (auto& entity : GetSystemEntities()) {
+                Entity& a = entity;
+                if(a.GetComponent<SpriteComponent>().isDead) {
+                    auto sprite = a.GetComponent<SpriteComponent>();
+                    if ((SDL_GetTicks() - sprite.deathTime) > maxTime) {
+                        a.Kill();
+                    }
+                }
+            }
+        }
+
         void OnDeath(DeathEvent& e) {
             // TODO(any) Implementar la muerte
             if(e.a.HasComponent<SoundComponent>()) {
                 std::string soundPath = e.a.GetComponent<SoundComponent>().soundName;
                 e.a.registry->GetSystem<AudioSystem>().playSound(
                         Game::GetInstance().assetManager->GetSound(soundPath));
+            }
+            if(e.a.HasComponent<ShotComponent>()) {
+                e.a.Kill();
+                return;
+            }
+            if (e.a.HasComponent<SpriteComponent>()) {
+                auto& sprite = e.a.GetComponent<SpriteComponent>();
+                sprite.isDead = true;
+                sprite.deathTime = SDL_GetTicks();
+            }
+            if (e.a.HasComponent<CircleColliderComponent>()) {
+                auto& collider = e.a.GetComponent<CircleColliderComponent>();
+                collider.isDead = true;
             }
         }
 };
