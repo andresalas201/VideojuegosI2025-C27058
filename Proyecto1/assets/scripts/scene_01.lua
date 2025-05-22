@@ -74,7 +74,8 @@ scene = {
                     assetId = "Bg_01",
                     width = 1280,
                     height = 720,
-                    src_rect = {x = 0, y = 0 }
+                    src_rect = {x = 0, y = 0 },
+                    hit_rect = {x = 32, y = 0 },
                 },
                 transform = {
                     position = {x = 0.0, y = 0.0},
@@ -101,7 +102,9 @@ scene = {
                     assetId = "player_ship",
                     width = 16,
                     height = 16,
-                    src_rect = {x = 16, y = 0 }
+                    src_rect = {x = 16, y = 0 },
+                    hit_rect = {x = 32, y = 0 },
+                    up_down = {up = 0, down = 32, hit_up = 0, hit_down = 32},
                 },
                 transform = {
                     position = {x = 400.0, y = 300.0},
@@ -148,7 +151,8 @@ scene = {
                     assetId = "enemy_alan",
                     width = 16,
                     height = 16,
-                    src_rect = {x = 16, y = 0 }
+                    src_rect = {x = 16, y = 0 },
+                    hit_rect = {x = 32, y = 0 }
                 },
                 transform = {
                     position = {x = 800.0, y = 300.0},
@@ -175,7 +179,8 @@ scene = {
                     assetId = "enemy_alan",
                     width = 16,
                     height = 16,
-                    src_rect = {x = 16, y = 0 }
+                    src_rect = {x = 16, y = 0 },
+                    hit_rect = {x = 32, y = 0 }
                 },
                 transform = {
                     position = {x = 800.0, y = 400.0},
@@ -202,7 +207,8 @@ scene = {
                     assetId = "enemy_alan",
                     width = 16,
                     height = 16,
-                    src_rect = {x = 16, y = 0 }
+                    src_rect = {x = 16, y = 0 },
+                    hit_rect = {x = 32, y = 0 }
                 },
                 transform = {
                     position = {x = 800.0, y = 500.0},
@@ -229,7 +235,8 @@ scene = {
                     assetId = "icons",
                     width = 32,
                     height = 32,
-                    src_rect = {x = 2*32, y = 8*32 }
+                    src_rect = {x = 2*32, y = 8*32 },
+                    hit_rect = {x = 32, y = 0 }
                 },
                 transform = {
                     position = {x = 800.0, y = 250.0},

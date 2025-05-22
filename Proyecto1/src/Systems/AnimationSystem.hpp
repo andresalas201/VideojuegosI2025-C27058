@@ -22,7 +22,9 @@ class AnimationSystem : public System {
 
                 animation.currentFrame = ((SDL_GetTicks() - animation.startTime) * 
                     animation.frameSpeedRate / 1000) % animation.numFrames;
-                sprite.srcRect.x = animation.currentFrame * sprite.width;
+                
+                sprite.srcRect.x = sprite.srcRectBase + animation.currentFrame * sprite.width;
+                sprite.hitSrcRect.x = sprite.hitSrcRectBase + animation.currentFrame * sprite.width;
             }
         }
 

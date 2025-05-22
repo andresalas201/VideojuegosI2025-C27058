@@ -31,4 +31,5 @@ function update()
         vel_y = vel_y * player_velocity
     end
     set_velocity(this, vel_x, vel_y)
+    set_sprite(this)
 end

@@ -22,9 +22,15 @@ class RenderSystem : public System {
             
             std::vector<Entity> entityTest = GetSystemEntities();
             for (auto entity : GetSystemEntities()) {
-                const auto sprite = entity.GetComponent<SpriteComponent>();
+                auto& sprite = entity.GetComponent<SpriteComponent>();
                 const auto transform = entity.GetComponent<TransformComponent>();
                 SDL_Rect srcRect = sprite.srcRect;
+                if (sprite.isHit) {
+                    if (sprite.showHitCounter % 4 == 0) {
+                        srcRect = sprite.hitSrcRect;
+                    }
+                    sprite.showHitCounter++;
+                }
                 SDL_Rect dstRect = {
                     static_cast<int>(transform.position.x),
                     static_cast<int>(transform.position.y),

@@ -236,12 +236,23 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
             //* SpriteComponent
             sol::optional<sol::table> hasSprite = components["sprite"];
             if (hasSprite != sol::nullopt) {
+                sol::optional<sol::table> hasUpDown = components["sprite"]["up_down"];
+                int upX = 0, downX = 0, hitUpX = 0, hitDownX;
+                if (hasUpDown != sol::nullopt) {
+                    upX = components["sprite"]["up_down"]["up"];
+                    downX = components["sprite"]["up_down"]["down"];
+                    hitUpX = components["sprite"]["up_down"]["hit_up"];
+                    hitDownX = components["sprite"]["up_down"]["hit_down"];
+                }
                 newEntity.AddComponent<SpriteComponent>(
                     components["sprite"]["assetId"],
                     components["sprite"]["width"],
                     components["sprite"]["height"],
                     components["sprite"]["src_rect"]["x"],
-                    components["sprite"]["src_rect"]["y"]
+                    components["sprite"]["src_rect"]["y"],
+                    components["sprite"]["hit_rect"]["x"],
+                    components["sprite"]["hit_rect"]["y"],
+                    upX, downX, hitUpX, hitDownX
                 );
             }
 

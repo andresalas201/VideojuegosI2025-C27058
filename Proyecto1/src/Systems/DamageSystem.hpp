@@ -49,6 +49,16 @@ class DamageSystem : public System {
                 e.b.GetComponent<HealthComponent>().health = 0;
                 return;
             }
+            if (e.a.HasComponent<SpriteComponent>()) {
+                e.a.GetComponent<SpriteComponent>().isHit = true;
+                e.a.GetComponent<SpriteComponent>().hitTime = SDL_GetTicks();
+                e.a.GetComponent<SpriteComponent>().showHitCounter = 0;
+            }
+            if (e.b.HasComponent<SpriteComponent>()) {
+                e.b.GetComponent<SpriteComponent>().isHit = true;
+                e.b.GetComponent<SpriteComponent>().hitTime = SDL_GetTicks();
+                e.a.GetComponent<SpriteComponent>().showHitCounter = 0;
+            }
             e.a.GetComponent<HealthComponent>().health -= e.b.GetComponent<HealthComponent>().damage;
             e.b.GetComponent<HealthComponent>().health -= e.a.GetComponent<HealthComponent>().damage; 
         }

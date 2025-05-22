@@ -29,6 +29,23 @@ void SetVelocity(Entity entity, float x, float y) {
     rigidBody.velocity.y = y;
 }
 
+void SetSprite (Entity entity) {
+    auto& sprite = entity.GetComponent<SpriteComponent>();
+    auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
+    if (rigidBody.velocity.y < 0.0) {
+        sprite.srcRect.x = sprite.upX;
+        sprite.hitSrcRect.x = sprite.hitUpX;
+    }
+    else if (rigidBody.velocity.y > 0.0) {
+        sprite.srcRect.x = sprite.downX;
+        sprite.hitSrcRect.x = sprite.hitDownX;
+    }
+    else {
+        sprite.srcRect.x = sprite.srcRectBase;
+        sprite.hitSrcRect.x = sprite.hitSrcRectBase;
+    }
+}
+
 glm::vec2 CalculatePosition(Entity e, bool left) {
     double direction;
     if (left) direction = -1.0;

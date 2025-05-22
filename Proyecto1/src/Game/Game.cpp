@@ -15,6 +15,7 @@
 #include "../Systems/DeathSystem.hpp"
 #include "../Systems/AudioSystem.hpp"
 #include "../Systems/CleanShotSystem.hpp"
+#include "../Systems/ClearHitSystem.hpp"
 
 
 Game::Game() {
@@ -170,7 +171,8 @@ void Game::Update() {
     registry->GetSystem<CollisionSystem>().Update(eventManager);
     registry->GetSystem<AnimationSystem>().Update();
     registry->GetSystem<DamageSystem>().Update(eventManager);
-    registry->GetSystem<CleanShotSystem>().Update(MILLISECS_PER_FRAME, FPS);
+    registry->GetSystem<CleanShotSystem>().Update(MILLISECS_PER_FRAME, FPS, secondsPerShot);
+    registry->GetSystem<ClearHitSystem>().Update(MILLISECS_PER_FRAME, FPS);
 }
 
 void Game::Setup() {
@@ -185,6 +187,7 @@ void Game::Setup() {
     registry->AddSystem<DeathSystem>();
     registry->AddSystem<AudioSystem>();
     registry->AddSystem<CleanShotSystem>();
+    registry->AddSystem<ClearHitSystem>();
     
     registry->GetSystem<CleanShotSystem>().setSecondsPerShot(secondsPerShot);
     sceneManager->LoadSceneFromScript("assets/scripts/scenes.lua", lua);

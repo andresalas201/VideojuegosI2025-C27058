@@ -22,14 +22,14 @@ class CleanShotSystem : public System {
             this->secondsPerShot = seconds;
         }
 
-        void Update(int MILLISECS_PER_FRAME, int FPS) {
-            Uint32 fiveSeconds = MILLISECS_PER_FRAME * FPS * 2;
+        void Update(int MILLISECS_PER_FRAME, int FPS, int maxSeconds) {
+            Uint32 maxTime = MILLISECS_PER_FRAME * FPS * maxSeconds;
             auto entities = GetSystemEntities();
 
             for (auto i = entities.begin(); i != entities.end(); i++) {
                 Entity a = *i;
                 auto& shot = a.GetComponent<ShotComponent>();
-                if ((SDL_GetTicks() - shot.shotTime) >= fiveSeconds) {
+                if ((SDL_GetTicks() - shot.shotTime) >= maxTime) {
                     a.GetComponent<FatherComponent>().father->currentShots --;
                     std::cout << "[CLEANSHOTSYSTEM] Se borra el disparo de entidad "
                         << a.GetId() << std::endl;
