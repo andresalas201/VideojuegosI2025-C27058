@@ -30,11 +30,12 @@ class CollisionSystem : public System {
                 for (auto j = i; j!= entities.end(); j++) {
                     Entity b = *j;
                     
-                    if (a == b || 
+                    if (a == b ||
                         (a.HasComponent<ShotComponent>() && b.HasComponent<ShotComponent>()) ||
                         (a.HasComponent<UpgradeComponent>()) ||
                         (b.HasComponent<ShotComponent>() && (a.HasComponent<PlayerComponent>()) &&
-                        (b.GetComponent<ShotComponent>().playerShot))) {
+                        (b.GetComponent<ShotComponent>().playerShot)) ||
+                        (a.HasComponent<PlayerComponent>() && b.HasComponent<PlayerComponent>())) {
                         continue;
                     }
                     auto bCollider = b.GetComponent<CircleColliderComponent>();

@@ -11,6 +11,10 @@ scene = {
             filePath = "assets/images/player_ship.png"
         },
         {
+            assetId = "player_ship_2",
+            filePath = "assets/images/player_ship_2.png"
+        },
+        {
             assetId = "enemy_alan",
             filePath = "assets/images/Improved_Alan.png"
         },
@@ -42,6 +46,11 @@ scene = {
         {name = "down", key=115},
         {name = "right", key=100},
         {name = "shoot", key=106}, -- J
+        {name = "up2", key=1073741906},
+        {name = "left2", key=1073741904},
+        {name = "down2", key=1073741905},
+        {name = "right2", key=1073741903},
+        {name = "shoot2", key=1073741922},
     },
 
     -- Tabla de acciones y botones del ratón
@@ -100,6 +109,59 @@ scene = {
                 },
                 sprite = {
                     assetId = "player_ship",
+                    width = 16,
+                    height = 16,
+                    src_rect = {x = 16, y = 0 },
+                    hit_rect = {x = 64, y = 0 },
+                    up_down = {up = 0, down = 32, hit_up = 46, hit_down = 80},
+                },
+                transform = {
+                    position = {x = 400.0, y = 300.0},
+                    scale = {x = 2.0, y = 2.0},
+                    rotation = 90.0
+                },
+                health = {
+                    max_health = 10,
+                    damage = 1
+                },
+                player = {
+                    number = 1
+                },
+                attack = {
+                    damage = 1,
+                    radius = 8,
+                    width = 16,
+                    height = 16,
+                    texture_id = "energy_shot",
+                    src_x = 16,
+                    src_y = 0,
+                    vel_x = 100,
+                    vel_y = 0,
+                    sound_path = "laser_shot",
+                    hit_path = "laser_shot",
+                    max_shots = 5,
+                    left = false,
+                    scale = {x = 1, y = 1},
+                    rotation = 0
+                }
+            }
+        },
+        -- Player
+        {
+            components = {
+                circle_collider = {
+                    radius = 8,
+                    width = 16,
+                    height = 16
+                },
+                rigidBody = {
+                    velocity = {x = 0, y = 0}
+                },
+                script = {
+                    path = "assets/scripts/player2.lua"
+                },
+                sprite = {
+                    assetId = "player_ship_2",
                     width = 16,
                     height = 16,
                     src_rect = {x = 16, y = 0 },

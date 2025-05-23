@@ -56,10 +56,8 @@ void SceneLoader::LoadScene(const std::string& scenePath, sol::state& lua,
 
     sol::optional<sol::table> hasSounds = scene["sound"];
     if (hasSounds != sol::nullopt) {
-        std::cout << "sonido\n";
         sol::table sounds = scene["sound"];
         LoadSound(sounds, assetManager);
-        std::cout << "sale de sonido\n";
     }
 
     sol::table entities = scene["entities"];
@@ -186,7 +184,15 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
             sol::table components = entity["components"];
 
             //* AnimationComponent
-
+            sol::optional<sol::table> hasAnimation = components["animation"];
+            if (hasAnimation != sol::nullopt) {
+                newEntity.AddComponent<AnimationComponent>(
+                    components["animation"]["frames"],
+                    components["animation"]["frame_rate"],
+                    components["animation"]["looping"]
+                );
+            }
+            
             //* CircleColliderComponent
             sol::optional<sol::table> hasCircleCollider = components["circle_collider"];
             if (hasCircleCollider != sol::nullopt) {
@@ -244,6 +250,12 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
                     hitUpX = components["sprite"]["up_down"]["hit_up"];
                     hitDownX = components["sprite"]["up_down"]["hit_down"];
                 }
+                sol::optional<sol::table> hasDeathRect = components["sprite"]["death"];
+                int deathX = 0, deathY = 0;
+                if (hasDeathRect != sol::nullopt) {
+                    deathX = components["sprite"]["death"]["x"];
+                    deathY = components["sprite"]["death"]["y"];
+                }
                 newEntity.AddComponent<SpriteComponent>(
                     components["sprite"]["assetId"],
                     components["sprite"]["width"],
@@ -252,7 +264,7 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
                     components["sprite"]["src_rect"]["y"],
                     components["sprite"]["hit_rect"]["x"],
                     components["sprite"]["hit_rect"]["y"],
-                    upX, downX, hitUpX, hitDownX
+                    upX, downX, hitUpX, hitDownX, deathX, deathY
                 );
             }
 

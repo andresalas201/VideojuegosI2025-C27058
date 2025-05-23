@@ -39,7 +39,7 @@ scene = {
         {
             components = {
                 text = {
-                    text = "Galaxian",
+                    text = "Battle of Andronika",
                     fontId = "press_start_32",
                     r = 150,
                     g = 0,
@@ -58,7 +58,7 @@ scene = {
         {
             components = {
                 text = {
-                    text = "Level 01",
+                    text = "1 Player",
                     fontId = "press_start_24",
                     r = 150,
                     g = 150,
@@ -72,6 +72,28 @@ scene = {
                 },
                 script = {
                     path = "assets/scripts/menu_button_01.lua"
+                },
+                clickable = {
+                }
+            }
+        },
+        {
+            components = {
+                text = {
+                    text = "2 Players",
+                    fontId = "press_start_24",
+                    r = 150,
+                    g = 150,
+                    b = 0,
+                    a = 255
+                },
+                transform = {
+                    position = {x = 50.0, y = 150.0},
+                    scale = {x = 1.0, y = 1.0},
+                    rotation = 0.0
+                },
+                script = {
+                    path = "assets/scripts/menu_button_02.lua"
                 },
                 clickable = {
                 }

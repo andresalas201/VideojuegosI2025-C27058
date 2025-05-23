@@ -66,6 +66,8 @@ class DamageSystem : public System {
     private:
 
         void Upgrade(Entity upgraded, int increase) {
+            // TODO(any): annadir un upgrade que annada tiros dobles y triples
+            // TODO(any): agregar sprites para probar muertes y hits
             if(!upgraded.HasComponent<AttackComponent>()) return;
             upgraded.GetComponent<AttackComponent>().damage += increase;
             std::cout << "Entity " << upgraded.GetId() << " aumenta su daño por " << increase <<
