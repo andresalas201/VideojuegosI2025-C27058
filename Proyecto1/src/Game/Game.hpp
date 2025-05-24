@@ -20,7 +20,7 @@ extern int MILLISECS_PER_FRAME;
 class Game {
     private:
         SDL_Window* window = nullptr;
-    
+
         int windowWidth = 0;
         int windowHeight = 0;
         int secondsPerShot = 0;
@@ -28,6 +28,7 @@ class Game {
         int milisecsPreviousFrame = 0;
 
         bool isRunning = false;
+        bool isPaused = false;
         
         void Setup();
         void RunScene();

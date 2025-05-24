@@ -96,8 +96,10 @@ void Game::RunScene() {
     
     while(isRunning && sceneManager->IsSceneRunning()) {
         ProcessInput();
-        Update();
-        Render();
+        if (!isPaused) {
+            Update();
+            Render();
+        } else this->milisecsPreviousFrame = SDL_GetTicks();
     }
 
     assetManager->ClearAssets();
@@ -119,7 +121,11 @@ void Game::ProcessInput() {
                     sceneManager->StopScene();
                     break;
                 }
-                controllerManager->KeyDown(sdlEvent.key.keysym.sym);
+                if (sdlEvent.key.keysym.sym == SDLK_p) {
+                    this->isPaused = !this->isPaused;
+                    break;
+                }
+                if(!this->isPaused)controllerManager->KeyDown(sdlEvent.key.keysym.sym);
                 break;
             case SDL_KEYUP:
                 controllerManager->KeyUp(sdlEvent.key.keysym.sym);
@@ -127,19 +133,21 @@ void Game::ProcessInput() {
             case SDL_MOUSEMOTION:
                 int x,y;
                 SDL_GetMouseState(&x, &y);
-                controllerManager->SetMousePosition(x, y);
+                if(!this->isPaused) controllerManager->SetMousePosition(x, y);
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 controllerManager->SetMousePosition(sdlEvent.button.x,
                     sdlEvent.button.y);
-                controllerManager->MouseButtonDown(static_cast<int>(sdlEvent.button.button));
-                eventManager->EmitEvent<ClickEvent>(static_cast<int>(sdlEvent.button.button),
-                    sdlEvent.button.x, sdlEvent.button.y);
+                if(!this->isPaused) {
+                    controllerManager->MouseButtonDown(static_cast<int>(sdlEvent.button.button));
+                    eventManager->EmitEvent<ClickEvent>(static_cast<int>(sdlEvent.button.button),
+                        sdlEvent.button.x, sdlEvent.button.y);
+                }
                 break;
             case SDL_MOUSEBUTTONUP:
             controllerManager->SetMousePosition(sdlEvent.button.x,
                 sdlEvent.button.y);
-            controllerManager->MouseButtonUp(static_cast<int>(sdlEvent.button.button));
+            if(!this->isPaused) controllerManager->MouseButtonUp(static_cast<int>(sdlEvent.button.button));
                 break;
             default:
                 break;
