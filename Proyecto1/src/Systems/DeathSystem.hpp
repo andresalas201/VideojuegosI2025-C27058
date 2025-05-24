@@ -3,6 +3,7 @@
 
 #include "../ECS/ECS.hpp"
 #include "../Components/SpriteComponent.hpp"
+#include "../Components/PlayerComponent.hpp"
 #include "../EventManager/EventManager.hpp"
 #include "../Events/DeathEvent.hpp"
 #include "AudioSystem.hpp"
@@ -18,13 +19,17 @@ class DeathSystem : public System {
             eventManager->SubscribeToEvent<DeathEvent, DeathSystem>(this, &DeathSystem::OnDeath);
         }
 
-        void Update(int MILISECS_PER_FRAME, int FPS) {
-            Uint32 maxTime = MILISECS_PER_FRAME * FPS * 2;
+        void Update(int MILISECS_PER_FRAME, int FPS, int windowHeight) {
+            Uint32 maxTime = MILISECS_PER_FRAME * FPS * 3;
             for (auto& entity : GetSystemEntities()) {
                 Entity& a = entity;
                 if(a.GetComponent<SpriteComponent>().isDead) {
                     auto sprite = a.GetComponent<SpriteComponent>();
-                    if ((SDL_GetTicks() - sprite.deathTime) > maxTime) {
+                    if (a.HasComponent<PlayerComponent>()) {
+                        if (a.GetComponent<TransformComponent>().position.y > windowHeight) {
+                            a.Kill();
+                        }
+                    } else if ((SDL_GetTicks() - sprite.deathTime) > maxTime) {
                         a.Kill();
                     }
                 }
@@ -32,7 +37,7 @@ class DeathSystem : public System {
         }
 
         void OnDeath(DeathEvent& e) {
-            // TODO(any) Implementar la muerte
+            std::cout << "[DEATHSYSTEM] Se muere la entidad "  << e.a.GetId() << std::endl;
             if(e.a.HasComponent<SoundComponent>()) {
                 std::string soundPath = e.a.GetComponent<SoundComponent>().soundName;
                 e.a.registry->GetSystem<AudioSystem>().playSound(

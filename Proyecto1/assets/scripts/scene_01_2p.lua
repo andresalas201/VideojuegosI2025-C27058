@@ -114,6 +114,7 @@ scene = {
                     src_rect = {x = 16, y = 0 },
                     hit_rect = {x = 64, y = 0 },
                     up_down = {up = 0, down = 32, hit_up = 46, hit_down = 80},
+                    death = {x = 96, y = 0}
                 },
                 transform = {
                     position = {x = 400.0, y = 300.0},
@@ -146,7 +147,7 @@ scene = {
                 }
             }
         },
-        -- Player
+        -- Player 2
         {
             components = {
                 circle_collider = {
@@ -167,6 +168,7 @@ scene = {
                     src_rect = {x = 16, y = 0 },
                     hit_rect = {x = 64, y = 0 },
                     up_down = {up = 0, down = 32, hit_up = 46, hit_down = 80},
+                    death = {x = 96, y = 0}
                 },
                 transform = {
                     position = {x = 400.0, y = 300.0},
@@ -174,7 +176,7 @@ scene = {
                     rotation = 90.0
                 },
                 health = {
-                    max_health = 10,
+                    max_health = 1,
                     damage = 1
                 },
                 player = {

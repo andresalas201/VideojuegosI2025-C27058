@@ -173,7 +173,7 @@ void Game::Update() {
     registry->GetSystem<DamageSystem>().Update(eventManager);
     registry->GetSystem<CleanShotSystem>().Update(MILLISECS_PER_FRAME, FPS, secondsPerShot);
     registry->GetSystem<ClearHitSystem>().Update(MILLISECS_PER_FRAME, FPS);
-    registry->GetSystem<DeathSystem>().Update(MILLISECS_PER_FRAME, FPS);
+    registry->GetSystem<DeathSystem>().Update(MILLISECS_PER_FRAME, FPS, windowHeight);
 }
 
 void Game::Setup() {
@@ -191,6 +191,7 @@ void Game::Setup() {
     registry->AddSystem<ClearHitSystem>();
     
     registry->GetSystem<CleanShotSystem>().setSecondsPerShot(secondsPerShot);
+    registry->GetSystem<DamageSystem>().SetDamageWait(FPS, MILLISECS_PER_FRAME, 1);
     sceneManager->LoadSceneFromScript("assets/scripts/scenes.lua", lua);
 
     lua.open_libraries(sol::lib::base, sol::lib::math);

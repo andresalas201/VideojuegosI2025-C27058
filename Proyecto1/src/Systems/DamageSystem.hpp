@@ -19,6 +19,11 @@
 class DamageSystem : public System {
 
     public:
+
+        void SetDamageWait(int FPS, int MILISECS_PER_FRAME, int seconds) {
+            this->damageWait = FPS * MILISECS_PER_FRAME * seconds;
+        }
+
         DamageSystem() {
             RequireComponent<CircleColliderComponent>();
             RequireComponent<HealthComponent>();
@@ -34,9 +39,9 @@ class DamageSystem : public System {
 
             for (auto i = entities.begin(); i != entities.end(); i++) {
                 Entity a = *i;
-                if(a.GetComponent<HealthComponent>().health <= 0) {
+                if(a.GetComponent<HealthComponent>().health <= 0 &&
+                    !a.GetComponent<CircleColliderComponent>().isDead) {
                     eventManager->EmitEvent<DeathEvent>(a);
-                    a.Kill();
                 }
             }
             
@@ -59,15 +64,25 @@ class DamageSystem : public System {
                 e.b.GetComponent<SpriteComponent>().hitTime = SDL_GetTicks();
                 e.a.GetComponent<SpriteComponent>().showHitCounter = 0;
             }
-            e.a.GetComponent<HealthComponent>().health -= e.b.GetComponent<HealthComponent>().damage;
-            e.b.GetComponent<HealthComponent>().health -= e.a.GetComponent<HealthComponent>().damage; 
+            if ((SDL_GetTicks() - e.a.GetComponent<HealthComponent>().lastHit) > damageWait) {
+                e.a.GetComponent<HealthComponent>().health -= e.b.GetComponent<HealthComponent>().damage;
+                auto& healthA = e.a.GetComponent<HealthComponent>();
+                healthA.lastHit = SDL_GetTicks();
+            }
+            if ((SDL_GetTicks() - e.b.GetComponent<HealthComponent>().lastHit) > damageWait) {
+                e.b.GetComponent<HealthComponent>().health -= e.a.GetComponent<HealthComponent>().damage; 
+                auto& healthB = e.b.GetComponent<HealthComponent>();
+                healthB.lastHit = SDL_GetTicks();
+            }
         }
 
     private:
 
+        Uint32 damageWait;
+        
+
         void Upgrade(Entity upgraded, int increase) {
             // TODO(any): annadir un upgrade que annada tiros dobles y triples
-            // TODO(any): agregar sprites para probar muertes y hits
             if(!upgraded.HasComponent<AttackComponent>()) return;
             upgraded.GetComponent<AttackComponent>().damage += increase;
             std::cout << "Entity " << upgraded.GetId() << " aumenta su daño por " << increase <<
