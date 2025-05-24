@@ -50,7 +50,10 @@ class DamageSystem : public System {
         void OnCollision(CollisionEvent& e) {
             std::cout << "[DAMAGESYSTEM] Colision de entidad " << e.a.GetId() << " y " << e.b.GetId() << std::endl;
             if (e.a.HasComponent<PlayerComponent>() && e.b.HasComponent<UpgradeComponent>()) {
-                Upgrade(e.a, e.b.GetComponent<UpgradeComponent>().increase);
+                std::cout << "Va a upgrade\n";
+                if(e.b.GetComponent<UpgradeComponent>().upgrade.valid()) {
+                    e.b.GetComponent<UpgradeComponent>().upgrade(e.a);
+                }
                 e.b.GetComponent<HealthComponent>().health = 0;
                 return;
             }
@@ -79,15 +82,6 @@ class DamageSystem : public System {
     private:
 
         Uint32 damageWait;
-        
-
-        void Upgrade(Entity upgraded, int increase) {
-            // TODO(any): annadir un upgrade que annada tiros dobles y triples
-            if(!upgraded.HasComponent<AttackComponent>()) return;
-            upgraded.GetComponent<AttackComponent>().damage += increase;
-            std::cout << "Entity " << upgraded.GetId() << " aumenta su daño por " << increase <<
-                " a " << upgraded.GetComponent<AttackComponent>().damage << std::endl;
-        }
 };
 
 #endif // DAMAGESYSTEM_HPP

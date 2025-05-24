@@ -20,7 +20,7 @@ class DeathSystem : public System {
         }
 
         void Update(int MILISECS_PER_FRAME, int FPS, int windowHeight) {
-            Uint32 maxTime = MILISECS_PER_FRAME * FPS * 3;
+            Uint32 maxTime = MILISECS_PER_FRAME * FPS * 0.5;
             for (auto& entity : GetSystemEntities()) {
                 Entity& a = entity;
                 if(a.GetComponent<SpriteComponent>().isDead) {
@@ -43,7 +43,11 @@ class DeathSystem : public System {
                 e.a.registry->GetSystem<AudioSystem>().playSound(
                         Game::GetInstance().assetManager->GetSound(soundPath));
             }
-            if(e.a.HasComponent<ShotComponent>()) {
+            if(e.a.HasComponent<ShotComponent>() || e.a.HasComponent<UpgradeComponent>()) {
+                if (e.a.HasComponent<FatherComponent>()) {
+                    auto& father = e.a.GetComponent<FatherComponent>();
+                    if(father.father->currentShots)father.father->currentShots --;
+                }
                 e.a.Kill();
                 return;
             }

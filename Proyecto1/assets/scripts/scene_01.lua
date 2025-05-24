@@ -109,7 +109,7 @@ scene = {
                 },
                 transform = {
                     position = {x = 400.0, y = 300.0},
-                    scale = {x = 2.0, y = 2.0},
+                    scale = {x = 4.0, y = 4.0},
                     rotation = 90.0
                 },
                 health = {
@@ -134,7 +134,7 @@ scene = {
                     max_shots = 5,
                     left = false,
                     scale = {x = 1, y = 1},
-                    rotation = 0
+                    shot_quantity = 1
                 }
             }
         },
@@ -268,7 +268,8 @@ scene = {
                     damage = 0
                 },
                 upgrade = {
-                    increase = 1
+                    increase = 1,
+                    path = "assets/scripts/upgrade_amount.lua"
                 },
                 sound = {
                     sound_path = "upgrade"

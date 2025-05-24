@@ -143,7 +143,7 @@ scene = {
                     max_shots = 5,
                     left = false,
                     scale = {x = 1, y = 1},
-                    rotation = 0
+                    shot_quantity = 1
                 }
             }
         },
@@ -197,7 +197,7 @@ scene = {
                     max_shots = 5,
                     left = false,
                     scale = {x = 1, y = 1},
-                    rotation = 0
+                    shot_quantity = 1
                 }
             }
         },

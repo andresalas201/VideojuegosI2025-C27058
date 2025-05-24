@@ -11,7 +11,7 @@ class ClearHitSystem : public System {
         }
 
         void Update(int MILLISECS_PER_FRAME, int FPS) {
-            Uint32 twoSeconds = MILLISECS_PER_FRAME * FPS * 2;
+            Uint32 twoSeconds = MILLISECS_PER_FRAME * FPS * 1;
             for (auto& entity : GetSystemEntities()) {
                 Entity& a = entity;
                 if (!a.GetComponent<SpriteComponent>().isHit) continue;

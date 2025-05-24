@@ -1,11 +1,12 @@
 #ifndef UPGRADECOMPONENT_HPP
 #define UPGRADECOMPONENT_HPP
+#include <sol/sol.hpp>
 
 struct UpgradeComponent {
-    int increase;
+    sol::function upgrade;
 
-    UpgradeComponent(int increase = 0) {
-        this->increase = increase;
+    UpgradeComponent(sol::function upgrade = sol::lua_nil) {
+        this->upgrade = upgrade;
     }
 };
 

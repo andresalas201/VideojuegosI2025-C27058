@@ -30,8 +30,8 @@ class MovementSystem : public System {
                     && entity.GetComponent<SpriteComponent>().isDead) {
                     continue;
                 }
-                transform.position.x += rigidBody.velocity.x * dt;
-                transform.position.y += rigidBody.velocity.y * dt;
+                transform.position.x += rigidBody.velocity.x * rigidBody.speed * dt;
+                transform.position.y += rigidBody.velocity.y * rigidBody.speed * dt;
             }
         }
 

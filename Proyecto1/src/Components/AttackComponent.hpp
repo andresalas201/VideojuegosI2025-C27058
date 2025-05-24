@@ -20,14 +20,14 @@ struct AttackComponent {
     int currentShots;
     bool left;
     glm::vec2 scale;
-    double rotation;
     int lastShotTick;
+    int shotQuantity;
     
     AttackComponent(int damage = 1, int radius = 0, int width = 0, int height = 0,
         const std::string& textureId = "none", int srcX = 0, int srcY = 0,
         glm::vec2 velVec = glm::vec2(0.0, 0.0), std::string soundFile = "",
         std::string hitSoundFilePath = "none", int maxShots = 0, bool left = false,
-        glm::vec2 scale = glm::vec2(1.0, 1.0), double rotation = 0.0) {   
+        glm::vec2 scale = glm::vec2(1.0, 1.0), int shotQuantity = 1) {   
 
         this->damage = damage;
         this->radius = radius;
@@ -42,8 +42,8 @@ struct AttackComponent {
         this->currentShots = 0;
         this->left = left;
         this->scale = scale;
-        this->rotation = rotation;
         this->lastShotTick = 0;
+        this->shotQuantity = shotQuantity;
     }
 
 };

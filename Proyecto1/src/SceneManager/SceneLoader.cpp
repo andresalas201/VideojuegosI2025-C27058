@@ -313,8 +313,16 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
             //* UpgradeComponent
             sol::optional<sol::table> hasUpgrade = components["upgrade"];
             if(hasUpgrade != sol::nullopt) {
-                int inc = components["upgrade"]["increase"];
-                newEntity.AddComponent<UpgradeComponent>(inc);
+                std::string path = components["upgrade"]["path"];
+                lua["upgrade"] = sol::nil;
+                lua.script_file(path);
+
+                sol::optional<sol::function> hasUpgrade = lua["upgrade"];
+                sol::function upgrade = sol::nil;
+                if (hasUpgrade != sol::nullopt) {
+                    upgrade = lua["upgrade"];  
+                }
+                newEntity.AddComponent<UpgradeComponent>();
             }
 
 
@@ -337,7 +345,7 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
                     components["attack"]["sound_path"], components["attack"]["hit_path"],
                     components["attack"]["max_shots"], components["attack"]["left"],
                     glm::vec2(components["attack"]["scale"]["x"], components["attack"]["scale"]["y"]),
-                    components["attack"]["rotation"]);
+                    components["attack"]["shot_quantity"]);
             }
 
             //* SoundComponent

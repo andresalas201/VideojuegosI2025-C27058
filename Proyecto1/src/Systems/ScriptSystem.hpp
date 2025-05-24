@@ -33,6 +33,9 @@ class ScriptSystem : public System {
             lua.set_function("go_to_scene", GoToScene);
             lua.set_function("shoot", Shoot);
             lua.set_function("set_sprite", SetSprite);
+            lua.set_function("upgrade_damage", UpgradeDamage);
+            lua.set_function("upgrade_amount", UpgradeAmount);
+            lua.set_function("upgrade_speed", UpgradeSpeed);
         }
 };
 
