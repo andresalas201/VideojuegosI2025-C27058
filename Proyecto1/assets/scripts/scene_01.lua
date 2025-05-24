@@ -64,6 +64,10 @@ scene = {
             name = "upgrade",
             file_path = "assets/sounds/upgrade.wav"
         },
+        {
+            name = "explosion",
+            file_path = "assets/sounds/explosion.wav"
+        }
 
     },
     -- Tabla de entidades
@@ -130,7 +134,7 @@ scene = {
                     vel_x = 100,
                     vel_y = 0,
                     sound_path = "laser_shot",
-                    hit_path = "laser_shot",
+                    hit_path = "explosion",
                     max_shots = 5,
                     left = false,
                     scale = {x = 1, y = 1},
