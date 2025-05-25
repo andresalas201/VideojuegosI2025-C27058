@@ -322,7 +322,8 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
                 if (hasUpgrade != sol::nullopt) {
                     upgrade = lua["upgrade"];  
                 }
-                newEntity.AddComponent<UpgradeComponent>();
+                newEntity.AddComponent<UpgradeComponent>(upgrade,
+                    components["upgrade"]["increase"]);
             }
 
 

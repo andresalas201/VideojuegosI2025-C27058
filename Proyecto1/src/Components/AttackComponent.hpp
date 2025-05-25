@@ -22,12 +22,16 @@ struct AttackComponent {
     glm::vec2 scale;
     int lastShotTick;
     int shotQuantity;
+    int numFrames;
+    int frameSpeedRate;
+    bool isLoop;
     
     AttackComponent(int damage = 1, int radius = 0, int width = 0, int height = 0,
         const std::string& textureId = "none", int srcX = 0, int srcY = 0,
         glm::vec2 velVec = glm::vec2(0.0, 0.0), std::string soundFile = "",
         std::string hitSoundFilePath = "none", int maxShots = 0, bool left = false,
-        glm::vec2 scale = glm::vec2(1.0, 1.0), int shotQuantity = 1) {   
+        glm::vec2 scale = glm::vec2(1.0, 1.0), int shotQuantity = 1,
+        int numFrames = 1, int frameSpeedRate = 1, bool isLoop = true) {   
 
         this->damage = damage;
         this->radius = radius;
@@ -44,6 +48,9 @@ struct AttackComponent {
         this->scale = scale;
         this->lastShotTick = 0;
         this->shotQuantity = shotQuantity;
+        this->numFrames = numFrames;
+        this->frameSpeedRate = frameSpeedRate;
+        this->isLoop = isLoop;
     }
 
 };

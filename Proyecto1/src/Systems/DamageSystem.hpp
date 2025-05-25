@@ -52,7 +52,8 @@ class DamageSystem : public System {
             if (e.a.HasComponent<PlayerComponent>() && e.b.HasComponent<UpgradeComponent>()) {
                 std::cout << "Va a upgrade\n";
                 if(e.b.GetComponent<UpgradeComponent>().upgrade.valid()) {
-                    e.b.GetComponent<UpgradeComponent>().upgrade(e.a);
+                    e.b.GetComponent<UpgradeComponent>().upgrade(e.a, 
+                        e.b.GetComponent<UpgradeComponent>().increase);
                 }
                 e.b.GetComponent<HealthComponent>().health = 0;
                 return;

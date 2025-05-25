@@ -12,6 +12,7 @@
 
 #include "../Utils/Pool.hpp"
 #include "../Components/TransformComponent.hpp"
+#include "../PreEntity/PreEntity.hpp"
 
 const unsigned int MAX_COMPONENTS = 64;
 
@@ -95,6 +96,9 @@ class Registry {
         ~Registry();
 
         void Update();
+
+        std::vector<PreEntity> enemyVector;
+        std::vector<PreEntity> enemiesToSpawn;
 
         // Entity management
         Entity CreateEntity();

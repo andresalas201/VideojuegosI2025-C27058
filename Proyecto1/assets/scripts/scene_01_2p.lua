@@ -335,7 +335,8 @@ scene = {
                     damage = 0
                 },
                 upgrade = {
-                    increase = 1
+                    increase = 1,
+                    path = "assets/scripts/upgrade_amount"
                 },
                 sound = {
                     sound_path = "upgrade"

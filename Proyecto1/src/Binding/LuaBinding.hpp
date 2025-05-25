@@ -18,6 +18,7 @@
 #include "../Components/AttackComponent.hpp"
 #include "../Components/FatherComponent.hpp"
 #include "../Components/ShotComponent.hpp"
+#include "../Components/AnimationComponent.hpp"
 
 bool IsActionActivated(const std::string& action) {
     return Game::GetInstance().controllerManager->IsActionActivated(action);
@@ -69,7 +70,8 @@ glm::vec2 CalculatePosition(Entity e, bool left, bool up) {
     glm::vec2 entityPosition = e.GetComponent<TransformComponent>().position;
     int entityWidth = e.GetComponent<SpriteComponent>().width;
     int entityHeight = e.GetComponent<SpriteComponent>().height;
-    double x = (entityPosition.x + (entityWidth)) + 
+    int entityScaleX = e.GetComponent<TransformComponent>().scale.x;
+    double x = (entityPosition.x + ((entityWidth / 2 ) * entityScaleX)) + 
         ((entityWidth) * direction);
     double y;
     if (up) y = entityPosition.y;
@@ -86,22 +88,25 @@ bool CanShoot(AttackComponent* attack) {
 
 void ShootExtra(Entity shooter,AttackComponent* attack, bool up) {
     Entity shot = Game::GetInstance().registry->CreateEntity();
-        shot.AddComponent<CircleColliderComponent>(attack->radius, attack->width,
-            attack->height);
-        glm::vec2 velocity = attack->velocity;
-        if (up) velocity.y = -10;
-        else velocity.y = 10;
-        shot.AddComponent<RigidBodyComponent>(velocity);
-        shot.AddComponent<TransformComponent>(CalculatePosition(shooter, attack->left, up), 
-            attack->scale, 0);
-        shot.AddComponent<HealthComponent>(1, attack->damage);
-        shot.AddComponent<CircleColliderComponent>(attack->radius, attack->width,
-            attack->height);
-        shot.AddComponent<SpriteComponent>(attack->textureId, attack->width,
-            attack->srcRect.x, attack->srcRect.y);
-        shot.AddComponent<SoundComponent>(attack->hitSoundFilePath);
-        shot.AddComponent<FatherComponent>(attack);
-        shot.AddComponent<ShotComponent>(true, shooter.HasComponent<PlayerComponent>());
+    shot.AddComponent<CircleColliderComponent>(attack->radius, attack->width,
+        attack->height);
+    glm::vec2 velocity = attack->velocity;
+    if (up) velocity.y = -25;
+    else velocity.y = 25;
+    shot.AddComponent<RigidBodyComponent>(velocity);
+    shot.AddComponent<TransformComponent>(CalculatePosition(shooter, attack->left, up), 
+        attack->scale, 0);
+    shot.AddComponent<HealthComponent>(1, attack->damage);
+    shot.AddComponent<CircleColliderComponent>(attack->radius, attack->width,
+        attack->height);
+    shot.AddComponent<SpriteComponent>(attack->textureId, attack->width,
+        attack->srcRect.x, attack->srcRect.y);
+    shot.AddComponent<SoundComponent>(attack->hitSoundFilePath);
+    shot.AddComponent<FatherComponent>(attack);
+    shot.AddComponent<ShotComponent>(true, shooter.HasComponent<PlayerComponent>());
+    shot.AddComponent<AnimationComponent>(attack->numFrames, attack->frameSpeedRate, attack->isLoop);
+    attack->currentShots++;
+    Game::GetInstance().registry->AddEntityToSystems(shot);
 }
 
 void Shoot(Entity shooter) {
@@ -127,7 +132,6 @@ void Shoot(Entity shooter) {
         Game::GetInstance().registry->GetSystem<AudioSystem>().playSound(
             Game::GetInstance().assetManager->GetSound(attack->shootSoundFilePath)
         );
-        
         Game::GetInstance().registry->AddEntityToSystems(shot);
         if (attack->shotQuantity > 1) ShootExtra(shooter, attack, true);
         if (attack->shotQuantity > 2) ShootExtra(shooter, attack, false);
