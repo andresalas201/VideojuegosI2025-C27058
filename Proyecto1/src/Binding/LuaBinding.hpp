@@ -127,6 +127,8 @@ void Shoot(Entity shooter) {
         shot.AddComponent<SoundComponent>(attack->hitSoundFilePath);
         shot.AddComponent<FatherComponent>(attack);
         shot.AddComponent<ShotComponent>(true, shooter.HasComponent<PlayerComponent>());
+        shot.AddComponent<ScriptComponent>(attack->update);
+        shot.AddComponent<AnimationComponent>(attack->numFrames, attack->frameSpeedRate, attack->isLoop);
         attack->currentShots++;
         attack->lastShotTick = SDL_GetTicks();
         Game::GetInstance().registry->GetSystem<AudioSystem>().playSound(

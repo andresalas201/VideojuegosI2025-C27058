@@ -4,6 +4,7 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <SDL2/SDL.h>
+#include <sol/sol.hpp>
 
 struct AttackComponent {
 
@@ -25,13 +26,15 @@ struct AttackComponent {
     int numFrames;
     int frameSpeedRate;
     bool isLoop;
+    sol::function update;
     
     AttackComponent(int damage = 1, int radius = 0, int width = 0, int height = 0,
         const std::string& textureId = "none", int srcX = 0, int srcY = 0,
         glm::vec2 velVec = glm::vec2(0.0, 0.0), std::string soundFile = "",
         std::string hitSoundFilePath = "none", int maxShots = 0, bool left = false,
         glm::vec2 scale = glm::vec2(1.0, 1.0), int shotQuantity = 1,
-        int numFrames = 1, int frameSpeedRate = 1, bool isLoop = true) {   
+        int numFrames = 1, int frameSpeedRate = 1, bool isLoop = true,
+        sol::function update = sol::lua_nil) {   
 
         this->damage = damage;
         this->radius = radius;
@@ -51,6 +54,7 @@ struct AttackComponent {
         this->numFrames = numFrames;
         this->frameSpeedRate = frameSpeedRate;
         this->isLoop = isLoop;
+        this->update = update;
     }
 
 };

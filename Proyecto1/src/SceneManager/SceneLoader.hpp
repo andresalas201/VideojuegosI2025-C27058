@@ -34,6 +34,8 @@ class SceneLoader {
         
         void LoadSound(const sol::table& sounds, std::unique_ptr<AssetManager>& assetManager);
 
+        void LoadEnemies(sol::state& lua, const sol::table& enemies, std::unique_ptr<Registry>& registry);
+
     public:
         SceneLoader();
         ~SceneLoader();

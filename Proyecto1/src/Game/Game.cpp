@@ -16,6 +16,7 @@
 #include "../Systems/AudioSystem.hpp"
 #include "../Systems/CleanShotSystem.hpp"
 #include "../Systems/ClearHitSystem.hpp"
+#include "../Systems/EnemySpawnSystem.hpp"
 
 
 Game::Game() {
@@ -182,6 +183,7 @@ void Game::Update() {
     registry->GetSystem<CleanShotSystem>().Update(MILLISECS_PER_FRAME, FPS, secondsPerShot);
     registry->GetSystem<ClearHitSystem>().Update(MILLISECS_PER_FRAME, FPS);
     registry->GetSystem<DeathSystem>().Update(MILLISECS_PER_FRAME, FPS, windowHeight);
+    registry->GetSystem<EnemySpawnSystem>().Update(registry);
 }
 
 void Game::Setup() {
@@ -197,6 +199,7 @@ void Game::Setup() {
     registry->AddSystem<AudioSystem>();
     registry->AddSystem<CleanShotSystem>();
     registry->AddSystem<ClearHitSystem>();
+    registry->AddSystem<EnemySpawnSystem>();
     
     registry->GetSystem<CleanShotSystem>().setSecondsPerShot(secondsPerShot);
     registry->GetSystem<DamageSystem>().SetDamageWait(FPS, MILLISECS_PER_FRAME, 1);

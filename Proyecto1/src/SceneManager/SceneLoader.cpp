@@ -63,6 +63,9 @@ void SceneLoader::LoadScene(const std::string& scenePath, sol::state& lua,
     sol::table entities = scene["entities"];
     LoadEntities(lua, entities, registry);
 
+    sol::table enemyPool = scene["enemies"];
+    LoadEnemies(lua, enemyPool, registry);
+
     sol::table fonts = scene["fonts"];
     LoadFonts(fonts, assetManager);
 
@@ -366,7 +369,81 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
 void SceneLoader::StartMusic(const sol::table& music, std::unique_ptr<Registry>& registry) {
     std::string musicPath = music["filePath"];
     registry->GetSystem<AudioSystem>().playMusic(musicPath);
+}
 
+void SceneLoader::LoadEnemies(sol::state& lua, const sol::table& enemies, 
+    std::unique_ptr<Registry>& registry) {
+    
+    int index = 0;
+    while(true) {
+
+        sol::optional<sol::table> hasEnemy = enemies[index];
+        if (hasEnemy == sol::nullopt) break;
+        sol::table enemy = enemies[index];
+
+        int groupLeft = enemy["group_left"];
+        int spawnWait = enemy["spawn_wait"];
+        PreEntity newEnemyGroup(index, groupLeft, spawnWait);
+
+        sol::optional hasAnimation = enemy["animation"];
+        if (hasAnimation != sol::nullopt) {
+            newEnemyGroup.SetAnimation(enemy["animation"]["num_frames"],
+                enemy["animation"]["frame_rate"], enemy["animation"]["is_loop"]);
+        }
+
+        sol::optional hasAttack = enemy["attack"];
+        if (hasAttack != sol::nullopt) {
+            lua["update"] = sol::nil;
+            std::string path = enemy["attack"]["attack_path"];
+            lua.script_file(path);
+            sol::function update = sol::nil;
+            update = lua["update"];
+            newEnemyGroup.SetAttack(enemy["attack"]["damage"], enemy["attack"]["radius"],
+            enemy["attack"]["width"], enemy["attack"]["height"], enemy["attack"]["texture"],
+            enemy["attack"]["src_x"], enemy["attack"]["src_y"], glm::vec2(enemy["attack"]["vel"]["x"], 
+            enemy["attack"]["vel"]["y"]), enemy["attack"]["sound"], enemy["attack"]["hit_sound"],
+            enemy["attack"]["max_shots"], enemy["attack"]["left"], glm::vec2(enemy["attack"]["scale_x"], 
+            enemy["attack"]["scale_y"]), enemy["attack"]["shot_quantity"], update,
+            enemy["attack"]["num_frames"], enemy["attack"]["frame_speed_rate"], enemy["attack"]["is_loop"]);
+        }
+
+        
+
+        newEnemyGroup.SetCollider(enemy["radius"], enemy["width"], enemy["height"]);
+
+        lua["update"] = sol::nil;
+        std::string path = enemy["update_path"];
+        lua.script_file(path);
+        sol::function enemyFunc = sol::nil;
+        enemyFunc = lua["update"];
+        newEnemyGroup.SetEnemy(enemyFunc);
+
+        newEnemyGroup.SetHealth(enemy["health"], enemy["damage"]);
+        newEnemyGroup.SetBody(glm::vec2(enemy["vel_x"], enemy["vel_y"]));
+
+        sol::optional hasSound = enemy["sound"];
+        if (hasSound != sol::nullopt) {            
+            std::string soundPath = enemy["sound"]["sound_path"];
+            newEnemyGroup.SetSound(soundPath);
+        }
+
+        newEnemyGroup.SetSprite(enemy["texture"], enemy["src_x"], enemy["src_y"],
+            enemy["hit_x"], enemy["hit_y"], enemy["up_x"], enemy["down_x"],
+            enemy["hit_down_x"], enemy["hit_down_y"], enemy["death_x"],
+            enemy["death_y"]);
+        newEnemyGroup.SetTransform(glm::vec2(enemy["scale_x"], enemy["scale_y"]),
+            enemy["rotation"]);
+        sol::optional hasDrop = enemy["drop"];
+        if (hasDrop != sol::nullopt) {            
+            newEnemyGroup.SetDrop(enemy["drop"]["increase"], enemy["drop"]["script"],
+            enemy["drop"]["width"], enemy["drop"]["height"], enemy["drop"]["rotation"],
+            enemy["drop"]["texture"], enemy["drop"]["src_x"], enemy["drop"]["src_y"],
+            enemy["drop"]["sound"]);
+        }
+
+
+        registry->enemyVector.push_back(newEnemyGroup);
+    }
 }
 
 
