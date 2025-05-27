@@ -363,6 +363,9 @@ scene = {
                     b = 150,
                     a = 255
                 },
+                score = {
+                    is_score = true
+                },
                 transform = {
                     position = {x = 500.0, y = 50.0},
                     scale = {x = 1.0, y = 1.0},

@@ -121,7 +121,7 @@ void PreEntity::SetDrop(int increase, sol::function upgrade, int width, int heig
 void PreEntity::CreateEntity(std::unique_ptr<Registry>& registry) {
     Entity newEntity = registry->CreateEntity();
     newEntity.AddComponent<CircleColliderComponent>(this->radius, this->width, this->height);
-    newEntity.AddComponent<EnemyComponent>(this->update, this->groupNumber, this);
+    newEntity.AddComponent<EnemyComponent>(this->update, this->groupNumber, this, this->health);
     newEntity.AddComponent<HealthComponent>(this->health, this->damage);
     newEntity.AddComponent<RigidBodyComponent>(this->velocity);
     newEntity.AddComponent<SpriteComponent>(this->textureId, this->width, this->height,
@@ -158,6 +158,5 @@ void PreEntity::SetSpawn(int x, int y) {
 }
 
 //TODO(any) Crear scripts para diferentes tipos de enemigos
-//TODO(any) Crear un sistema para mantener score
 //TODO(any) Crear un sistema para el jefe
 //TODO(any) Crear un sistema para perder y ganar niveles

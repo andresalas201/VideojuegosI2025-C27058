@@ -19,7 +19,7 @@
 #include "../Systems/EnemySpawnSystem.hpp"
 #include "../Systems/CleanEnemiesSystem.hpp"
 #include "../Systems/DropSystem.hpp"
-
+#include "../Systems/ScoreSystem.hpp"
 
 Game::Game() {
     std::cout <<"[GAME] se ejecuta\n";
@@ -176,6 +176,7 @@ void Game::Update() {
     registry->GetSystem<UISystem>().SubscribeToClicEvent(eventManager);
     registry->GetSystem<DeathSystem>().SubscribeToDeathEvent(eventManager);
     registry->GetSystem<DropSystem>().SubscribeToGroupDeathEvent(eventManager);
+    registry->GetSystem<ScoreSystem>().SubscribeToDeathEvent(eventManager);
 
     registry->Update();
     registry->GetSystem<ScriptSystem>().Update(lua);
@@ -189,6 +190,7 @@ void Game::Update() {
         eventManager);
     registry->GetSystem<EnemySpawnSystem>().Update(registry);
     registry->GetSystem<CleanEnemiesSystem>().Update(registry);
+    registry->GetSystem<ScoreSystem>().Update();
 }
 
 void Game::Setup() {
@@ -207,6 +209,7 @@ void Game::Setup() {
     registry->AddSystem<EnemySpawnSystem>();
     registry->AddSystem<CleanEnemiesSystem>();
     registry->AddSystem<DropSystem>();
+    registry->AddSystem<ScoreSystem>();
     
     registry->GetSystem<CleanShotSystem>().setSecondsPerShot(secondsPerShot);
     registry->GetSystem<DamageSystem>().SetDamageWait(FPS, MILLISECS_PER_FRAME, 1);

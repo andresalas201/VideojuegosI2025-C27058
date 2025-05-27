@@ -14,6 +14,7 @@
 #include "../Components/UpgradeComponent.hpp"
 #include "../Components/PlayerComponent.hpp"
 #include "../Components/AttackComponent.hpp"
+#include "../Components/ScoreComponent.hpp"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -362,6 +363,12 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
             if (hasSound != sol::nullopt) {
                 std::string soundPath = components["sound"]["sound_path"];
                 newEntity.AddComponent<SoundComponent>(soundPath);
+            }
+
+            //* ScoreComponent
+            sol::optional<sol::table> hasScore = components["score"];
+            if (hasScore != sol::nullopt) {
+                newEntity.AddComponent<ScoreComponent>();
             }
             
         }
