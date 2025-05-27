@@ -18,6 +18,7 @@
 #include "../Systems/ClearHitSystem.hpp"
 #include "../Systems/EnemySpawnSystem.hpp"
 #include "../Systems/CleanEnemiesSystem.hpp"
+#include "../Systems/DropSystem.hpp"
 
 
 Game::Game() {
@@ -165,7 +166,6 @@ void Game::Update() {
         SDL_Delay(timeToWait);
     }
     double deltaTime = (SDL_GetTicks() - milisecsPreviousFrame) / 1000.0;
-    // TODO: Agregar esta variable al estado de LUA
 
     milisecsPreviousFrame = SDL_GetTicks();
 
@@ -175,6 +175,7 @@ void Game::Update() {
     registry->GetSystem<DamageSystem>().SubscribeToCollisionEvent(eventManager);
     registry->GetSystem<UISystem>().SubscribeToClicEvent(eventManager);
     registry->GetSystem<DeathSystem>().SubscribeToDeathEvent(eventManager);
+    registry->GetSystem<DropSystem>().SubscribeToGroupDeathEvent(eventManager);
 
     registry->Update();
     registry->GetSystem<ScriptSystem>().Update(lua);
@@ -184,7 +185,8 @@ void Game::Update() {
     registry->GetSystem<DamageSystem>().Update(eventManager);
     registry->GetSystem<CleanShotSystem>().Update(MILLISECS_PER_FRAME, FPS, secondsPerShot);
     registry->GetSystem<ClearHitSystem>().Update(MILLISECS_PER_FRAME, FPS);
-    registry->GetSystem<DeathSystem>().Update(MILLISECS_PER_FRAME, FPS, windowHeight);
+    registry->GetSystem<DeathSystem>().Update(MILLISECS_PER_FRAME, FPS, windowHeight,
+        eventManager);
     registry->GetSystem<EnemySpawnSystem>().Update(registry);
     registry->GetSystem<CleanEnemiesSystem>().Update(registry);
 }
@@ -204,6 +206,7 @@ void Game::Setup() {
     registry->AddSystem<ClearHitSystem>();
     registry->AddSystem<EnemySpawnSystem>();
     registry->AddSystem<CleanEnemiesSystem>();
+    registry->AddSystem<DropSystem>();
     
     registry->GetSystem<CleanShotSystem>().setSecondsPerShot(secondsPerShot);
     registry->GetSystem<DamageSystem>().SetDamageWait(FPS, MILLISECS_PER_FRAME, 1);

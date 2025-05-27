@@ -433,15 +433,19 @@ void SceneLoader::LoadEnemies(sol::state& lua, const sol::table& enemies,
             enemy["hit_x"], enemy["hit_y"], enemy["up_x"], enemy["down_x"],
             enemy["hit_up_x"], enemy["hit_down_x"], enemy["death_x"],
             enemy["death_y"]);
-        std::cout << "ski-bi-di mid\n";
         newEnemyGroup.SetTransform(glm::vec2(enemy["scale_x"], enemy["scale_y"]),
             enemy["rotation"]);
         sol::optional hasDrop = enemy["drop"];
-        if (hasDrop != sol::nullopt) {            
-            newEnemyGroup.SetDrop(enemy["drop"]["increase"], enemy["drop"]["script"],
+        if (hasDrop != sol::nullopt) { 
+            lua["upgrade"] = sol::nil;
+            std::string pathDrop = enemy["drop"]["script"];
+            lua.script_file(pathDrop);
+            sol::function upgrade = sol::nil;
+            upgrade = lua["upgrade"];
+            newEnemyGroup.SetDrop(enemy["drop"]["increase"], upgrade,
             enemy["drop"]["width"], enemy["drop"]["height"], enemy["drop"]["rotation"],
             enemy["drop"]["texture"], enemy["drop"]["src_x"], enemy["drop"]["src_y"],
-            enemy["drop"]["sound"]);
+            enemy["drop"]["sound"], enemy["drop"]["radius"]);
         }
 
         registry->enemyVector.push_back(newEnemyGroup);

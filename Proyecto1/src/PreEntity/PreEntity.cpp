@@ -101,19 +101,21 @@ void PreEntity::SetTransform(glm::vec2 scale, double rotation) {
     this->rotation = rotation;
 }
 
-void PreEntity::SetDrop(int increase, const std::string& path, int width, int height,
+void PreEntity::SetDrop(int increase, sol::function upgrade, int width, int height,
     double rotation, const std::string& textureId, int x, int y,
-    const std::string& soundName) {
+    const std::string& soundName, int radius) {
 
     this->increase = increase;
-    this->upgradePath = path;
+    this->upgradeFunction = upgrade;
     this->upgradeWidth = width;
     this->upgradeHeight = height;
     this->upgradeSrcRect = {x, y, width, height};
     this->upgradeSprite = textureId;
     this->upgradeSound = soundName;
     this->upgradeRotation = rotation;
+    this->upgradeRadius = radius;
     this->hasDrop = true;
+
 }
 
 void PreEntity::CreateEntity(std::unique_ptr<Registry>& registry) {
@@ -129,9 +131,9 @@ void PreEntity::CreateEntity(std::unique_ptr<Registry>& registry) {
         glm::vec2(static_cast<double>(this->spawnX), static_cast<double>(this->spawnY)),
         this->scale, this->rotation);
     if (hasDrop) {
-        newEntity.AddComponent<DropComponent>(this->increase, this->upgradePath,
+        newEntity.AddComponent<DropComponent>(this->increase, this->upgradeFunction,
         this->upgradeWidth, this->upgradeHeight, this->upgradeRotation, this->upgradeSprite,
-        this->upgradeSrcRect.x, this->upgradeSrcRect.y, this->upgradeSound);
+        this->upgradeSrcRect.x, this->upgradeSrcRect.y, this->upgradeSound, this->upgradeRadius);
     }
     if (hasSound) newEntity.AddComponent<SoundComponent>(this->soundName);
     if (hasAnimation) {
@@ -155,8 +157,6 @@ void PreEntity::SetSpawn(int x, int y) {
     this->spawnY = y;
 }
 
-//TODO(any) Hacer un sistema para spawnear enemigos
-//TODO(any) Hacer que al morirse los de drop dropeen algo
 //TODO(any) Crear scripts para diferentes tipos de enemigos
 //TODO(any) Crear un sistema para mantener score
 //TODO(any) Crear un sistema para el jefe

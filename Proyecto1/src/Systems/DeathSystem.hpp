@@ -7,6 +7,7 @@
 #include "../EventManager/EventManager.hpp"
 #include "../Events/DeathEvent.hpp"
 #include "../Components/EnemyComponent.hpp"
+#include "../Events/GroupDeathEvent.hpp"
 #include "AudioSystem.hpp"
 
 class DeathSystem : public System {
@@ -20,7 +21,8 @@ class DeathSystem : public System {
             eventManager->SubscribeToEvent<DeathEvent, DeathSystem>(this, &DeathSystem::OnDeath);
         }
 
-        void Update(int MILISECS_PER_FRAME, int FPS, int windowHeight) {
+        void Update(int MILISECS_PER_FRAME, int FPS, int windowHeight,
+            std::unique_ptr<EventManager>& eventManager) {
             Uint32 maxTime = MILISECS_PER_FRAME * FPS * 0.5;
             for (auto& entity : GetSystemEntities()) {
                 Entity& a = entity;
@@ -31,6 +33,11 @@ class DeathSystem : public System {
                             a.Kill();
                         }
                     } else if ((SDL_GetTicks() - sprite.deathTime) > maxTime) {
+                        if (a.HasComponent<EnemyComponent>() &&
+                            a.GetComponent<EnemyComponent>().fatherGroup->groupLeft <= 0) {
+                            
+                            eventManager->EmitEvent<GroupDeathEvent>(a);
+                        }
                         a.Kill();
                     }
                 }

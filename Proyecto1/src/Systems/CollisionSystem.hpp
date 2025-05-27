@@ -9,6 +9,7 @@
 #include "../Components/ShotComponent.hpp"
 #include "../Components/UpgradeComponent.hpp"
 #include "../Components/PlayerComponent.hpp"
+#include "../Components/EnemyComponent.hpp"
 #include "../EventManager/EventManager.hpp"
 #include "../Events/CollisionEvent.hpp"
 
@@ -35,7 +36,14 @@ class CollisionSystem : public System {
                         (a.HasComponent<UpgradeComponent>()) ||
                         (b.HasComponent<ShotComponent>() && (a.HasComponent<PlayerComponent>()) &&
                         (b.GetComponent<ShotComponent>().playerShot)) ||
-                        (a.HasComponent<PlayerComponent>() && b.HasComponent<PlayerComponent>())) {
+                        (a.HasComponent<PlayerComponent>() && b.HasComponent<PlayerComponent>()) ||
+                        ((!a.HasComponent<PlayerComponent>() || a.HasComponent<ShotComponent>()) && 
+                        (b.HasComponent<UpgradeComponent>())) ||
+                        (a.HasComponent<EnemyComponent>() && b.HasComponent<EnemyComponent>()) ||
+                        (a.HasComponent<EnemyComponent>() && b.HasComponent<ShotComponent>()
+                        && !b.GetComponent<ShotComponent>().playerShot) || 
+                        (b.HasComponent<EnemyComponent>() && a.HasComponent<ShotComponent>()
+                        && !a.GetComponent<ShotComponent>().playerShot)) {
                         continue;
                     }
                     auto bCollider = b.GetComponent<CircleColliderComponent>();

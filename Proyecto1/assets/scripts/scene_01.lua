@@ -137,7 +137,8 @@ scene = {
                 texture = "icons",
                 src_x = 2*32,
                 src_y = 8*32,
-                sound = "upgrade"
+                sound = "upgrade",
+                radius = 16
             }
 
         }

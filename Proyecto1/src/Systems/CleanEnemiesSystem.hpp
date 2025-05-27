@@ -5,13 +5,13 @@
 #include "../Components/EnemyComponent.hpp"
 #include "../Components/TransformComponent.hpp"
 #include "../Components/SpriteComponent.hpp"
-
 class CleanEnemiesSystem : public System {
     private:
         int height;
         int width;
 
         void CleanEnemyGroups(std::unique_ptr<Registry>& registry) {
+            
             bool clean;
             for (long unsigned int i = 0; i < registry->enemiesToSpawn.size();
                 i++) {
@@ -41,6 +41,7 @@ class CleanEnemiesSystem : public System {
                 if ((transform.position.x + (sprite.width * transform.scale.x)) < 0 ||
                     (transform.position.y + (sprite.height * transform.scale.y)) < 0 ||
                     (transform.position.y + (sprite.height * transform.scale.y)) > height) {
+                    
                     std::cout << "[CLEANENEMIESSYSTEM] Se elimina la entidad " << a.GetId()
                         << " debido a que sale de pantalla\n";
                     a.Kill();

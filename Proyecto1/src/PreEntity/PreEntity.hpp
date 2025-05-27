@@ -59,7 +59,8 @@ class PreEntity {
         int upgradeWidth;
         int upgradeHeight;
         int upgradeRotation;
-        std::string upgradePath;
+        int upgradeRadius;
+        sol::function upgradeFunction;
         std::string upgradeSound;
 
         bool hasAttack;
@@ -98,9 +99,9 @@ class PreEntity {
             int upX = 0, int downX = 0, int hitUpX = 0, int hitDownX = 0,
             int deathRectX = 0, int deathRectY = 0);
         void SetTransform(glm::vec2 scale = glm::vec2(1.0, 1.0), double rotation = 0.0);
-        void SetDrop(int increase = 1, const std::string& path = "none", int width = 0,
+        void SetDrop(int increase = 1, sol::function = sol::lua_nil, int width = 0,
             int height = 0, double rotation = 0, const std::string& textureId = "none",
-            int x = 0, int y = 0, const std::string& soundName = "none");
+            int x = 0, int y = 0, const std::string& soundName = "none", int radius = 0);
         void CreateEntity(std::unique_ptr<Registry>& registry);
         void SetSpawn(int x, int y);
 

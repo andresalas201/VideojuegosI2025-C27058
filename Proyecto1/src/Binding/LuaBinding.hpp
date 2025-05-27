@@ -71,11 +71,12 @@ glm::vec2 CalculatePosition(Entity e, bool left, bool up) {
     int entityWidth = e.GetComponent<SpriteComponent>().width;
     int entityHeight = e.GetComponent<SpriteComponent>().height;
     int entityScaleX = e.GetComponent<TransformComponent>().scale.x;
+    int entityScaleY = e.GetComponent<TransformComponent>().scale.y;
     double x = (entityPosition.x + ((entityWidth / 2 ) * entityScaleX)) + 
         ((entityWidth) * direction);
     double y;
     if (up) y = entityPosition.y;
-    else y = entityPosition.y + entityHeight;
+    else y = (entityPosition.y + (entityHeight * entityScaleY));
     glm::vec2 result = glm::vec2(x, y);
     return result;
 
