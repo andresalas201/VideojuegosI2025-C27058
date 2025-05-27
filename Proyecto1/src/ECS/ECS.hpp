@@ -99,6 +99,8 @@ class Registry {
 
         std::vector<PreEntity> enemyVector;
         std::vector<PreEntity> enemiesToSpawn;
+        std::string winScene;
+        std::string loseScene;
 
         // Entity management
         Entity CreateEntity();

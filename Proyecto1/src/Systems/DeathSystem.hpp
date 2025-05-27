@@ -30,6 +30,8 @@ class DeathSystem : public System {
                     auto sprite = a.GetComponent<SpriteComponent>();
                     if (a.HasComponent<PlayerComponent>()) {
                         if (a.GetComponent<TransformComponent>().position.y > windowHeight) {
+                            std::cout << "[DEATHSYSTEM] Jugador " << 
+                            a.GetComponent<PlayerComponent>().playerNumber << " ha muerto\n";
                             a.Kill();
                         }
                     } else if ((SDL_GetTicks() - sprite.deathTime) > maxTime) {

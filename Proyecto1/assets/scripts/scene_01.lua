@@ -1,4 +1,8 @@
 scene = {
+    next_scenes = {
+        win = "main_menu",
+        lose = "main_menu"
+    },
     -- Tabla de imagenes y sprites
     sprites = {
         [0] = 
@@ -190,7 +194,7 @@ scene = {
                     rotation = 90.0
                 },
                 health = {
-                    max_health = 10,
+                    max_health = 1,
                     damage = 1
                 },
                 player = {

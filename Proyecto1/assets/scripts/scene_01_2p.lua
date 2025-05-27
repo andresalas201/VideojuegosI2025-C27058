@@ -1,4 +1,8 @@
 scene = {
+    next_scenes = {
+        win = "main_menu",
+        lose = "main_menu"
+    },
     -- Tabla de imagenes y sprites
     sprites = {
         [0] = 

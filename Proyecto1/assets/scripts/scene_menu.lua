@@ -73,6 +73,9 @@ scene = {
                 script = {
                     path = "assets/scripts/menu_button_01.lua"
                 },
+                player = {
+                    number = 1
+                },
                 clickable = {
                 }
             }

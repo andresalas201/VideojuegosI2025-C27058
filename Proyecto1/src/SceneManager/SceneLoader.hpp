@@ -13,6 +13,9 @@
 
 class SceneLoader {
     private:
+        void LoadNextScenes(std::unique_ptr<Registry>& registry,
+            const sol::table& nextScenes);
+    
         void LoadSprites(SDL_Renderer* renderer, 
             const sol::table& sprites, 
             std::unique_ptr<AssetManager>& assetManager);

@@ -50,7 +50,6 @@ class DamageSystem : public System {
         void OnCollision(CollisionEvent& e) {
             std::cout << "[DAMAGESYSTEM] Colision de entidad " << e.a.GetId() << " y " << e.b.GetId() << std::endl;
             if (e.a.HasComponent<PlayerComponent>() && e.b.HasComponent<UpgradeComponent>()) {
-                std::cout << "Va a upgrade\n";
                 if(e.b.GetComponent<UpgradeComponent>().upgrade.valid()) {
                     e.b.GetComponent<UpgradeComponent>().upgrade(e.a, 
                         e.b.GetComponent<UpgradeComponent>().increase);

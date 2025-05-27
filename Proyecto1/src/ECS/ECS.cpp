@@ -44,12 +44,12 @@ Registry::~Registry() {
 Entity Registry::CreateEntity() {
     int entityID;
 
-    if (freeIds.empty()) {
-        entityID = numEntity++;
-    } else {
+    //if (freeIds.empty()) {
+    entityID = numEntity++;
+    /*} else {
         entityID = freeIds.front();
         freeIds.pop_front();
-    }
+    }*/
 
     if(static_cast<long unsigned int>(entityID) >= entityComponentSignature.size()) {
         entityComponentSignature.resize(entityID + 100);
@@ -100,6 +100,7 @@ void Registry::Update() {
     for(auto entity: entitiesToBeKilled) {
         RemoveEntityFromSystem(entity);
         entityComponentSignature[entity.GetId()].reset();
+        entityComponentSignature[entity.GetId()] = Signature();
         freeIds.push_back(entity.GetId());
     }
     entitiesToBeKilled.clear();

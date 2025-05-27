@@ -79,6 +79,9 @@ class PreEntity {
         int spawnedAmount;
         sol::function update;
         int lastSpawnTick;
+        bool isBoss;
+        int bossX;
+        int bossY;
 
         PreEntity(int groupNumber, int groupLeft = 1, int spawnWait = 1);
         void SetAnimation(int numFrames = 1, int frameRate = 1, bool isLoop = true);
@@ -104,6 +107,7 @@ class PreEntity {
             int x = 0, int y = 0, const std::string& soundName = "none", int radius = 0);
         void CreateEntity(std::unique_ptr<Registry>& registry);
         void SetSpawn(int x, int y);
+        void SetBoss(int x, int y);
 
 
 };

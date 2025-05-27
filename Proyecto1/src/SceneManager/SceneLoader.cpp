@@ -49,6 +49,12 @@ void SceneLoader::LoadScene(const std::string& scenePath, sol::state& lua,
 
     sol::table scene = lua["scene"];
     
+    
+    sol::optional<sol::table> hasNext = scene["next_scenes"];
+    if (hasNext != sol::nullopt) { 
+        sol::table nextScenes = scene["next_scenes"];
+        this->LoadNextScenes(registry, nextScenes);
+    }
     sol::table sprites = scene["sprites"];
     this->LoadSprites(renderer, sprites, assetManager);
     
@@ -78,6 +84,14 @@ void SceneLoader::LoadScene(const std::string& scenePath, sol::state& lua,
 
     sol::table music = scene["music"];
     StartMusic(music, registry);
+    std::cout << "[SCENELOADER] Se finaliza la carga de la escena\n";
+}
+
+void SceneLoader::LoadNextScenes(std::unique_ptr<Registry>& registry,
+    const sol::table& nextScenes) {
+
+    registry->loseScene = nextScenes["lose"];
+    registry->winScene = nextScenes["win"];
 }
 
 void SceneLoader::LoadSprites(SDL_Renderer* renderer, 
@@ -453,6 +467,11 @@ void SceneLoader::LoadEnemies(sol::state& lua, const sol::table& enemies,
             enemy["drop"]["width"], enemy["drop"]["height"], enemy["drop"]["rotation"],
             enemy["drop"]["texture"], enemy["drop"]["src_x"], enemy["drop"]["src_y"],
             enemy["drop"]["sound"], enemy["drop"]["radius"]);
+        }
+
+        sol::optional<sol::table> isBoss = enemy["boss"];
+        if (isBoss != sol::nullopt) {
+            newEnemyGroup.SetBoss(enemy["boss"]["x"], enemy["boss"]["y"]);
         }
 
         registry->enemyVector.push_back(newEnemyGroup);

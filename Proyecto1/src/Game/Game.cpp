@@ -20,6 +20,7 @@
 #include "../Systems/CleanEnemiesSystem.hpp"
 #include "../Systems/DropSystem.hpp"
 #include "../Systems/ScoreSystem.hpp"
+#include "../Systems/LevelEndSystem.hpp"
 
 Game::Game() {
     std::cout <<"[GAME] se ejecuta\n";
@@ -97,15 +98,19 @@ void Game::Run() {
 
 void Game::RunScene() {
     sceneManager->LoadScene();
-    
+    // TODO: Resetear lo que necesita reset
+    this->registry->GetSystem<LevelEndSystem>().Reset();
+    this->registry->GetSystem<EnemySpawnSystem>().Reset();
+    this->milisecsPreviousFrame = SDL_GetTicks();
     while(isRunning && sceneManager->IsSceneRunning()) {
         ProcessInput();
+        
         if (!isPaused) {
             Update();
+            std::cout << "skibidiOver\n";
             Render();
         } else this->milisecsPreviousFrame = SDL_GetTicks();
     }
-
     assetManager->ClearAssets();
     registry->ClearAllEntities();
 }
@@ -169,7 +174,6 @@ void Game::Update() {
 
     milisecsPreviousFrame = SDL_GetTicks();
 
-
     // Reiniciar las subscripciones
     eventManager->Reset();
     registry->GetSystem<DamageSystem>().SubscribeToCollisionEvent(eventManager);
@@ -177,7 +181,6 @@ void Game::Update() {
     registry->GetSystem<DeathSystem>().SubscribeToDeathEvent(eventManager);
     registry->GetSystem<DropSystem>().SubscribeToGroupDeathEvent(eventManager);
     registry->GetSystem<ScoreSystem>().SubscribeToDeathEvent(eventManager);
-
     registry->Update();
     registry->GetSystem<ScriptSystem>().Update(lua);
     registry->GetSystem<MovementSystem>().Update(deltaTime);
@@ -188,9 +191,15 @@ void Game::Update() {
     registry->GetSystem<ClearHitSystem>().Update(MILLISECS_PER_FRAME, FPS);
     registry->GetSystem<DeathSystem>().Update(MILLISECS_PER_FRAME, FPS, windowHeight,
         eventManager);
-    registry->GetSystem<EnemySpawnSystem>().Update(registry);
+    std::cout << "toilet1\n";
+    registry->GetSystem<EnemySpawnSystem>().Update(registry, eventManager);
+    std::cout << "toilet2\n";
     registry->GetSystem<CleanEnemiesSystem>().Update(registry);
+    std::cout << "toilet2\n";
     registry->GetSystem<ScoreSystem>().Update();
+    std::cout << "toilet3\n";
+    registry->GetSystem<LevelEndSystem>().Update(registry, sceneManager);
+    std::cout << "skibidi4\n";
 }
 
 void Game::Setup() {
@@ -210,6 +219,7 @@ void Game::Setup() {
     registry->AddSystem<CleanEnemiesSystem>();
     registry->AddSystem<DropSystem>();
     registry->AddSystem<ScoreSystem>();
+    registry->AddSystem<LevelEndSystem>();
     
     registry->GetSystem<CleanShotSystem>().setSecondsPerShot(secondsPerShot);
     registry->GetSystem<DamageSystem>().SetDamageWait(FPS, MILLISECS_PER_FRAME, 1);

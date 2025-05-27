@@ -11,6 +11,7 @@
 #include "../Components/SoundComponent.hpp"
 #include "../Components/SpriteComponent.hpp"
 #include "../Components/TransformComponent.hpp"
+#include "../Components/BossComponent.hpp"
 
 PreEntity::PreEntity(int groupNumber, int groupLeft, int spawnWait) {
     this->groupNumber = groupNumber;
@@ -22,6 +23,7 @@ PreEntity::PreEntity(int groupNumber, int groupLeft, int spawnWait) {
     this->spawnedAmount = 0;
     this->lastSpawnTick = 0;
     this->spawnMax = groupLeft;
+    this->isBoss = false;
 }
 
 void PreEntity::SetAnimation(int numFrames, int frameRate, bool isLoop) {
@@ -148,6 +150,9 @@ void PreEntity::CreateEntity(std::unique_ptr<Registry>& registry) {
             this->shotQuantity, this->attackNumFrames, this->attackFrameSpeedRate,
             this->isAttackLoop, this->attackUpdate);
     }
+    if (isBoss) {
+        newEntity.AddComponent<BossComponent>();
+    }
     registry->AddEntityToSystems(newEntity);
     this->lastSpawnTick = SDL_GetTicks();
 }
@@ -155,6 +160,12 @@ void PreEntity::CreateEntity(std::unique_ptr<Registry>& registry) {
 void PreEntity::SetSpawn(int x, int y) {
     this->spawnX = x;
     this->spawnY = y;
+}
+
+void PreEntity::SetBoss(int x, int y) {
+    this->isBoss = true;
+    this->bossX = x;
+    this->bossY = y;
 }
 
 //TODO(any) Crear scripts para diferentes tipos de enemigos
