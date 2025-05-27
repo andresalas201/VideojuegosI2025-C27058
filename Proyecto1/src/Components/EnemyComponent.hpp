@@ -4,13 +4,18 @@
 #include <sol/sol.hpp>
 
 
+class PreEntity;
 struct EnemyComponent {
     sol::function update;
     int group;
+    PreEntity* fatherGroup;
 
-    EnemyComponent(sol::function update = sol::lua_nil, int group = 0) {
+    EnemyComponent(sol::function update = sol::lua_nil, int group = 0,
+        PreEntity* fatherGroup = nullptr) {
+        
         this->update = update;
         this->group = group;
+        this->fatherGroup = fatherGroup;
     }
 };
 

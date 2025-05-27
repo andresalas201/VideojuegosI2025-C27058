@@ -6,6 +6,7 @@
 #include "../Components/PlayerComponent.hpp"
 #include "../EventManager/EventManager.hpp"
 #include "../Events/DeathEvent.hpp"
+#include "../Components/EnemyComponent.hpp"
 #include "AudioSystem.hpp"
 
 class DeathSystem : public System {
@@ -59,6 +60,9 @@ class DeathSystem : public System {
             if (e.a.HasComponent<CircleColliderComponent>()) {
                 auto& collider = e.a.GetComponent<CircleColliderComponent>();
                 collider.isDead = true;
+            }
+            if (e.a.HasComponent<EnemyComponent>()) {
+                e.a.GetComponent<EnemyComponent>().fatherGroup->groupLeft--;
             }
         }
 };

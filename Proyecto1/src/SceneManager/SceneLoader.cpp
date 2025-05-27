@@ -176,6 +176,8 @@ void SceneLoader::LoadSound(const sol::table& sounds, std::unique_ptr<AssetManag
 void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
     std::unique_ptr<Registry>& registry) {
     
+    registry->enemiesToSpawn.clear();
+    registry->enemyVector.clear();
     int index = 0;
     while (true) {
         sol::optional<sol::table> hasEntity = entities[index];

@@ -17,6 +17,7 @@
 #include "../Systems/CleanShotSystem.hpp"
 #include "../Systems/ClearHitSystem.hpp"
 #include "../Systems/EnemySpawnSystem.hpp"
+#include "../Systems/CleanEnemiesSystem.hpp"
 
 
 Game::Game() {
@@ -185,6 +186,7 @@ void Game::Update() {
     registry->GetSystem<ClearHitSystem>().Update(MILLISECS_PER_FRAME, FPS);
     registry->GetSystem<DeathSystem>().Update(MILLISECS_PER_FRAME, FPS, windowHeight);
     registry->GetSystem<EnemySpawnSystem>().Update(registry);
+    registry->GetSystem<CleanEnemiesSystem>().Update(registry);
 }
 
 void Game::Setup() {
@@ -201,11 +203,14 @@ void Game::Setup() {
     registry->AddSystem<CleanShotSystem>();
     registry->AddSystem<ClearHitSystem>();
     registry->AddSystem<EnemySpawnSystem>();
+    registry->AddSystem<CleanEnemiesSystem>();
     
     registry->GetSystem<CleanShotSystem>().setSecondsPerShot(secondsPerShot);
     registry->GetSystem<DamageSystem>().SetDamageWait(FPS, MILLISECS_PER_FRAME, 1);
     registry->GetSystem<EnemySpawnSystem>().SetParameter(this->spawnWait,
         this->windowWidth, this->windowHeight);
+    registry->GetSystem<CleanEnemiesSystem>().SetParameter(this->windowHeight,
+        this->windowWidth);
     sceneManager->LoadSceneFromScript("assets/scripts/scenes.lua", lua);
 
     lua.open_libraries(sol::lib::base, sol::lib::math);
