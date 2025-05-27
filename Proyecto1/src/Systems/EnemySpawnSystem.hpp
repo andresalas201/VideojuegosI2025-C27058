@@ -103,19 +103,15 @@ class EnemySpawnSystem : public System {
 
         void Update(std::unique_ptr<Registry>& registry, std::unique_ptr<EventManager>& eventManager) {
             if (!this->bossSpawned) {
-                std::cout << "tralelero1\n";
                 if (this->bossReady) {
                     SpawnBoss(registry);
                     eventManager->EmitEvent<BossActivationEvent>();  
                     return;
                 }
-                std::cout << "tralelero2\n";
                 if (((SDL_GetTicks() - lastSpawn) / 1000) > waitBetween) {
                     AddSpawnGroup(registry);
                 }
-                std::cout << "tralelero3\n";
                 SpawnEnemy(registry);
-                std::cout << "tralelero4\n";
             }
         }
 

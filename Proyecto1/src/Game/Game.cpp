@@ -107,7 +107,6 @@ void Game::RunScene() {
         
         if (!isPaused) {
             Update();
-            std::cout << "skibidiOver\n";
             Render();
         } else this->milisecsPreviousFrame = SDL_GetTicks();
     }
@@ -191,15 +190,10 @@ void Game::Update() {
     registry->GetSystem<ClearHitSystem>().Update(MILLISECS_PER_FRAME, FPS);
     registry->GetSystem<DeathSystem>().Update(MILLISECS_PER_FRAME, FPS, windowHeight,
         eventManager);
-    std::cout << "toilet1\n";
     registry->GetSystem<EnemySpawnSystem>().Update(registry, eventManager);
-    std::cout << "toilet2\n";
     registry->GetSystem<CleanEnemiesSystem>().Update(registry);
-    std::cout << "toilet2\n";
     registry->GetSystem<ScoreSystem>().Update();
-    std::cout << "toilet3\n";
     registry->GetSystem<LevelEndSystem>().Update(registry, sceneManager);
-    std::cout << "skibidi4\n";
 }
 
 void Game::Setup() {
