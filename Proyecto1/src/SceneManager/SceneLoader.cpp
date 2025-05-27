@@ -63,8 +63,11 @@ void SceneLoader::LoadScene(const std::string& scenePath, sol::state& lua,
     sol::table entities = scene["entities"];
     LoadEntities(lua, entities, registry);
 
-    sol::table enemyPool = scene["enemies"];
-    LoadEnemies(lua, enemyPool, registry);
+    sol::optional<sol::table> hasEnemies = scene["enemies"];
+    if (hasEnemies != sol::nullopt) {
+        sol::table enemyPool = scene["enemies"];
+        LoadEnemies(lua, enemyPool, registry);
+    }
 
     sol::table fonts = scene["fonts"];
     LoadFonts(fonts, assetManager);
@@ -376,7 +379,6 @@ void SceneLoader::LoadEnemies(sol::state& lua, const sol::table& enemies,
     
     int index = 0;
     while(true) {
-
         sol::optional<sol::table> hasEnemy = enemies[index];
         if (hasEnemy == sol::nullopt) break;
         sol::table enemy = enemies[index];
@@ -407,8 +409,6 @@ void SceneLoader::LoadEnemies(sol::state& lua, const sol::table& enemies,
             enemy["attack"]["num_frames"], enemy["attack"]["frame_speed_rate"], enemy["attack"]["is_loop"]);
         }
 
-        
-
         newEnemyGroup.SetCollider(enemy["radius"], enemy["width"], enemy["height"]);
 
         lua["update"] = sol::nil;
@@ -423,14 +423,15 @@ void SceneLoader::LoadEnemies(sol::state& lua, const sol::table& enemies,
 
         sol::optional hasSound = enemy["sound"];
         if (hasSound != sol::nullopt) {            
-            std::string soundPath = enemy["sound"]["sound_path"];
+            std::string soundPath = enemy["sound"]["sound_name"];
             newEnemyGroup.SetSound(soundPath);
         }
 
         newEnemyGroup.SetSprite(enemy["texture"], enemy["src_x"], enemy["src_y"],
             enemy["hit_x"], enemy["hit_y"], enemy["up_x"], enemy["down_x"],
-            enemy["hit_down_x"], enemy["hit_down_y"], enemy["death_x"],
+            enemy["hit_up_x"], enemy["hit_down_x"], enemy["death_x"],
             enemy["death_y"]);
+        std::cout << "ski-bi-di mid\n";
         newEnemyGroup.SetTransform(glm::vec2(enemy["scale_x"], enemy["scale_y"]),
             enemy["rotation"]);
         sol::optional hasDrop = enemy["drop"];
@@ -441,8 +442,8 @@ void SceneLoader::LoadEnemies(sol::state& lua, const sol::table& enemies,
             enemy["drop"]["sound"]);
         }
 
-
         registry->enemyVector.push_back(newEnemyGroup);
+        index++;
     }
 }
 

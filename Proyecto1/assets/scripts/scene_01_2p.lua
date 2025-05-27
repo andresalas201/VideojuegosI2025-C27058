@@ -46,11 +46,11 @@ scene = {
         {name = "down", key=115},
         {name = "right", key=100},
         {name = "shoot", key=106}, -- J
-        {name = "up2", key=1073741906},
-        {name = "left2", key=1073741904},
-        {name = "down2", key=1073741905},
-        {name = "right2", key=1073741903},
-        {name = "shoot2", key=1073741922},
+        {name = "up2", key=1073741906}, -- Up arrow
+        {name = "left2", key=1073741904}, -- Left arrow
+        {name = "down2", key=1073741905}, -- Down arrow
+        {name = "right2", key=1073741903}, -- Right arrow
+        {name = "shoot2", key=1073741922}, -- Numpad 0
     },
 
     -- Tabla de acciones y botones del ratón
@@ -76,8 +76,79 @@ scene = {
         {
             name = "explosion",
             file_path = "assets/sounds/explosion.wav"
+        },
+        {
+            name = "scream",
+            file_path = "assets/sounds/Death.wav"
         }
 
+    },
+    enemies = {
+        [0] = {
+            group_left = 3,
+            spawn_wait = 1,
+            animation = {
+                num_frames = 6,
+                frame_rate = 6,
+                is_loop = true,
+            },
+            attack = {
+                damage = 2,
+                radius = 8,
+                width = 16,
+                height = 16,
+                texture = "energy_shot",
+                src_x = 16,
+                src_y = 0,
+                vel = { x = 100, y = 0},
+                sound = "laser_shot",
+                hit_sound = "explosion",
+                max_shots = 5,
+                left = true,
+                scale_x = 1,
+                scale_y = 1,
+                shot_quantity = 1,
+                num_frames = 1,
+                frame_speed_rate = 1,
+                is_loop = true;
+                attack_path = "assets/scripts/basic_bullet.lua"
+            },
+            radius = 8,
+            width = 16,
+            height = 16,
+            update_path = "assets/scripts/basic_enemy.lua",
+            health = 1,
+            damage = 1,
+            vel_x = -100,
+            vel_y = 0,
+            sound = {sound_name = "scream"},
+            texture = "enemy_alan",
+            src_x = 0,
+            src_y = 0,
+            hit_x = 96,
+            hit_y = 0,
+            up_x = 0,
+            down_x = 0,
+            hit_down_x = 96,
+            hit_up_x = 96,
+            death_x =  192,
+            death_y = 0,
+            scale_x = 4.0,
+            scale_y = 4.0,
+            rotation = 0.0,
+            drop = {
+                increase = 1,
+                script = "assets/scripts/upgrade_amount.lua",
+                width = 32,
+                height = 32,
+                rotation = 0,
+                texture = "icons",
+                src_x = 2*32,
+                src_y = 8*32,
+                sound = "upgrade"
+            }
+
+        }
     },
     -- Tabla de entidades
     entities = {
@@ -122,7 +193,7 @@ scene = {
                 },
                 transform = {
                     position = {x = 400.0, y = 300.0},
-                    scale = {x = 2.0, y = 2.0},
+                    scale = {x = 4.0, y = 4.0},
                     rotation = 90.0
                 },
                 health = {
@@ -175,8 +246,8 @@ scene = {
                     death = {x = 96, y = 0}
                 },
                 transform = {
-                    position = {x = 400.0, y = 300.0},
-                    scale = {x = 2.0, y = 2.0},
+                    position = {x = 400.0, y = 400.0},
+                    scale = {x = 4.0, y = 4.0},
                     rotation = 90.0
                 },
                 health = {
@@ -336,7 +407,7 @@ scene = {
                 },
                 upgrade = {
                     increase = 1,
-                    path = "assets/scripts/upgrade_amount"
+                    path = "assets/scripts/upgrade_amount.lua"
                 },
                 sound = {
                     sound_path = "upgrade"

@@ -2,6 +2,7 @@
 #define ENEMYSPAWNSYSTEM_HPP
 
 #include <memory>
+#include <time.h>
 #include "../ECS/ECS.hpp"
 #include "../PreEntity/PreEntity.hpp"
 
@@ -22,18 +23,22 @@ class EnemySpawnSystem : public System {
             int index = rand() % registry->enemyVector.size();
             PreEntity newEnemyGroup = registry->enemyVector[index];
             newEnemyGroup.SetSpawn(width+5, GenerateY());
+            int baseGroupNumber = newEnemyGroup.groupNumber;
             newEnemyGroup.groupNumber = currentGroup;
             this->currentGroup++;
             registry->enemiesToSpawn.push_back(newEnemyGroup);
             this->lastSpawn = SDL_GetTicks();
+            std::cout << "[ENEMYSPAWNSYSTEM] Se agrega el grupo " << newEnemyGroup.groupNumber <<
+                " apartir de " << baseGroupNumber << std::endl;
         }
 
         void SpawnEnemy(std::unique_ptr<Registry>& registry) {
-            for (int i = 0; registry->enemiesToSpawn.size(); i++) {
+            for (long unsigned int i = 0; i < registry->enemiesToSpawn.size(); i++) {
                 if(registry->enemiesToSpawn[i].spawnedAmount >= 
                     registry->enemiesToSpawn[i].spawnMax) continue;
                 if((SDL_GetTicks() - registry->enemiesToSpawn[i].lastSpawnTick)/1000 > 
                     static_cast<Uint32>(registry->enemiesToSpawn[i].spawnWait)) {
+                    std::cout << "[ENEMYSPAWNSYSTEM] Se spawnea del grupo " << i << std::endl;
                     registry->enemiesToSpawn[i].CreateEntity(registry);
                     registry->enemiesToSpawn[i].spawnedAmount ++;
                 }
@@ -43,6 +48,7 @@ class EnemySpawnSystem : public System {
 
     public:
         EnemySpawnSystem() {
+            srand(time(NULL));
             this->lastSpawn = 0;
             this->currentGroup = 0;
         }

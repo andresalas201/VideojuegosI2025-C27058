@@ -81,6 +81,7 @@ void Game::LoadConfig() {
     secondsPerShot = config["seconds_per_shot"];
     windowWidth = config["width"];
     windowHeight = config["height"];
+    spawnWait = config["spawn_wait"];
 }
 
 void Game::Run() {
@@ -203,6 +204,8 @@ void Game::Setup() {
     
     registry->GetSystem<CleanShotSystem>().setSecondsPerShot(secondsPerShot);
     registry->GetSystem<DamageSystem>().SetDamageWait(FPS, MILLISECS_PER_FRAME, 1);
+    registry->GetSystem<EnemySpawnSystem>().SetParameter(this->spawnWait,
+        this->windowWidth, this->windowHeight);
     sceneManager->LoadSceneFromScript("assets/scripts/scenes.lua", lua);
 
     lua.open_libraries(sol::lib::base, sol::lib::math);

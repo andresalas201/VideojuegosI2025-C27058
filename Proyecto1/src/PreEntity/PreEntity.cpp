@@ -119,7 +119,9 @@ void PreEntity::SetDrop(int increase, const std::string& path, int width, int he
 void PreEntity::CreateEntity(std::unique_ptr<Registry>& registry) {
     Entity newEntity = registry->CreateEntity();
     newEntity.AddComponent<CircleColliderComponent>(this->radius, this->width, this->height);
+    std::cout << "Skibidi\n";
     newEntity.AddComponent<EnemyComponent>(this->update, this->groupNumber);
+    std::cout << "Skibidi1\n";
     newEntity.AddComponent<HealthComponent>(this->health, this->damage);
     newEntity.AddComponent<RigidBodyComponent>(this->velocity);
     newEntity.AddComponent<SpriteComponent>(this->textureId, this->width, this->height,
