@@ -55,7 +55,7 @@ void Game::Init() {
     LoadConfig();
 
     this->window = SDL_CreateWindow(
-        "Motor de juegos",
+        "Battle of Andronika",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         this->windowWidth,
@@ -85,6 +85,7 @@ void Game::LoadConfig() {
     windowWidth = config["width"];
     windowHeight = config["height"];
     spawnWait = config["spawn_wait"];
+    bossScore = config["boss_score"];
 }
 
 void Game::Run() {
@@ -101,10 +102,10 @@ void Game::RunScene() {
     // TODO: Resetear lo que necesita reset
     this->registry->GetSystem<LevelEndSystem>().Reset();
     this->registry->GetSystem<EnemySpawnSystem>().Reset();
+    this->registry->GetSystem<ScoreSystem>().SetStartScore();
     this->milisecsPreviousFrame = SDL_GetTicks();
     while(isRunning && sceneManager->IsSceneRunning()) {
         ProcessInput();
-        
         if (!isPaused) {
             Update();
             Render();
@@ -180,6 +181,8 @@ void Game::Update() {
     registry->GetSystem<DeathSystem>().SubscribeToDeathEvent(eventManager);
     registry->GetSystem<DropSystem>().SubscribeToGroupDeathEvent(eventManager);
     registry->GetSystem<ScoreSystem>().SubscribeToDeathEvent(eventManager);
+    registry->GetSystem<EnemySpawnSystem>().SubscribeToBossSpawnEvent(eventManager);
+    registry->GetSystem<LevelEndSystem>().SubscribeToBossActivation(eventManager);
     registry->Update();
     registry->GetSystem<ScriptSystem>().Update(lua);
     registry->GetSystem<MovementSystem>().Update(deltaTime);
@@ -192,8 +195,10 @@ void Game::Update() {
         eventManager);
     registry->GetSystem<EnemySpawnSystem>().Update(registry, eventManager);
     registry->GetSystem<CleanEnemiesSystem>().Update(registry);
-    registry->GetSystem<ScoreSystem>().Update();
-    registry->GetSystem<LevelEndSystem>().Update(registry, sceneManager);
+    registry->GetSystem<ScoreSystem>().Update(eventManager);
+    if (registry->GetSystem<LevelEndSystem>().Update(registry, sceneManager)) {
+        registry->GetSystem<ScoreSystem>().Reset();
+    }
 }
 
 void Game::Setup() {

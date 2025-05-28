@@ -102,9 +102,11 @@ class EnemySpawnSystem : public System {
         }
 
         void Update(std::unique_ptr<Registry>& registry, std::unique_ptr<EventManager>& eventManager) {
+            if (registry->enemyVector.empty()) return;
             if (!this->bossSpawned) {
                 if (this->bossReady) {
                     SpawnBoss(registry);
+                    this->bossReady = false;
                     eventManager->EmitEvent<BossActivationEvent>();  
                     return;
                 }

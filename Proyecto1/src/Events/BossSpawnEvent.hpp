@@ -7,8 +7,7 @@
 class BossSpawnEvent : public Event {
     public:
         Entity a;
-        bool isReady;
-        BossSpawnEvent(Entity a, bool isReady) : a(a), isReady(isReady) {}
+        BossSpawnEvent(Entity a) : a(a) {}
 };
 
 #endif // BOSSSPAWNEVENT_HPP

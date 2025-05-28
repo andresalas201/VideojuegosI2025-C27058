@@ -11,6 +11,14 @@
 class ScoreSystem : public System {
     private:
         int Score;
+        int startScore;
+        bool bossSpawned;
+
+        void SendSpawnEvent(std::unique_ptr<EventManager>& eventManager, Entity& a) {
+            std::cout << "[SCORESYSTEM] Se alcanzan los puntos para el jefe\n";
+            eventManager->EmitEvent<BossSpawnEvent>(a);
+        }
+
     public:
 
         ScoreSystem() {
@@ -19,11 +27,26 @@ class ScoreSystem : public System {
             this->Score = 0;
         }
 
-        void Update() {
+        void SetStartScore () {
+            this->startScore = Score;
+            this->bossSpawned = false;
+        }
+
+        void Reset() {
+            this->Score = 0;
+        }
+
+        void Update(std::unique_ptr<EventManager>& eventManager) {
             for (auto& entity : GetSystemEntities()) {
                 Entity& a = entity;
                 auto& text = a.GetComponent<TextComponent>();
+                auto& score = a.GetComponent<ScoreComponent>();
                 text.text = "Score: " + std::to_string(this->Score);
+                
+                if (!this->bossSpawned && score.bossScore < (this->Score - this->startScore)) {
+                    SendSpawnEvent(eventManager, a);
+                    this->bossSpawned = true;
+                }
             }
         }
 

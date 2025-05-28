@@ -382,7 +382,13 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
             //* ScoreComponent
             sol::optional<sol::table> hasScore = components["score"];
             if (hasScore != sol::nullopt) {
-                newEntity.AddComponent<ScoreComponent>();
+                std::string scorePath = components["score"]["path"];
+                lua["check_end"] = sol::nil;
+                lua.script_file(scorePath);
+                sol::function checkEnd = sol::nil;
+                checkEnd = lua["update"];
+                int bossScore = components["score"]["boss_score"];
+                newEntity.AddComponent<ScoreComponent>(bossScore, checkEnd);
             }
             
         }
@@ -410,13 +416,13 @@ void SceneLoader::LoadEnemies(sol::state& lua, const sol::table& enemies,
         int spawnWait = enemy["spawn_wait"];
         PreEntity newEnemyGroup(index, groupLeft, spawnWait);
 
-        sol::optional hasAnimation = enemy["animation"];
+        sol::optional<sol::table> hasAnimation = enemy["animation"];
         if (hasAnimation != sol::nullopt) {
             newEnemyGroup.SetAnimation(enemy["animation"]["num_frames"],
                 enemy["animation"]["frame_rate"], enemy["animation"]["is_loop"]);
         }
 
-        sol::optional hasAttack = enemy["attack"];
+        sol::optional<sol::table> hasAttack = enemy["attack"];
         if (hasAttack != sol::nullopt) {
             lua["update"] = sol::nil;
             std::string path = enemy["attack"]["attack_path"];
@@ -444,7 +450,7 @@ void SceneLoader::LoadEnemies(sol::state& lua, const sol::table& enemies,
         newEnemyGroup.SetHealth(enemy["health"], enemy["damage"]);
         newEnemyGroup.SetBody(glm::vec2(enemy["vel_x"], enemy["vel_y"]));
 
-        sol::optional hasSound = enemy["sound"];
+        sol::optional<sol::table> hasSound = enemy["sound"];
         if (hasSound != sol::nullopt) {            
             std::string soundPath = enemy["sound"]["sound_name"];
             newEnemyGroup.SetSound(soundPath);
@@ -456,7 +462,7 @@ void SceneLoader::LoadEnemies(sol::state& lua, const sol::table& enemies,
             enemy["death_y"]);
         newEnemyGroup.SetTransform(glm::vec2(enemy["scale_x"], enemy["scale_y"]),
             enemy["rotation"]);
-        sol::optional hasDrop = enemy["drop"];
+        sol::optional<sol::table> hasDrop = enemy["drop"];
         if (hasDrop != sol::nullopt) { 
             lua["upgrade"] = sol::nil;
             std::string pathDrop = enemy["drop"]["script"];
@@ -469,9 +475,11 @@ void SceneLoader::LoadEnemies(sol::state& lua, const sol::table& enemies,
             enemy["drop"]["sound"], enemy["drop"]["radius"]);
         }
 
+
         sol::optional<sol::table> isBoss = enemy["boss"];
         if (isBoss != sol::nullopt) {
-            newEnemyGroup.SetBoss(enemy["boss"]["x"], enemy["boss"]["y"]);
+            sol::table boss = enemy["boss"];
+            newEnemyGroup.SetBoss(boss["x"], boss["y"]);
         }
 
         registry->enemyVector.push_back(newEnemyGroup);

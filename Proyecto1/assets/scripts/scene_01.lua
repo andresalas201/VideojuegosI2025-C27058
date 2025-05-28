@@ -145,6 +145,62 @@ scene = {
                 radius = 16
             }
 
+        },
+        -- Jefe
+        {
+            group_left = 1,
+            spawn_wait = 1,
+            animation = {
+                num_frames = 6,
+                frame_rate = 6,
+                is_loop = true,
+            },
+            attack = {
+                damage = 2,
+                radius = 8,
+                width = 16,
+                height = 16,
+                texture = "energy_shot",
+                src_x = 16,
+                src_y = 0,
+                vel = { x = 100, y = 0},
+                sound = "laser_shot",
+                hit_sound = "explosion",
+                max_shots = 5,
+                left = true,
+                scale_x = 1,
+                scale_y = 1,
+                shot_quantity = 1,
+                num_frames = 1,
+                frame_speed_rate = 1,
+                is_loop = true;
+                attack_path = "assets/scripts/basic_bullet.lua"
+            },
+            radius = 8,
+            width = 16,
+            height = 16,
+            update_path = "assets/scripts/basic_enemy.lua",
+            health = 1,
+            damage = 1,
+            vel_x = -100,
+            vel_y = 0,
+            sound = {sound_name = "scream"},
+            texture = "enemy_alan",
+            src_x = 0,
+            src_y = 0,
+            hit_x = 96,
+            hit_y = 0,
+            up_x = 0,
+            down_x = 0,
+            hit_down_x = 96,
+            hit_up_x = 96,
+            death_x =  192,
+            death_y = 0,
+            scale_x = 10.0,
+            scale_y = 10.0,
+            rotation = 0.0,
+            boss = { x = 100, y = 100}
+
         }
     },
     -- Tabla de entidades
@@ -153,8 +209,8 @@ scene = {
             components = {
                 sprite = {
                     assetId = "Bg_01",
-                    width = 1280,
-                    height = 720,
+                    width = 1820,
+                    height = 100,
                     src_rect = {x = 0, y = 0 },
                     hit_rect = {x = 32, y = 0 },
                 },
@@ -162,6 +218,12 @@ scene = {
                     position = {x = 0.0, y = 0.0},
                     scale = {x = 10.0, y = 10.0},
                     rotation = 0.0
+                },
+                rigidBody = {
+                    velocity = {x = -1, y = 0}
+                },
+                script = {
+                    path = "assets/scripts/background_move.lua"
                 }
             }
         },
@@ -221,146 +283,8 @@ scene = {
         },
         {
             components = {
-                circle_collider = {
-                    radius = 8,
-                    width = 16,
-                    height = 16
-                },
-                rigidBody = {
-                    velocity = {x = -1, y = 0}
-                },
-                sprite = {
-                    assetId = "enemy_alan",
-                    width = 16,
-                    height = 16,
-                    src_rect = {x = 0, y = 0 },
-                    hit_rect = {x = 96, y = 0 },
-                    death = {x =  192, y = 0}
-                },
-                animation = {
-                    frames = 6,
-                    frame_rate = 6,
-                    looping = true,
-                },
-                transform = {
-                    position = {x = 800.0, y = 300.0},
-                    scale = {x = 4.0, y = 4.0},
-                    rotation = 180.0
-                },
-                health = {
-                    max_health = 1,
-                    damage = 1
-                },
-                
-            }
-        },
-        {
-            components = {
-                circle_collider = {
-                    radius = 8,
-                    width = 16,
-                    height = 16
-                },
-                rigidBody = {
-                    velocity = {x = -1, y = 0}
-                },
-                sprite = {
-                    assetId = "enemy_alan",
-                    width = 16,
-                    height = 16,
-                    src_rect = {x = 0, y = 0 },
-                    hit_rect = {x = 96, y = 0 },
-                    death = {x =  192, y = 0}
-                },
-                animation = {
-                    frames = 6,
-                    frame_rate = 6,
-                    looping = true,
-                },
-                transform = {
-                    position = {x = 800.0, y = 400.0},
-                    scale = {x = 4.0, y = 4.0},
-                    rotation = 0.0
-                },
-                health = {
-                    max_health = 2,
-                    damage = 1
-                },
-            }
-        },
-        {
-            components = {
-                circle_collider = {
-                    radius = 8,
-                    width = 16,
-                    height = 16
-                },
-                rigidBody = {
-                    velocity = {x = -1, y = 0}
-                },
-                sprite = {
-                    assetId = "enemy_alan",
-                    width = 16,
-                    height = 16,
-                    src_rect = {x = 0, y = 0 },
-                    hit_rect = {x = 96, y = 0 },
-                    death = {x =  192, y = 0}
-                },
-                animation = {
-                    frames = 6,
-                    frame_rate = 6,
-                    looping = true,
-                },
-                transform = {
-                    position = {x = 800.0, y = 500.0},
-                    scale = {x = 4.0, y = 4.0},
-                    rotation = 0.0
-                },
-                health = {
-                    max_health = 2,
-                    damage = 1
-                },
-            }
-        },
-        {
-            components = {
-                circle_collider = {
-                    radius = 16,
-                    width = 32,
-                    height = 32
-                },
-                rigidBody = {
-                    velocity = {x = -10, y = 0}
-                },
-                sprite = {
-                    assetId = "icons",
-                    width = 32,
-                    height = 32,
-                    src_rect = {x = 2*32, y = 8*32 },
-                    hit_rect = {x = 2*32, y = 8*32 }
-                },
-                transform = {
-                    position = {x = 800.0, y = 250.0},
-                    scale = {x = 1.0, y = 1.0},
-                    rotation = 0.0
-                },
-                health = {
-                    max_health = 1,
-                    damage = 0
-                },
-                upgrade = {
-                    increase = 1,
-                    path = "assets/scripts/upgrade_amount.lua"
-                },
-                sound = {
-                    sound_path = "upgrade"
-                }
-            }
-        },
-        {
-            components = {
                 text = {
-                    text = "Score: 100",
+                    text = "Score: 0",
                     fontId = "press_start_24",
                     r = 150,
                     g = 0,
@@ -368,7 +292,9 @@ scene = {
                     a = 255
                 },
                 score = {
-                    is_score = true
+                    is_score = true,
+                    path = "assets/scripts/score_script.lua",
+                    boss_score = 5;
                 },
                 transform = {
                     position = {x = 500.0, y = 50.0},

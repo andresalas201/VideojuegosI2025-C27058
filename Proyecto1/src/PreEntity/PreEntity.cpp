@@ -151,6 +151,7 @@ void PreEntity::CreateEntity(std::unique_ptr<Registry>& registry) {
             this->isAttackLoop, this->attackUpdate);
     }
     if (isBoss) {
+        std::cout << "jefe\n";
         newEntity.AddComponent<BossComponent>();
     }
     registry->AddEntityToSystems(newEntity);
@@ -169,5 +170,4 @@ void PreEntity::SetBoss(int x, int y) {
 }
 
 //TODO(any) Crear scripts para diferentes tipos de enemigos
-//TODO(any) Crear un sistema para el jefe
-//TODO(any) Crear un sistema para perder y ganar niveles
+//TODO Crear scripts para balas

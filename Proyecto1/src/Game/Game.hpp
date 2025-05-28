@@ -20,11 +20,10 @@ extern int MILLISECS_PER_FRAME;
 class Game {
     private:
         SDL_Window* window = nullptr;
-
-        int windowWidth = 0;
         int windowHeight = 0;
         int secondsPerShot = 0;
         int spawnWait = 0;
+        int bossScore = 0;
         
         int milisecsPreviousFrame = 0;
 
@@ -43,6 +42,7 @@ class Game {
 
     public:
         
+        int windowWidth = 0;
         std::unique_ptr<AssetManager> assetManager;
         std::unique_ptr<EventManager> eventManager;
         std::unique_ptr<Registry> registry;

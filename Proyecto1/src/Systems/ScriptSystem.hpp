@@ -36,6 +36,8 @@ class ScriptSystem : public System {
             lua.set_function("upgrade_damage", UpgradeDamage);
             lua.set_function("upgrade_amount", UpgradeAmount);
             lua.set_function("upgrade_speed", UpgradeSpeed);
+            lua.set_function("background_move", BackgroundMove);
+            lua.set_function("spawn_boss", SpawnBoss);
         }
 };
 

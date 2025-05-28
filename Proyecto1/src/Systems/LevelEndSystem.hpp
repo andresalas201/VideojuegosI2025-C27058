@@ -15,6 +15,7 @@ class LevelEndSystem : public System {
         void WinLevel(std::unique_ptr<Registry>& registry,
             std::unique_ptr<SceneManager>& sceneManager) {
 
+            std::cout << "[LEVELENDSYSTEM] Se gana el nivel\n";
             sceneManager->SetNextScene(registry->winScene);
             sceneManager->StopScene();
 
@@ -25,6 +26,7 @@ class LevelEndSystem : public System {
 
             sceneManager->SetNextScene(registry->loseScene);
             sceneManager->StopScene();
+            std::cout << "[LEVELENDSYSTEM] Se pierde el nivel\n";
         }
 
 
@@ -41,7 +43,7 @@ class LevelEndSystem : public System {
                 &LevelEndSystem::OnBossActivation);
         }
 
-        void Update(std::unique_ptr<Registry>& registry,
+        bool Update(std::unique_ptr<Registry>& registry,
             std::unique_ptr<SceneManager>& sceneManager) {
             bool playerExists = false;
             bool bossExists = false;
@@ -49,17 +51,21 @@ class LevelEndSystem : public System {
                 if (entity.HasComponent<BossComponent>()) bossExists = true;
                 if (entity.HasComponent<PlayerComponent>()) {
                     playerExists = true;
-                    break;
                 }
             }
             if (this->bossSpawned && !bossExists) {
                 WinLevel(registry, sceneManager);
-                return;
+                return false;
             }
-            if (!playerExists) LoseLevel(registry, sceneManager);
+            if (!playerExists) {
+                LoseLevel(registry, sceneManager);
+                return true;
+            }
+            return false;
         }
 
         void OnBossActivation(BossActivationEvent& e) {
+            std::cout << "[LEVELENDSYSTEM] Jefe activado\n";
             this->bossSpawned = e.isActive;
         }
 };

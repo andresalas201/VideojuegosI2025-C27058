@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 
 #include "../ECS/ECS.hpp"
+#include "../Events/BossSpawnEvent.hpp"
 #include "../AssetManager/AssetManager.hpp"
 #include "../Game/Game.hpp"
 #include "../Systems/AudioSystem.hpp"
@@ -173,6 +174,21 @@ void UpgradeSpeed(Entity upgraded, int increase) {
 void GoToScene(const std::string& sceneName) {
     Game::GetInstance().sceneManager->SetNextScene(sceneName);
     Game::GetInstance().sceneManager->StopScene();
+}
+
+// Background Move
+
+void BackgroundMove(Entity a) {
+    int position = a.GetComponent<TransformComponent>().position.x;
+    int width = a.GetComponent<SpriteComponent>().width;
+    if (((position + width) <= Game::GetInstance().windowWidth)) {
+        SetVelocity(a, 1.0, 0.0);
+    }
+}
+
+void SpawnBoss(Entity a) {
+    Game::GetInstance().eventManager->EmitEvent<BossSpawnEvent>(a);
+    std::cout << "Se spawnea el jefe";
 }
 
 #endif // LUABINDING_HPP
