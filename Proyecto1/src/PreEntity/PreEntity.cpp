@@ -151,7 +151,6 @@ void PreEntity::CreateEntity(std::unique_ptr<Registry>& registry) {
             this->isAttackLoop, this->attackUpdate);
     }
     if (isBoss) {
-        std::cout << "jefe\n";
         newEntity.AddComponent<BossComponent>();
     }
     registry->AddEntityToSystems(newEntity);

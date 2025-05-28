@@ -12,15 +12,23 @@
 class ScriptSystem : public System {
     public:
         ScriptSystem() {
-            RequireComponent<ScriptComponent>();
         }
         
         void Update(sol::state& lua) {
             for (auto entity : GetSystemEntities()) {
-                const auto& script = entity.GetComponent<ScriptComponent>();
-                if (script.update.valid()) {
-                    lua["this"] = entity;
-                    script.update();
+                if (entity.HasComponent<ScriptComponent>())
+                    const auto& script = entity.GetComponent<ScriptComponent>();
+                    if (script.update.valid()) {
+                        lua["this"] = entity;
+                        script.update();
+                    }
+                }
+                if (entity.HasComponent<EnemyComponent>()) {
+                    const auto& enemy = entity.GetComponent<ScriptComponent>();
+                    if (enemy.update.valid()) {
+                        lua["this"] = entity;
+                        script.update();
+                    }
                 }
             }
         }
