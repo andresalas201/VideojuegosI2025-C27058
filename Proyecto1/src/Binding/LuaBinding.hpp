@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <math.h>
 #include <glm/glm.hpp>
 
 #include "../ECS/ECS.hpp"
@@ -10,6 +11,7 @@
 #include "../AssetManager/AssetManager.hpp"
 #include "../Game/Game.hpp"
 #include "../Systems/AudioSystem.hpp"
+#include "../Systems/CollisionSystem.hpp"
 #include "../Components/RigidBodyComponent.hpp"
 #include "../Components/TransformComponent.hpp"
 #include "../Components/HealthComponent.hpp"
@@ -20,6 +22,7 @@
 #include "../Components/FatherComponent.hpp"
 #include "../Components/ShotComponent.hpp"
 #include "../Components/AnimationComponent.hpp"
+#include "../Components/PlayerComponent.hpp"
 
 bool IsActionActivated(const std::string& action) {
     return Game::GetInstance().controllerManager->IsActionActivated(action);
@@ -189,6 +192,78 @@ void BackgroundMove(Entity a) {
 void SpawnBoss(Entity a) {
     Game::GetInstance().eventManager->EmitEvent<BossSpawnEvent>(a);
     std::cout << "Se spawnea el jefe";
+}
+
+void SetRotation(Entity a, float x, float y) {
+    auto& transform = a.GetComponent<TransformComponent>();
+    if (x > 0) {
+        if (y > 0) transform.rotation = 315;
+        else if (y < 0) transform.rotation = 45;
+        else transform.rotation = 0;
+    } else if (x < 0) {
+        if (y > 0) transform.rotation = 135;
+        else if (y < 0) transform.rotation = 225;
+        else transform.rotation = 180;
+    } else {
+        if (y > 0) transform.rotation = 90;
+        else if (y < 0) transform.rotation = 270;
+        else transform.rotation = 0;
+    }
+}
+
+double CalculateDistance(float x1, float y1, float x2, float y2) {
+    return sqrt(static_cast<double>(((x1-x2)*(x1-x2))+((y1-y2)*(y1-y2))));
+} 
+
+void SetDirectionToPlayer(Entity a) {
+    float enemyX = a.GetComponent<TransformComponent>().position.x;
+    float enemyY = a.GetComponent<TransformComponent>().position.y;
+    float playerX = 0, playerY = 0;
+    float xFinal = 0;
+    float yFinal = 0;
+    double currentClosest = 10000.0;
+    double currentDistance = 10000.0;
+    for (auto entity : a.registry->GetSystem<CollisionSystem>().GetSystemEntities()) {
+        if (entity.HasComponent<PlayerComponent>() && 
+            entity.HasComponent<TransformComponent>()) {
+            
+            playerX = entity.GetComponent<TransformComponent>().position.x;
+            playerY = entity.GetComponent<TransformComponent>().position.y;
+            currentDistance = CalculateDistance(enemyX, enemyY, playerX, playerY);
+            if (currentClosest > currentDistance) {
+                currentClosest = currentDistance;
+                xFinal = playerX;
+                yFinal = playerY;
+            }
+        }
+    }
+    float speedX;
+    float speedY;
+    
+    // Calculates if it should go left or right
+    if ((enemyX - xFinal) > 0.0) {
+        // Move left by the remaining distance
+        if ((enemyX - xFinal) < 100.0) speedX = -(enemyX - xFinal);
+        else speedX = -100.0;
+    }
+    else if ((enemyX - xFinal) < 0.0) {
+        // Move right by the remaining distance
+        if ((enemyX - xFinal) > -100.0) speedX = -(enemyX - xFinal);
+        else speedX = 100.0;
+    } else speedX = 0;
+
+    // Calculates if it should go up or down
+    if ((enemyY - yFinal) > 0) {
+        if ((enemyY - yFinal)) speedY = -(enemyY - yFinal);
+        else speedY = -100.0;
+    }
+    else if ((enemyY - yFinal) < 0) {
+        if ((enemyY - yFinal)) speedY = -(enemyY - yFinal);
+        else speedY = 100.0;
+    }
+    else speedY = 0;
+    SetVelocity(a, speedX, speedY);
+    SetRotation(a, speedX, speedY);
 }
 
 #endif // LUABINDING_HPP
