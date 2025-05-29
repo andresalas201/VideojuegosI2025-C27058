@@ -5,7 +5,7 @@ scene = {
     },
     -- Tabla de imagenes y sprites
     sprites = {
-        [0] = 
+        [0] =
         {
             assetId = "Bg_01",
             filePath = "assets/images/MenuBg.png"
@@ -56,7 +56,7 @@ scene = {
 
     },
     music = {
-        filePath = "assets/music/TestMusic.wav",
+        filePath = "assets/music/z-battle.wav",
         length = 300,
     },
     sound = {

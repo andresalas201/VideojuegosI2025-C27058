@@ -65,7 +65,7 @@ scene = {
 
     },
     music = {
-        filePath = "assets/music/TestMusic.wav",
+        filePath = "assets/music/z-battle.wav",
         length = 300,
     },
     sound = {
@@ -340,146 +340,8 @@ scene = {
         },
         {
             components = {
-                circle_collider = {
-                    radius = 8,
-                    width = 16,
-                    height = 16
-                },
-                rigidBody = {
-                    velocity = {x = -1, y = 0}
-                },
-                sprite = {
-                    assetId = "enemy_alan",
-                    width = 16,
-                    height = 16,
-                    src_rect = {x = 0, y = 0 },
-                    hit_rect = {x = 96, y = 0 },
-                    death = {x =  192, y = 0}
-                },
-                animation = {
-                    frames = 6,
-                    frame_rate = 6,
-                    looping = true,
-                },
-                transform = {
-                    position = {x = 800.0, y = 300.0},
-                    scale = {x = 4.0, y = 4.0},
-                    rotation = 180.0
-                },
-                health = {
-                    max_health = 1,
-                    damage = 1
-                },
-                
-            }
-        },
-        {
-            components = {
-                circle_collider = {
-                    radius = 8,
-                    width = 16,
-                    height = 16
-                },
-                rigidBody = {
-                    velocity = {x = -1, y = 0}
-                },
-                sprite = {
-                    assetId = "enemy_alan",
-                    width = 16,
-                    height = 16,
-                    src_rect = {x = 0, y = 0 },
-                    hit_rect = {x = 96, y = 0 },
-                    death = {x =  192, y = 0}
-                },
-                animation = {
-                    frames = 6,
-                    frame_rate = 6,
-                    looping = true,
-                },
-                transform = {
-                    position = {x = 800.0, y = 400.0},
-                    scale = {x = 4.0, y = 4.0},
-                    rotation = 0.0
-                },
-                health = {
-                    max_health = 2,
-                    damage = 1
-                },
-            }
-        },
-        {
-            components = {
-                circle_collider = {
-                    radius = 8,
-                    width = 16,
-                    height = 16
-                },
-                rigidBody = {
-                    velocity = {x = -1, y = 0}
-                },
-                sprite = {
-                    assetId = "enemy_alan",
-                    width = 16,
-                    height = 16,
-                    src_rect = {x = 0, y = 0 },
-                    hit_rect = {x = 96, y = 0 },
-                    death = {x =  192, y = 0}
-                },
-                animation = {
-                    frames = 6,
-                    frame_rate = 6,
-                    looping = true,
-                },
-                transform = {
-                    position = {x = 800.0, y = 500.0},
-                    scale = {x = 4.0, y = 4.0},
-                    rotation = 0.0
-                },
-                health = {
-                    max_health = 2,
-                    damage = 1
-                },
-            }
-        },
-        {
-            components = {
-                circle_collider = {
-                    radius = 16,
-                    width = 32,
-                    height = 32
-                },
-                rigidBody = {
-                    velocity = {x = -10, y = 0}
-                },
-                sprite = {
-                    assetId = "icons",
-                    width = 32,
-                    height = 32,
-                    src_rect = {x = 2*32, y = 8*32 },
-                    hit_rect = {x = 2*32, y = 8*32 }
-                },
-                transform = {
-                    position = {x = 800.0, y = 250.0},
-                    scale = {x = 1.0, y = 1.0},
-                    rotation = 0.0
-                },
-                health = {
-                    max_health = 1,
-                    damage = 0
-                },
-                upgrade = {
-                    increase = 1,
-                    path = "assets/scripts/upgrade_amount.lua"
-                },
-                sound = {
-                    sound_path = "upgrade"
-                }
-            }
-        },
-        {
-            components = {
                 text = {
-                    text = "Score: 100",
+                    text = "Score: 0",
                     fontId = "press_start_24",
                     r = 150,
                     g = 0,
@@ -487,7 +349,9 @@ scene = {
                     a = 255
                 },
                 score = {
-                    is_score = true
+                    is_score = true,
+                    path = "assets/scripts/score_script.lua",
+                    boss_score = 100;
                 },
                 transform = {
                     position = {x = 500.0, y = 50.0},
@@ -498,9 +362,6 @@ scene = {
                 },
                 
             }
-        },
-        {
-
         },
     }
 }
