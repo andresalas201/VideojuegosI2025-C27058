@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "../Components/ScriptComponent.hpp"
+#include "../Components/EnemyComponent.hpp"
 #include "../ECS/ECS.hpp"
 #include "../Binding/LuaBinding.hpp"
 
@@ -16,7 +17,7 @@ class ScriptSystem : public System {
         
         void Update(sol::state& lua) {
             for (auto entity : GetSystemEntities()) {
-                if (entity.HasComponent<ScriptComponent>())
+                if (entity.HasComponent<ScriptComponent>()) {
                     const auto& script = entity.GetComponent<ScriptComponent>();
                     if (script.update.valid()) {
                         lua["this"] = entity;
@@ -27,7 +28,7 @@ class ScriptSystem : public System {
                     const auto& enemy = entity.GetComponent<ScriptComponent>();
                     if (enemy.update.valid()) {
                         lua["this"] = entity;
-                        script.update();
+                        enemy.update();
                     }
                 }
             }
