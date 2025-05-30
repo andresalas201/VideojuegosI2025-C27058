@@ -168,8 +168,8 @@ scene = {
                 height = 32,
                 rotation = 0,
                 texture = "icons",
-                src_x = 11*32,
-                src_y = 7*32,
+                src_x = 12*32,
+                src_y = 10*32,
                 sound = "upgrade",
                 radius = 16
             }
@@ -212,8 +212,8 @@ scene = {
                 height = 32,
                 rotation = 0,
                 texture = "icons",
-                src_x = 11*32,
-                src_y = 7*32,
+                src_x = 12*32,
+                src_y = 10*32,
                 sound = "upgrade",
                 radius = 16
             }
@@ -401,8 +401,8 @@ scene = {
                 height = 32,
                 rotation = 0,
                 texture = "icons",
-                src_x = 11*32,
-                src_y = 7*32,
+                src_x = 9*32,
+                src_y = 12*32,
                 sound = "upgrade",
                 radius = 16
             }
@@ -700,7 +700,7 @@ scene = {
                 score = {
                     is_score = true,
                     path = "assets/scripts/score_script.lua",
-                    boss_score = 1000;
+                    boss_score = 2000;
                 },
                 transform = {
                     position = {x = 500.0, y = 50.0},
