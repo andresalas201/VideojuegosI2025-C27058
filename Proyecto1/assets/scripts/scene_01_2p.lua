@@ -8,7 +8,7 @@ scene = {
         [0] = 
         {
             assetId = "Bg_01",
-            filePath = "assets/images/MenuBg.png"
+            filePath = "assets/images/Background1.png"
         },
         {
             assetId = "player_ship",
@@ -19,16 +19,28 @@ scene = {
             filePath = "assets/images/player_ship_2.png"
         },
         {
-            assetId = "enemy_alan",
-            filePath = "assets/images/Improved_Alan.png"
-        },
-        {
             assetId = "energy_shot",
             filePath = "assets/images/energy_shot.png"
         },
         {
             assetId = "icons",
             filePath = "assets/images/icons.png"
+        },
+        {
+            assetId = "laser_bolt",
+            filePath = "assets/images/LaserBolt.png"
+        },
+        {
+            assetId = "cruiser",
+            filePath = "assets/images/Cruiser.png"
+        },
+        {
+            assetId = "enemy_alan",
+            filePath = "assets/images/Improved_Alan.png"
+        },
+        {
+            assetId = "missile",
+            filePath = "assets/images/Missiles.png"
         },
 
     },
@@ -215,8 +227,8 @@ scene = {
             components = {
                 sprite = {
                     assetId = "Bg_01",
-                    width = 1280,
-                    height = 720,
+                    width = 200,
+                    height = 200,
                     src_rect = {x = 0, y = 0 },
                     hit_rect = {x = 32, y = 0 },
                 },
