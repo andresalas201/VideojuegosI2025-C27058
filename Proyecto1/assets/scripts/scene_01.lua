@@ -8,15 +8,11 @@ scene = {
         [0] =
         {
             assetId = "Bg_01",
-            filePath = "assets/images/MenuBg.png"
+            filePath = "assets/images/Background1.png"
         },
         {
             assetId = "player_ship",
             filePath = "assets/images/player_ship.png"
-        },
-        {
-            assetId = "enemy_alan",
-            filePath = "assets/images/Improved_Alan.png"
         },
         {
             assetId = "energy_shot",
@@ -27,9 +23,22 @@ scene = {
             filePath = "assets/images/icons.png"
         },
         {
+            assetId = "laser_bolt",
+            filePath = "assets/images/LaserBolt.png"
+        },
+        {
+            assetId = "cruiser",
+            filePath = "assets/images/Cruiser.png"
+        },
+        {
+            assetId = "enemy_alan",
+            filePath = "assets/images/Improved_Alan.png"
+        },
+        {
             assetId = "missile",
             filePath = "assets/images/Missiles.png"
         },
+
 
     },
     -- Tabla de fuentes
@@ -84,7 +93,7 @@ scene = {
     },
     -- Tabla de enemigos
     enemies = {
-        [0] = {
+        [0] = { -- Alan
             group_left = 3,
             spawn_wait = 1,
             animation = {
@@ -150,12 +159,13 @@ scene = {
             }
 
         },
+        -- Missiles
         {
             group_left = 1,
             spawn_wait = 10,
             animation = {
                 num_frames = 4,
-                frame_rate = 1,
+                frame_rate = 4,
                 is_loop = true,
             },
             radius = 8,
@@ -170,13 +180,13 @@ scene = {
             texture = "missile",
             src_x = 0,
             src_y = 0,
-            hit_x = 96,
+            hit_x = 64,
             hit_y = 0,
             up_x = 0,
             down_x = 0,
-            hit_down_x = 96,
-            hit_up_x = 96,
-            death_x =  192,
+            hit_down_x = 0,
+            hit_up_x = 0,
+            death_x =  128,
             death_y = 0,
             scale_x = 4.0,
             scale_y = 4.0,
@@ -184,6 +194,73 @@ scene = {
             drop = {
                 increase = 5,
                 script = "assets/scripts/upgrade_speed.lua",
+                width = 32,
+                height = 32,
+                rotation = 0,
+                texture = "icons",
+                src_x = 2*32,
+                src_y = 3*32,
+                sound = "upgrade",
+                radius = 16
+            }
+
+        },
+        -- Cruiser
+        {
+            group_left = 1,
+            spawn_wait = 10,
+            animation = {
+                num_frames = 4,
+                frame_rate = 4,
+                is_loop = true,
+            },
+            attack = {
+                damage = 5,
+                radius = 233,
+                width = 233,
+                height = 134,
+                texture = "laser_bolt",
+                src_x = 16,
+                src_y = 0,
+                vel = { x = 100, y = 0},
+                sound = "laser_shot",
+                hit_sound = "explosion",
+                max_shots = 5,
+                left = true,
+                scale_x = 1,
+                scale_y = 1,
+                shot_quantity = 1,
+                num_frames = 1,
+                frame_speed_rate = 1,
+                is_loop = true;
+                attack_path = "assets/scripts/basic_enemy_follow_once.lua"
+            },
+            radius = 8,
+            width = 16,
+            height = 16,
+            update_path = "assets/scripts/basic_enemy.lua",
+            health = 1,
+            damage = 1,
+            vel_x = -100,
+            vel_y = 0,
+            sound = {sound_name = "scream"},
+            texture = "cruiser",
+            src_x = 0,
+            src_y = 0,
+            hit_x = 64,
+            hit_y = 0,
+            up_x = 0,
+            down_x = 0,
+            hit_down_x = 0,
+            hit_up_x = 0,
+            death_x =  128,
+            death_y = 0,
+            scale_x = 4.0,
+            scale_y = 4.0,
+            rotation = 0.0,
+            drop = {
+                increase = 5,
+                script = "assets/scripts/upgrade_amount.lua",
                 width = 32,
                 height = 32,
                 rotation = 0,
@@ -258,8 +335,8 @@ scene = {
             components = {
                 sprite = {
                     assetId = "Bg_01",
-                    width = 1820,
-                    height = 100,
+                    width = 200,
+                    height = 200,
                     src_rect = {x = 0, y = 0 },
                     hit_rect = {x = 32, y = 0 },
                 },
@@ -351,6 +428,7 @@ scene = {
                 }
             }
         },
+        -- Score controller
         {
             components = {
                 text = {
@@ -364,7 +442,7 @@ scene = {
                 score = {
                     is_score = true,
                     path = "assets/scripts/score_script.lua",
-                    boss_score = 5;
+                    boss_score = 1;
                 },
                 transform = {
                     position = {x = 500.0, y = 50.0},

@@ -188,11 +188,19 @@ void GoToScene(const std::string& sceneName) {
 // Background Move
 
 void BackgroundMove(Entity a) {
-    int position = a.GetComponent<TransformComponent>().position.x;
+    int positionX = a.GetComponent<TransformComponent>().position.x;
+    int positionY = a.GetComponent<TransformComponent>().position.x;
     int width = a.GetComponent<SpriteComponent>().width;
-    if (((position + width) <= Game::GetInstance().windowWidth)) {
-        SetVelocity(a, 1.0, 0.0);
+    int height = a.GetComponent<SpriteComponent>().height;
+    float currentX = a.GetComponent<RigidBodyComponent>().velocity.x;
+    float currentY = a.GetComponent<RigidBodyComponent>().velocity.y;
+    if (((positionX + width) <= Game::GetInstance().windowWidth) || positionX < 0) {
+        currentX *= -1.0;
     }
+    if (((positionY + height) <= Game::GetInstance().windowHeight) || positionY < 0) {
+        currentY *= -1.0;
+    }
+    SetVelocity(a, currentX, currentY);
 }
 
 void SpawnBoss(Entity a) {
@@ -296,9 +304,9 @@ void SetDirectionToPlayerBoss(Entity a) {
     if ((enemyX - xFinal) > 0.0) {
         // Move left by the remaining distance
         if ((enemyX - xFinal) < 25.0) speedX = -(enemyX - xFinal);
-        else speedX = 25.0;
+        else speedX = -25.0;
     }
-    else if ((enemyX - xFinal) < 25.0) {
+    else if ((enemyX - xFinal) < 0.0) {
         // Move right by the remaining distance
         if ((enemyX - xFinal) > -25.0) speedX = -(enemyX - xFinal);
         else speedX = 25.0;
@@ -315,6 +323,14 @@ void SetDirectionToPlayerBoss(Entity a) {
     }
     else speedY = 0;
     SetVelocity(a, speedX, speedY);
+}
+
+void FollowPlayerSimple(Entity a) {
+    float velX = a.GetComponent<RigidBodyComponent>().velocity.x;
+    float velY = a.GetComponent<RigidBodyComponent>().velocity.y;
+    if (velX == 0.0 && velY == 0.0) {
+        SetDirectionToPlayer(a);
+    }
 }
 
 #endif // LUABINDING_HPP
