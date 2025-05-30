@@ -63,7 +63,7 @@ scene = {
         {
             components = {
                 text = {
-                    text = "You have defeated Alan, but now Glup will attack",
+                    text = "You have defeated Alan,",
                     fontId = "press_start_32",
                     r = 150,
                     g = 0,
@@ -82,6 +82,25 @@ scene = {
         {
             components = {
                 text = {
+                    text = "but now Glup will attack",
+                    fontId = "press_start_32",
+                    r = 150,
+                    g = 0,
+                    b = 150,
+                    a = 255
+                },
+                transform = {
+                    position = {x = 50.0, y = 100.0},
+                    scale = {x = 1.0, y = 1.0},
+                    rotation = 0.0
+                },
+                clickable = {
+                }
+            },
+        },
+        {
+            components = {
+                text = {
                     text = "Level 2 - 1 Player",
                     fontId = "press_start_24",
                     r = 150,
@@ -90,7 +109,7 @@ scene = {
                     a = 255
                 },
                 transform = {
-                    position = {x = 50.0, y = 100.0},
+                    position = {x = 50.0, y = 150.0},
                     scale = {x = 1.0, y = 1.0},
                     rotation = 0.0
                 },
@@ -115,7 +134,7 @@ scene = {
                     a = 255
                 },
                 transform = {
-                    position = {x = 50.0, y = 150.0},
+                    position = {x = 50.0, y = 200.0},
                     scale = {x = 1.0, y = 1.0},
                     rotation = 0.0
                 },
@@ -137,7 +156,7 @@ scene = {
                     a = 255
                 },
                 transform = {
-                    position = {x = 50.0, y = 200.0},
+                    position = {x = 50.0, y = 250.0},
                     scale = {x = 1.0, y = 1.0},
                     rotation = 0.0
                 },

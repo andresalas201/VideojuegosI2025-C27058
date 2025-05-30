@@ -63,7 +63,7 @@ scene = {
         {
             components = {
                 text = {
-                    text = "The gormoths are gone, now Andronika can know peace",
+                    text = "The gormoths are gone",
                     fontId = "press_start_32",
                     r = 150,
                     g = 0,
@@ -82,7 +82,7 @@ scene = {
         {
             components = {
                 text = {
-                    text = "Congratulations, you have won The Battle of Andronika",
+                    text = "Congratulations, you have won",
                     fontId = "press_start_24",
                     r = 150,
                     g = 150,
@@ -104,7 +104,7 @@ scene = {
         {
             components = {
                 text = {
-                    text = "Your name will go down in history",
+                    text = "The Battle of Andronika",
                     fontId = "press_start_24",
                     r = 150,
                     g = 150,
@@ -116,11 +116,28 @@ scene = {
                     scale = {x = 1.0, y = 1.0},
                     rotation = 0.0
                 },
-                script = {
-                    path = "assets/scripts/menu_button_06.lua"
+                player = {
+                    number = 1
                 },
                 clickable = {
                 }
+            }
+        },
+        {
+            components = {
+                text = {
+                    text = "Your name will go down in history",
+                    fontId = "press_start_24",
+                    r = 150,
+                    g = 150,
+                    b = 0,
+                    a = 255
+                },
+                transform = {
+                    position = {x = 50.0, y = 200.0},
+                    scale = {x = 1.0, y = 1.0},
+                    rotation = 0.0
+                },
             }
         },
         {
@@ -134,7 +151,7 @@ scene = {
                     a = 255
                 },
                 transform = {
-                    position = {x = 50.0, y = 200.0},
+                    position = {x = 50.0, y = 250.0},
                     scale = {x = 1.0, y = 1.0},
                     rotation = 0.0
                 },
