@@ -577,7 +577,7 @@ scene = {
                 score = {
                     is_score = true,
                     path = "assets/scripts/score_script.lua",
-                    boss_score = 1000;
+                    boss_score = 300;
                 },
                 transform = {
                     position = {x = 500.0, y = 50.0},

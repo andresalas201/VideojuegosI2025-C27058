@@ -46,25 +46,59 @@ public:
      * @param assetManager Unique pointer to the asset manager containing fonts
      */
     void update(SDL_Renderer* renderer,
-                const std::unique_ptr<AssetManager>& assetManager) {
-        for (auto entity : GetSystemEntities()){
+            const std::unique_ptr<AssetManager>& assetManager) {
+        
+        for (auto entity : GetSystemEntities()) {
+            
             auto& text = entity.GetComponent<TextComponent>();
             auto& transform = entity.GetComponent<TransformComponent>();
-            SDL_Surface* surface = TTF_RenderText_Blended(
-                assetManager->GetFont(text.fontId), text.text.c_str(), text.color);
+            
+            // Check for empty text
+            if (text.text.empty()) continue;
+            
+            // Get font
+            TTF_Font* font = assetManager->GetFont(text.fontId);
+            if (font == nullptr) {
+                std::cout << "[RENDERTEXTSYSTEM] Error al conseguir font: " 
+                    << text.fontId << std::endl;
+                continue;
+            }     
+            
+            // Now try with actual text
+            SDL_Surface* surface = TTF_RenderText_Blended(font, text.text.c_str(), text.color);
+            
+            if (surface == nullptr) {
+                std::cout << "[RENDERTEXTSYSTEM] Error al crear surface: " 
+                    << TTF_GetError() << std::endl;
+                continue;
+            }
+            
+            
             text.width = surface->w;
             text.height = surface->h;
+            
             SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
             SDL_FreeSurface(surface);
+            
+            if (texture == nullptr) {
+                std::cout << "[RENDERTEXTSYSTEM] Error al crear textura: " 
+                    << SDL_GetError() << std::endl;
+                continue;
+            }
+            
+            
             SDL_Rect dstRect = {
                 static_cast<int>(transform.position.x),
                 static_cast<int>(transform.position.y),
                 text.width * static_cast<int>(transform.scale.x),
                 text.height * static_cast<int>(transform.scale.y)
             };
+            
             SDL_RenderCopy(renderer, texture, NULL, &dstRect);
             SDL_DestroyTexture(texture);
+            
         }
+        
     }
 };
 #endif // RENDERTEXTSYSTEM_HPP

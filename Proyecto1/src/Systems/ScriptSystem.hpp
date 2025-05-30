@@ -31,6 +31,7 @@ public:
      * are set as this system manually checks for specific components.
      */
     ScriptSystem() {
+        RequireComponent<ScriptComponent>();
     }
     
     /**
@@ -43,20 +44,14 @@ public:
      * @param lua Reference to the Sol2 Lua state for script execution
      */
     void Update(sol::state& lua) {
-        for (auto entity : GetSystemEntities()) {
+        for (auto& entity : GetSystemEntities()) {
             if (entity.HasComponent<ScriptComponent>()) {
                 const auto& script = entity.GetComponent<ScriptComponent>();
                 if (script.update.valid()) {
                     lua["this"] = entity;
                     script.update();
                 }
-            }
-            if (entity.HasComponent<EnemyComponent>()) {
-                const auto& enemy = entity.GetComponent<ScriptComponent>();
-                if (enemy.update.valid()) {
-                    lua["this"] = entity;
-                    enemy.update();
-                }
+                lua.collect_garbage();
             }
         }
     }
@@ -71,7 +66,11 @@ public:
      * @param lua Reference to the Sol2 Lua state to bind functions to
      */
     void CreateLuaBinding(sol::state& lua) {
-        lua.new_usertype<Entity>("entity");
+        //lua.new_usertype<Entity>("entity");
+        lua.new_usertype<Entity>("Entity",
+            sol::constructors<Entity(int)>(),
+            "GetId", &Entity::GetId  // Add whatever basic methods you have
+        );
         lua.set_function("is_action_activated", IsActionActivated);
         lua.set_function("set_velocity", SetVelocity);
         lua.set_function("go_to_scene", GoToScene);

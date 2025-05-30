@@ -3,6 +3,6 @@ config = {
     seconds_per_shot = 5,
     width = 1280,
     height = 720,
-    spawn_wait = 1,
+    spawn_wait = 0,
     boss_score = 5
 }

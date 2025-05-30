@@ -54,6 +54,7 @@ bool IsActionActivated(const std::string& action) {
  * @param y Vertical velocity component
  */
 void SetVelocity(Entity entity, float x, float y) {
+    if (!entity.HasComponent<RigidBodyComponent>()) return;
     auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
     rigidBody.velocity.x = x;
     rigidBody.velocity.y = y;
@@ -73,6 +74,7 @@ void SetVelocity(Entity entity, float x, float y) {
  * @param entity The entity whose sprite will be updated
  */
 void SetSprite (Entity entity) {
+    if (!entity.HasComponent<SpriteComponent>() || !entity.HasComponent<RigidBodyComponent>()) return;
     auto& sprite = entity.GetComponent<SpriteComponent>();
     auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
     if (rigidBody.velocity.y < 0.0) {
@@ -100,6 +102,8 @@ void SetSprite (Entity entity) {
  * @return glm::vec2 The calculated world position
  */
 glm::vec2 CalculatePosition(Entity e, bool left) {
+    if (!e.HasComponent<TransformComponent>() || !e.HasComponent<SpriteComponent>()) return glm::vec2(-10, -10);
+    
     double direction = 0;
     if(left) direction = -1.0;
     else direction = 1.0;
@@ -135,6 +139,8 @@ glm::vec2 CalculatePosition(Entity e, bool left) {
  * @return glm::vec2 The calculated world position
  */
 glm::vec2 CalculatePosition(Entity e, bool left, bool up) {
+    if (!e.HasComponent<TransformComponent>() || !e.HasComponent<SpriteComponent>()) return glm::vec2(-10, -10);
+ 
     double direction = 0;
     if(left) direction = -1.0;
     else direction = 1.0;
@@ -322,6 +328,8 @@ void GoToScene(const std::string& sceneName) {
  * @param a The entity to apply bouncing movement to
  */
 void BackgroundMove(Entity a) {
+    if (!a.HasComponent<TransformComponent>() || !a.HasComponent<SpriteComponent>() ||
+        !a.HasComponent<RigidBodyComponent>()) return;
     int positionX = a.GetComponent<TransformComponent>().position.x;
     int positionY = a.GetComponent<TransformComponent>().position.x;
     int width = a.GetComponent<SpriteComponent>().width;
@@ -361,6 +369,7 @@ void SpawnBoss(Entity a) {
  * @param y Vertical direction component
  */
 void SetRotation(Entity a, float x, float y) {
+    if (!a.HasComponent<TransformComponent>()) return;
     auto& transform = a.GetComponent<TransformComponent>();
     if (x != 0 || y != 0) {
         transform.rotation = atan2(y, x) * 180.0f / M_PI;
@@ -397,6 +406,7 @@ double CalculateDistance(float x1, float y1, float x2, float y2) {
  * @param a The entity that will move toward the player
  */
 void SetDirectionToPlayer(Entity a) {
+    if (!a.HasComponent<TransformComponent>()) return;
     float enemyX = a.GetComponent<TransformComponent>().position.x;
     float enemyY = a.GetComponent<TransformComponent>().position.y;
     float playerX = 0, playerY = 0;
@@ -456,6 +466,7 @@ void SetDirectionToPlayer(Entity a) {
  * @param a The boss entity that will move toward the player
  */
 void SetDirectionToPlayerBoss(Entity a) {
+    if (!a.HasComponent<TransformComponent>()) return;
     float enemyX = a.GetComponent<TransformComponent>().position.x;
     float enemyY = a.GetComponent<TransformComponent>().position.y;
     float playerX = 0, playerY = 0;
@@ -514,6 +525,7 @@ void SetDirectionToPlayerBoss(Entity a) {
  * @param a The entity that should follow the player
  */
 void FollowPlayerSimple(Entity a) {
+    if (!a.HasComponent<RigidBodyComponent>() ) return;
     float velX = a.GetComponent<RigidBodyComponent>().velocity.x;
     float velY = a.GetComponent<RigidBodyComponent>().velocity.y;
     if (velX == 0.0 && velY == 0.0) {

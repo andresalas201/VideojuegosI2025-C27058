@@ -45,6 +45,8 @@ public:
      */
     void Update(double dt) {
         for (auto entity : GetSystemEntities()) {
+            if (!entity.HasComponent<TransformComponent>() || 
+                !entity.HasComponent<RigidBodyComponent>()) continue;
             auto& transform = entity.GetComponent<TransformComponent>();
             const auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
             if (entity.HasComponent<PlayerComponent>() && entity.HasComponent<SpriteComponent>()
