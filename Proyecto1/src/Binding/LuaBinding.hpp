@@ -58,38 +58,54 @@ void SetSprite (Entity entity) {
 }
 
 glm::vec2 CalculatePosition(Entity e, bool left) {
-    double direction;
-    if (left) direction = -1.0;
+    double direction = 0;
+    if(left) direction = -1.0;
     else direction = 1.0;
+    
     glm::vec2 entityPosition = e.GetComponent<TransformComponent>().position;
     int entityWidth = e.GetComponent<SpriteComponent>().width;
     int entityHeight = e.GetComponent<SpriteComponent>().height;
-    int entityScaleX = e.GetComponent<TransformComponent>().scale.x;
-    int entityScaleY = e.GetComponent<TransformComponent>().scale.y;
-    double x = (entityPosition.x + ((entityWidth / 2 ) * entityScaleX)) + 
-        ((entityWidth) * direction);
-    double y = entityPosition.y + (entityHeight/ 2) * entityScaleY - entityHeight / 2;
+    
+    double entityScaleX = e.GetComponent<TransformComponent>().scale.x;
+    double entityScaleY = e.GetComponent<TransformComponent>().scale.y;
+    
+    double scaledWidth = entityWidth * entityScaleX;
+    double scaledHeight = entityHeight * entityScaleY;
+    
+    double x = entityPosition.x + (scaledWidth / 2.0) + (scaledWidth * direction);
+    
+    double y = entityPosition.y + (scaledHeight / 2.0);
+    
     glm::vec2 result = glm::vec2(x, y);
+    
     return result;
-
 }
+
 glm::vec2 CalculatePosition(Entity e, bool left, bool up) {
-    double direction;
-    if (left) direction = -1.0;
+    double direction = 0;
+    if(left) direction = -1.0;
     else direction = 1.0;
+    
     glm::vec2 entityPosition = e.GetComponent<TransformComponent>().position;
     int entityWidth = e.GetComponent<SpriteComponent>().width;
     int entityHeight = e.GetComponent<SpriteComponent>().height;
-    int entityScaleX = e.GetComponent<TransformComponent>().scale.x;
-    int entityScaleY = e.GetComponent<TransformComponent>().scale.y;
-    double x = (entityPosition.x + ((entityWidth / 2 ) * entityScaleX)) + 
-        ((entityWidth) * direction);
+    
+    double entityScaleX = e.GetComponent<TransformComponent>().scale.x;
+    double entityScaleY = e.GetComponent<TransformComponent>().scale.y;
+    
+    double scaledWidth = entityWidth * entityScaleX;
+    double scaledHeight = entityHeight * entityScaleY;
+    
+    double x = entityPosition.x + (scaledWidth / 2.0) + (scaledWidth * direction);
+    
     double y;
-    if (up) y = entityPosition.y;
-    else y = (entityPosition.y + (entityHeight * entityScaleY));
-    glm::vec2 result = glm::vec2(x, y);
-    return result;
-
+    if (up) {
+        y = entityPosition.y - scaledHeight;
+    } else {
+        y = entityPosition.y + scaledHeight; 
+    }
+    
+    return glm::vec2(x, y);
 }
 
 bool CanShoot(AttackComponent* attack) {
