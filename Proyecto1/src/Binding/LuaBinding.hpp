@@ -100,7 +100,7 @@ glm::vec2 CalculatePosition(Entity e, bool left, bool up) {
     
     double y;
     if (up) {
-        y = entityPosition.y - scaledHeight;
+        y = entityPosition.y;
     } else {
         y = entityPosition.y + scaledHeight; 
     }
