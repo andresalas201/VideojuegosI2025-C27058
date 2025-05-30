@@ -48,6 +48,7 @@ class ScriptSystem : public System {
             lua.set_function("background_move", BackgroundMove);
             lua.set_function("spawn_boss", SpawnBoss);
             lua.set_function("set_direction_to_player", SetDirectionToPlayer);
+            lua.set_function("set_direction_to_player_boss", SetDirectionToPlayerBoss);
         }
 };
 

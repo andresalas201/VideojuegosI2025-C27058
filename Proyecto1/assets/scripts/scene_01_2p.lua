@@ -1,7 +1,7 @@
 scene = {
     next_scenes = {
-        win = "main_menu",
-        lose = "main_menu"
+        win = "level_01_win",
+        lose = "level_01_lose"
     },
     -- Tabla de imagenes y sprites
     sprites = {
@@ -230,6 +230,48 @@ scene = {
                 }
             }
         },
+        -- Health bar P1
+        {
+            components = {
+                text = {
+                    text = "Health: 0",
+                    fontId = "press_start_24",
+                    r = 150,
+                    g = 0,
+                    b = 150,
+                    a = 255
+                },
+                transform = {
+                    position = {x = 50.0, y = 50.0},
+                    scale = {x = 1.0, y = 1.0},
+                    rotation = 0.0
+                },
+                health_bar = {
+                    is_player1 = true;
+                }
+            }
+        },
+        -- Health Bar P2
+        {
+            components = {
+                text = {
+                    text = "Health: 0",
+                    fontId = "press_start_24",
+                    r = 150,
+                    g = 0,
+                    b = 150,
+                    a = 255
+                },
+                transform = {
+                    position = {x = 50.0, y = 100.0},
+                    scale = {x = 1.0, y = 1.0},
+                    rotation = 0.0
+                },
+                health_bar = {
+                    is_player1 = false;
+                }
+            }
+        },
         -- Player
         {
             components = {
@@ -317,7 +359,7 @@ scene = {
                     damage = 1
                 },
                 player = {
-                    number = 1
+                    number = 2
                 },
                 attack = {
                     damage = 1,

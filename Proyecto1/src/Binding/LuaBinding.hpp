@@ -12,6 +12,7 @@
 #include "../Game/Game.hpp"
 #include "../Systems/AudioSystem.hpp"
 #include "../Systems/CollisionSystem.hpp"
+#include "../Systems/HealthBarSystem.hpp"
 #include "../Components/RigidBodyComponent.hpp"
 #include "../Components/TransformComponent.hpp"
 #include "../Components/HealthComponent.hpp"
@@ -32,6 +33,11 @@ void SetVelocity(Entity entity, float x, float y) {
     auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
     rigidBody.velocity.x = x;
     rigidBody.velocity.y = y;
+    if (entity.HasComponent<PlayerComponent>() && entity.HasComponent<HealthComponent>()) {
+        entity.registry->GetSystem<HealthBarSystem>().SetHealth(
+            entity.GetComponent<HealthComponent>().health, 
+            entity.GetComponent<PlayerComponent>().playerNumber - 1);
+    }
 }
 
 void SetSprite (Entity entity) {
@@ -196,18 +202,13 @@ void SpawnBoss(Entity a) {
 
 void SetRotation(Entity a, float x, float y) {
     auto& transform = a.GetComponent<TransformComponent>();
-    if (x > 0) {
-        if (y > 0) transform.rotation = 315;
-        else if (y < 0) transform.rotation = 45;
-        else transform.rotation = 0;
-    } else if (x < 0) {
-        if (y > 0) transform.rotation = 135;
-        else if (y < 0) transform.rotation = 225;
-        else transform.rotation = 180;
-    } else {
-        if (y > 0) transform.rotation = 90;
-        else if (y < 0) transform.rotation = 270;
-        else transform.rotation = 0;
+    if (x != 0 || y != 0) {
+        transform.rotation = atan2(y, x) * 180.0f / M_PI;
+        
+        // Normalize to 0-360 range
+        if (transform.rotation < 0) {
+            transform.rotation += 360;
+        }
     }
 }
 
@@ -264,6 +265,56 @@ void SetDirectionToPlayer(Entity a) {
     else speedY = 0;
     SetVelocity(a, speedX, speedY);
     SetRotation(a, speedX, speedY);
+}
+
+void SetDirectionToPlayerBoss(Entity a) {
+    float enemyX = a.GetComponent<TransformComponent>().position.x;
+    float enemyY = a.GetComponent<TransformComponent>().position.y;
+    float playerX = 0, playerY = 0;
+    float xFinal = 0;
+    float yFinal = 0;
+    double currentClosest = 10000.0;
+    double currentDistance = 10000.0;
+    for (auto entity : a.registry->GetSystem<CollisionSystem>().GetSystemEntities()) {
+        if (entity.HasComponent<PlayerComponent>() && 
+            entity.HasComponent<TransformComponent>()) {
+            
+            playerX = entity.GetComponent<TransformComponent>().position.x;
+            playerY = entity.GetComponent<TransformComponent>().position.y;
+            currentDistance = CalculateDistance(enemyX, enemyY, playerX, playerY);
+            if (currentClosest > currentDistance) {
+                currentClosest = currentDistance;
+                xFinal = playerX;
+                yFinal = playerY;
+            }
+        }
+    }
+    float speedX;
+    float speedY;
+    
+    // Calculates if it should go left or right
+    if ((enemyX - xFinal) > 0.0) {
+        // Move left by the remaining distance
+        if ((enemyX - xFinal) < 25.0) speedX = -(enemyX - xFinal);
+        else speedX = 25.0;
+    }
+    else if ((enemyX - xFinal) < 25.0) {
+        // Move right by the remaining distance
+        if ((enemyX - xFinal) > -25.0) speedX = -(enemyX - xFinal);
+        else speedX = 25.0;
+    } else speedX = 0;
+
+    // Calculates if it should go up or down
+    if ((enemyY - yFinal) > 0) {
+        if ((enemyY - yFinal)) speedY = -(enemyY - yFinal);
+        else speedY = -25.0;
+    }
+    else if ((enemyY - yFinal) < 0) {
+        if ((enemyY - yFinal)) speedY = -(enemyY - yFinal);
+        else speedY = 25.0;
+    }
+    else speedY = 0;
+    SetVelocity(a, speedX, speedY);
 }
 
 #endif // LUABINDING_HPP

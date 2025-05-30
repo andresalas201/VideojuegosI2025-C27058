@@ -15,6 +15,7 @@
 #include "../Components/PlayerComponent.hpp"
 #include "../Components/AttackComponent.hpp"
 #include "../Components/ScoreComponent.hpp"
+#include "../Components/HealthBarComponent.hpp"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -389,6 +390,13 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
                 checkEnd = lua["update"];
                 int bossScore = components["score"]["boss_score"];
                 newEntity.AddComponent<ScoreComponent>(bossScore, checkEnd);
+            }
+
+            //* HealthBarComponent
+            sol::optional<sol::table> hasHealthBar = components["health_bar"];
+            if (hasHealthBar != sol::nullopt) {
+                bool isPlayer1 = components["health_bar"]["is_player1"];
+                newEntity.AddComponent<HealthBarComponent>(isPlayer1);
             }
             
         }

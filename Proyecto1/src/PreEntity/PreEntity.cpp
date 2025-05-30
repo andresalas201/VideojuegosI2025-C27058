@@ -12,6 +12,7 @@
 #include "../Components/SpriteComponent.hpp"
 #include "../Components/TransformComponent.hpp"
 #include "../Components/BossComponent.hpp"
+#include "../Components/ScriptComponent.hpp"
 
 PreEntity::PreEntity(int groupNumber, int groupLeft, int spawnWait) {
     this->groupNumber = groupNumber;
@@ -124,6 +125,7 @@ void PreEntity::CreateEntity(std::unique_ptr<Registry>& registry) {
     Entity newEntity = registry->CreateEntity();
     newEntity.AddComponent<CircleColliderComponent>(this->radius, this->width, this->height);
     newEntity.AddComponent<EnemyComponent>(this->update, this->groupNumber, this, this->health);
+    newEntity.AddComponent<ScriptComponent>(this->update);
     newEntity.AddComponent<HealthComponent>(this->health, this->damage);
     newEntity.AddComponent<RigidBodyComponent>(this->velocity);
     newEntity.AddComponent<SpriteComponent>(this->textureId, this->width, this->height,

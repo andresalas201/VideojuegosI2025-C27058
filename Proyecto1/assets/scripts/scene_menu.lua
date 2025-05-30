@@ -1,6 +1,10 @@
 scene = {
     -- Tabla de imagenes y sprites
     sprites = {
+        [0] = {
+            assetId = "Background",
+            filePath = "assets/images/TitleBackground.png"
+        }
     },
     -- Tabla de fuentes
     fonts = {
@@ -35,6 +39,25 @@ scene = {
     -- Tabla de entidades
     entities = {
         [0] =
+        {
+            components = {
+                sprite = {
+                    assetId = "Background",
+                    width = 200,
+                    height = 200,
+                    src_rect = {x = 0, y = 0 },
+                    hit_rect = {x = 32, y = 0 },
+                },
+                transform = {
+                    position = {x = 0.0, y = 0.0},
+                    scale = {x = 10.0, y = 10.0},
+                    rotation = 0.0
+                },
+                rigidBody = {
+                    velocity = {x = -1, y = 0}
+                },
+            }
+        },
         {
             components = {
                 text = {

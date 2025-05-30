@@ -58,7 +58,7 @@ scene = {
         {
             components = {
                 text = {
-                    text = "1 Player",
+                    text = "Level 2 - 1 Player",
                     fontId = "press_start_24",
                     r = 150,
                     g = 150,
@@ -83,7 +83,7 @@ scene = {
         {
             components = {
                 text = {
-                    text = "2 Players",
+                    text = "Level 2 - 2 Players",
                     fontId = "press_start_24",
                     r = 150,
                     g = 150,

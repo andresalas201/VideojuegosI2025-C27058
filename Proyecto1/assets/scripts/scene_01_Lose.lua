@@ -1,6 +1,11 @@
 scene = {
     -- Tabla de imagenes y sprites
     sprites = {
+        [0] =
+        {
+            assetId = "Bg_01",
+            filePath = "assets/images/LoseBackground.png"
+        },
     },
     -- Tabla de fuentes
 
@@ -36,6 +41,28 @@ scene = {
     -- Tabla de entidades
     entities = {
         [0] =
+        {
+            components = {
+                sprite = {
+                    assetId = "Bg_01",
+                    width = 200,
+                    height = 200,
+                    src_rect = {x = 0, y = 0 },
+                    hit_rect = {x = 32, y = 0 },
+                },
+                transform = {
+                    position = {x = 0.0, y = 0.0},
+                    scale = {x = 10.0, y = 10.0},
+                    rotation = 0.0
+                },
+                rigidBody = {
+                    velocity = {x = -1, y = 0}
+                },
+                script = {
+                    path = "assets/scripts/background_move.lua"
+                }
+            }
+        },
         {
             components = {
                 text = {

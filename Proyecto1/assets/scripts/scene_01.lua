@@ -1,7 +1,7 @@
 scene = {
     next_scenes = {
-        win = "main_menu",
-        lose = "main_menu"
+        win = "level_01_win",
+        lose = "level_01_lose"
     },
     -- Tabla de imagenes y sprites
     sprites = {
@@ -25,6 +25,10 @@ scene = {
         {
             assetId = "icons",
             filePath = "assets/images/icons.png"
+        },
+        {
+            assetId = "missile",
+            filePath = "assets/images/Missiles.png"
         },
 
     },
@@ -146,6 +150,51 @@ scene = {
             }
 
         },
+        {
+            group_left = 1,
+            spawn_wait = 10,
+            animation = {
+                num_frames = 4,
+                frame_rate = 1,
+                is_loop = true,
+            },
+            radius = 8,
+            width = 16,
+            height = 16,
+            update_path = "assets/scripts/basic_enemy_follow.lua",
+            health = 1,
+            damage = 1,
+            vel_x = -100,
+            vel_y = 0,
+            sound = {sound_name = "scream"},
+            texture = "missile",
+            src_x = 0,
+            src_y = 0,
+            hit_x = 96,
+            hit_y = 0,
+            up_x = 0,
+            down_x = 0,
+            hit_down_x = 96,
+            hit_up_x = 96,
+            death_x =  192,
+            death_y = 0,
+            scale_x = 4.0,
+            scale_y = 4.0,
+            rotation = 0.0,
+            drop = {
+                increase = 5,
+                script = "assets/scripts/upgrade_speed.lua",
+                width = 32,
+                height = 32,
+                rotation = 0,
+                texture = "icons",
+                src_x = 2*32,
+                src_y = 3*32,
+                sound = "upgrade",
+                radius = 16
+            }
+
+        },
         -- Jefe
         {
             group_left = 1,
@@ -179,7 +228,7 @@ scene = {
             radius = 8,
             width = 16,
             height = 16,
-            update_path = "assets/scripts/basic_enemy.lua",
+            update_path = "assets/scripts/boss_enemy_follow.lua",
             health = 1,
             damage = 1,
             vel_x = -100,
@@ -224,6 +273,27 @@ scene = {
                 },
                 script = {
                     path = "assets/scripts/background_move.lua"
+                }
+            }
+        },
+        -- Health bar
+        {
+            components = {
+                text = {
+                    text = "Health: 0",
+                    fontId = "press_start_24",
+                    r = 150,
+                    g = 0,
+                    b = 150,
+                    a = 255
+                },
+                transform = {
+                    position = {x = 50.0, y = 50.0},
+                    scale = {x = 1.0, y = 1.0},
+                    rotation = 0.0
+                },
+                health_bar = {
+                    is_player1 = true;
                 }
             }
         },

@@ -21,6 +21,7 @@
 #include "../Systems/DropSystem.hpp"
 #include "../Systems/ScoreSystem.hpp"
 #include "../Systems/LevelEndSystem.hpp"
+#include "../Systems/HealthBarSystem.hpp"
 
 Game::Game() {
     std::cout <<"[GAME] se ejecuta\n";
@@ -189,6 +190,7 @@ void Game::Update() {
     registry->GetSystem<CollisionSystem>().Update(eventManager);
     registry->GetSystem<AnimationSystem>().Update();
     registry->GetSystem<DamageSystem>().Update(eventManager);
+    registry->GetSystem<HealthBarSystem>().Update();
     registry->GetSystem<CleanShotSystem>().Update(MILLISECS_PER_FRAME, FPS, secondsPerShot);
     registry->GetSystem<ClearHitSystem>().Update(MILLISECS_PER_FRAME, FPS);
     registry->GetSystem<DeathSystem>().Update(MILLISECS_PER_FRAME, FPS, windowHeight,
@@ -219,6 +221,7 @@ void Game::Setup() {
     registry->AddSystem<DropSystem>();
     registry->AddSystem<ScoreSystem>();
     registry->AddSystem<LevelEndSystem>();
+    registry->AddSystem<HealthBarSystem>();
     
     registry->GetSystem<CleanShotSystem>().setSecondsPerShot(secondsPerShot);
     registry->GetSystem<DamageSystem>().SetDamageWait(FPS, MILLISECS_PER_FRAME, 1);
