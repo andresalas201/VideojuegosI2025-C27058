@@ -1,14 +1,14 @@
 scene = {
     next_scenes = {
-        win = "level_01_win",
-        lose = "level_01_lose"
+        win = "level_02_win",
+        lose = "level_02_lose"
     },
     -- Tabla de imagenes y sprites
     sprites = {
         [0] =
         {
             assetId = "Bg_01",
-            filePath = "assets/images/Background1.png"
+            filePath = "assets/images/Background2.png"
         },
         {
             assetId = "player_ship",
@@ -28,16 +28,20 @@ scene = {
         },
         {
             assetId = "cruiser",
-            filePath = "assets/images/Cruiser.png"
+            filePath = "assets/images/Cruiser2.png"
         },
         {
             assetId = "enemy_alan",
-            filePath = "assets/images/Improved_Alan.png"
+            filePath = "assets/images/Improved_Alan2.png"
         },
         {
             assetId = "missile",
-            filePath = "assets/images/Missiles.png"
+            filePath = "assets/images/Missiles2.png"
         },
+        {
+            assetId = "glup",
+            filePath = "assets/images/GeneralGlup.png"
+        }
 
 
     },
@@ -59,6 +63,11 @@ scene = {
         {name = "down", key=115},
         {name = "right", key=100},
         {name = "shoot", key=106}, -- J
+        {name = "up2", key=1073741906}, -- Up arrow
+        {name = "left2", key=1073741904}, -- Left arrow
+        {name = "down2", key=1073741905}, -- Down arrow
+        {name = "right2", key=1073741903}, -- Right arrow
+        {name = "shoot2", key=1073741922}, -- Numpad 0
     },
 
     -- Tabla de acciones y botones del ratón
@@ -91,11 +100,10 @@ scene = {
         }
 
     },
-    -- Tabla de enemigos
     enemies = {
         [0] =
         { -- Alan
-            group_left = 3,
+            group_left = 5,
             spawn_wait = 1,
             animation = {
                 num_frames = 6,
@@ -127,7 +135,7 @@ scene = {
             rotation = 0.0,
         },
         { -- Alan
-            group_left = 5,
+            group_left = 7,
             spawn_wait = 1,
             animation = {
                 num_frames = 6,
@@ -173,7 +181,7 @@ scene = {
         },
         -- Missiles
         {
-            group_left = 1,
+            group_left = 2,
             spawn_wait = 10,
             animation = {
                 num_frames = 4,
@@ -184,7 +192,7 @@ scene = {
             width = 16,
             height = 16,
             update_path = "assets/scripts/basic_enemy_follow.lua",
-            health = 2,
+            health = 3,
             damage = 1,
             vel_x = -100,
             vel_y = 0,
@@ -217,7 +225,7 @@ scene = {
             }
         },
         {
-            group_left = 3,
+            group_left = 5,
             spawn_wait = 10,
             animation = {
                 num_frames = 4,
@@ -263,8 +271,8 @@ scene = {
         },
         -- Cruiser
         {
-            group_left = 1,
-            spawn_wait = 5,
+            group_left = 2,
+            spawn_wait = 3,
             animation = {
                 num_frames = 5,
                 frame_rate = 5,
@@ -333,34 +341,55 @@ scene = {
             group_left = 1,
             spawn_wait = 1,
             animation = {
-                num_frames = 6,
-                frame_rate = 6,
+                num_frames = 4,
+                frame_rate = 4,
                 is_loop = true,
+            },
+            attack = {
+                damage = 5,
+                radius = 8,
+                width = 16,
+                height = 16,
+                texture = "energy_shot",
+                src_x = 16,
+                src_y = 0,
+                vel = { x = 0, y = 0},
+                sound = "laser_shot",
+                hit_sound = "explosion",
+                max_shots = 2,
+                left = true,
+                scale_x = 2,
+                scale_y = 2,
+                shot_quantity = 1,
+                num_frames = 1,
+                frame_speed_rate = 1,
+                is_loop = true;
+                attack_path = "assets/scripts/basic_enemy_follow_once.lua"
             },
             radius = 8,
             width = 16,
             height = 16,
             update_path = "assets/scripts/boss_enemy_follow.lua",
-            health = 20,
+            health = 50,
             damage = 1,
             vel_x = -100,
             vel_y = 0,
             sound = {sound_name = "scream"},
-            texture = "enemy_alan",
+            texture = "glup",
             src_x = 0,
             src_y = 0,
-            hit_x = 96,
+            hit_x = 64,
             hit_y = 0,
             up_x = 0,
             down_x = 0,
             hit_down_x = 96,
             hit_up_x = 96,
-            death_x =  192,
+            death_x =  128,
             death_y = 0,
-            scale_x = 10.0,
-            scale_y = 10.0,
+            scale_x = 5.0,
+            scale_y = 5.0,
             rotation = 0.0,
-            boss = { x = 100, y = 100}
+            boss = { x = 100, y = 150}
 
         }
     },
@@ -381,14 +410,11 @@ scene = {
                     rotation = 0.0
                 },
                 rigidBody = {
-                    velocity = {x = -1, y = 0}
-                },
-                script = {
-                    path = "assets/scripts/background_move.lua"
+                    velocity = {x = 0, y = 0}
                 }
             }
         },
-        -- Health bar
+        -- Health bar P1
         {
             components = {
                 text = {
@@ -406,6 +432,27 @@ scene = {
                 },
                 health_bar = {
                     is_player1 = true;
+                }
+            }
+        },
+        -- Health Bar P2
+        {
+            components = {
+                text = {
+                    text = "Health: 0",
+                    fontId = "press_start_24",
+                    r = 150,
+                    g = 0,
+                    b = 150,
+                    a = 255
+                },
+                transform = {
+                    position = {x = 50.0, y = 100.0},
+                    scale = {x = 1.0, y = 1.0},
+                    rotation = 0.0
+                },
+                health_bar = {
+                    is_player1 = false;
                 }
             }
         },
@@ -456,14 +503,67 @@ scene = {
                     vel_y = 0,
                     sound_path = "laser_shot",
                     hit_path = "explosion",
-                    max_shots = 10,
+                    max_shots = 5,
                     left = false,
                     scale = {x = 1, y = 1},
                     shot_quantity = 1
                 }
             }
         },
-        -- Score controller
+        -- Player 2
+        {
+            components = {
+                circle_collider = {
+                    radius = 8,
+                    width = 16,
+                    height = 16
+                },
+                rigidBody = {
+                    velocity = {x = 0, y = 0}
+                },
+                script = {
+                    path = "assets/scripts/player2.lua"
+                },
+                sprite = {
+                    assetId = "player_ship_2",
+                    width = 16,
+                    height = 16,
+                    src_rect = {x = 16, y = 0 },
+                    hit_rect = {x = 64, y = 0 },
+                    up_down = {up = 0, down = 32, hit_up = 46, hit_down = 80},
+                    death = {x = 96, y = 0}
+                },
+                transform = {
+                    position = {x = 400.0, y = 400.0},
+                    scale = {x = 4.0, y = 4.0},
+                    rotation = 90.0
+                },
+                health = {
+                    max_health = 10,
+                    damage = 1
+                },
+                player = {
+                    number = 2
+                },
+                attack = {
+                    damage = 1,
+                    radius = 8,
+                    width = 16,
+                    height = 16,
+                    texture_id = "energy_shot",
+                    src_x = 16,
+                    src_y = 0,
+                    vel_x = 100,
+                    vel_y = 0,
+                    sound_path = "laser_shot",
+                    hit_path = "explosion",
+                    max_shots = 5,
+                    left = false,
+                    scale = {x = 1, y = 1},
+                    shot_quantity = 1
+                }
+            }
+        },
         {
             components = {
                 text = {
@@ -477,7 +577,7 @@ scene = {
                 score = {
                     is_score = true,
                     path = "assets/scripts/score_script.lua",
-                    boss_score = 100;
+                    boss_score = 200;
                 },
                 transform = {
                     position = {x = 500.0, y = 50.0},

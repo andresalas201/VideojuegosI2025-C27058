@@ -63,7 +63,7 @@ scene = {
         {
             components = {
                 text = {
-                    text = "You have won the first level",
+                    text = "You have defeated Alan, but now Glup will attack",
                     fontId = "press_start_32",
                     r = 150,
                     g = 0,

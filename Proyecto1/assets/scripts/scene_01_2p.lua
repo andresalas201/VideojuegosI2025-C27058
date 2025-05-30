@@ -481,7 +481,7 @@ scene = {
                     vel_y = 0,
                     sound_path = "laser_shot",
                     hit_path = "explosion",
-                    max_shots = 5,
+                    max_shots = 10,
                     left = false,
                     scale = {x = 1, y = 1},
                     shot_quantity = 1
@@ -535,7 +535,7 @@ scene = {
                     vel_y = 0,
                     sound_path = "laser_shot",
                     hit_path = "explosion",
-                    max_shots = 5,
+                    max_shots = 10,
                     left = false,
                     scale = {x = 1, y = 1},
                     shot_quantity = 1

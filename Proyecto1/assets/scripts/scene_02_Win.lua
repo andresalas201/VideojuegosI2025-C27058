@@ -4,7 +4,7 @@ scene = {
         [0] =
         {
             assetId = "Bg_01",
-            filePath = "assets/images/LoseBackground.png"
+            filePath = "assets/images/WinBackground.png"
         },
     },
     -- Tabla de fuentes
@@ -34,7 +34,7 @@ scene = {
 
     },
     music = {
-        filePath = "assets/music/Defeat.wav",
+        filePath = "assets/music/TitleTrack.wav",
         length = 2000,
     },
 
@@ -56,17 +56,14 @@ scene = {
                     rotation = 0.0
                 },
                 rigidBody = {
-                    velocity = {x = -1, y = 0}
-                },
-                script = {
-                    path = "assets/scripts/background_move.lua"
+                    velocity = {x = 0, y = 0}
                 }
             }
         },
         {
             components = {
                 text = {
-                    text = "You have been beaten, Alan wins",
+                    text = "You have destroyed Glup, but now the Gormoth twins will seek revenge",
                     fontId = "press_start_32",
                     r = 150,
                     g = 0,
@@ -85,7 +82,7 @@ scene = {
         {
             components = {
                 text = {
-                    text = "Retry - 1 Player",
+                    text = "Level 3 - 1 Player",
                     fontId = "press_start_24",
                     r = 150,
                     g = 150,
@@ -98,7 +95,7 @@ scene = {
                     rotation = 0.0
                 },
                 script = {
-                    path = "assets/scripts/menu_button_01.lua"
+                    path = "assets/scripts/menu_button_05.lua"
                 },
                 player = {
                     number = 1
@@ -110,7 +107,7 @@ scene = {
         {
             components = {
                 text = {
-                    text = "Retry - 2 Players",
+                    text = "Level 3 - 2 Players",
                     fontId = "press_start_24",
                     r = 150,
                     g = 150,
@@ -123,7 +120,7 @@ scene = {
                     rotation = 0.0
                 },
                 script = {
-                    path = "assets/scripts/menu_button_02.lua"
+                    path = "assets/scripts/menu_button_06.lua"
                 },
                 clickable = {
                 }

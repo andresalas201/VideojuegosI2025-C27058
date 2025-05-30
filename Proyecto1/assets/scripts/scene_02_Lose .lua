@@ -66,7 +66,7 @@ scene = {
         {
             components = {
                 text = {
-                    text = "You have been beaten, Alan wins",
+                    text = "You have lost, General Glup will conquer Andronika",
                     fontId = "press_start_32",
                     r = 150,
                     g = 0,
@@ -98,7 +98,7 @@ scene = {
                     rotation = 0.0
                 },
                 script = {
-                    path = "assets/scripts/menu_button_01.lua"
+                    path = "assets/scripts/menu_button_03.lua"
                 },
                 player = {
                     number = 1
@@ -123,7 +123,7 @@ scene = {
                     rotation = 0.0
                 },
                 script = {
-                    path = "assets/scripts/menu_button_02.lua"
+                    path = "assets/scripts/menu_button_04.lua"
                 },
                 clickable = {
                 }
