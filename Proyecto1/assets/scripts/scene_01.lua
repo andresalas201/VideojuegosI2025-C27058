@@ -438,7 +438,7 @@ scene = {
                     rotation = 90.0
                 },
                 health = {
-                    max_health = 1,
+                    max_health = 10,
                     damage = 1
                 },
                 player = {
