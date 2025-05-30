@@ -28,7 +28,6 @@ class CleanEnemiesSystem : public System {
                     std::cout << "[CLEANENEMIESSYSTEM] Se elimina el grupo " <<
                         registry->enemiesToSpawn[i].groupNumber << std::endl;
                     registry->enemiesToSpawn.erase(registry->enemiesToSpawn.begin() + i);
-                    i--;
                 }
             }
         }
