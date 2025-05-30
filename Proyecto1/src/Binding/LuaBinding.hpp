@@ -1,3 +1,8 @@
+/**
+ * @file LuaBinding.hpp
+ * @brief Lua binding functions for game entity manipulation and control
+ */
+
 #ifndef LUABINDING_HPP
 #define LUABINDING_HPP
 
@@ -25,10 +30,29 @@
 #include "../Components/AnimationComponent.hpp"
 #include "../Components/PlayerComponent.hpp"
 
+/**
+ * @brief Checks if a specific input action is currently activated
+ * 
+ * Queries the game's controller manager to determine if the specified
+ * action is currently being triggered by player input.
+ * 
+ * @param action String identifier of the action to check
+ * @return true if the action is activated, false otherwise
+ */
 bool IsActionActivated(const std::string& action) {
     return Game::GetInstance().controllerManager->IsActionActivated(action);
 }
 
+/**
+ * @brief Sets the velocity of an entity's rigid body component
+ * 
+ * Updates the velocity of the entity and refreshes the health bar
+ * if the entity is a player with a health component.
+ * 
+ * @param entity The entity whose velocity will be modified
+ * @param x Horizontal velocity component
+ * @param y Vertical velocity component
+ */
 void SetVelocity(Entity entity, float x, float y) {
     auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
     rigidBody.velocity.x = x;
@@ -40,6 +64,14 @@ void SetVelocity(Entity entity, float x, float y) {
     }
 }
 
+/**
+ * @brief Updates sprite animation based on entity movement direction
+ * 
+ * Changes the sprite's source rectangle coordinates based on the
+ * entity's vertical velocity to show appropriate directional animation.
+ * 
+ * @param entity The entity whose sprite will be updated
+ */
 void SetSprite (Entity entity) {
     auto& sprite = entity.GetComponent<SpriteComponent>();
     auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
@@ -57,6 +89,16 @@ void SetSprite (Entity entity) {
     }
 }
 
+/**
+ * @brief Calculates a spawn position relative to an entity
+ * 
+ * Determines a position to the left or right of the entity based on
+ * its transform and sprite dimensions, typically used for projectile spawning.
+ * 
+ * @param e The reference entity
+ * @param left If true, calculates position to the left; otherwise to the right
+ * @return glm::vec2 The calculated world position
+ */
 glm::vec2 CalculatePosition(Entity e, bool left) {
     double direction = 0;
     if(left) direction = -1.0;
@@ -81,6 +123,17 @@ glm::vec2 CalculatePosition(Entity e, bool left) {
     return result;
 }
 
+/**
+ * @brief Calculates a spawn position relative to an entity with vertical offset
+ * 
+ * Extended version of CalculatePosition that also considers vertical positioning
+ * (top or bottom of the entity) in addition to horizontal positioning.
+ * 
+ * @param e The reference entity
+ * @param left If true, calculates position to the left; otherwise to the right
+ * @param up If true, calculates position at the top; otherwise at the bottom
+ * @return glm::vec2 The calculated world position
+ */
 glm::vec2 CalculatePosition(Entity e, bool left, bool up) {
     double direction = 0;
     if(left) direction = -1.0;
@@ -108,11 +161,30 @@ glm::vec2 CalculatePosition(Entity e, bool left, bool up) {
     return glm::vec2(x, y);
 }
 
+/**
+ * @brief Checks if an entity can shoot based on attack cooldown
+ * 
+ * Determines if enough time has passed since the last shot based on
+ * the game's frame rate and timing system.
+ * 
+ * @param attack Pointer to the attack component to check
+ * @return true if the entity can shoot, false if still on cooldown
+ */
 bool CanShoot(AttackComponent* attack) {
     int ticksSinceShot = (SDL_GetTicks() - attack->lastShotTick);
     return ticksSinceShot >= MILLISECS_PER_FRAME * FPS;
 }
 
+/**
+ * @brief Creates an additional projectile with vertical movement
+ * 
+ * Spawns an extra shot entity with upward or downward movement,
+ * typically used for multi-shot attacks or spread patterns.
+ * 
+ * @param shooter The entity that is shooting
+ * @param attack Pointer to the attack component containing shot parameters
+ * @param up If true, projectile moves upward; otherwise downward
+ */
 void ShootExtra(Entity shooter,AttackComponent* attack, bool up) {
     Entity shot = Game::GetInstance().registry->CreateEntity();
     shot.AddComponent<CircleColliderComponent>(attack->radius, attack->width,
@@ -136,6 +208,15 @@ void ShootExtra(Entity shooter,AttackComponent* attack, bool up) {
     Game::GetInstance().registry->AddEntityToSystems(shot);
 }
 
+/**
+ * @brief Creates a projectile entity from a shooter
+ * 
+ * Spawns a shot entity with all necessary components based on the
+ * shooter's attack component. Handles cooldown, shot limits, and
+ * multi-shot patterns.
+ * 
+ * @param shooter The entity that will create the projectile
+ */
 void Shoot(Entity shooter) {
     if(!shooter.HasComponent<AttackComponent>()) return;
     AttackComponent* attack = &shooter.GetComponent<AttackComponent>();
@@ -167,6 +248,15 @@ void Shoot(Entity shooter) {
     }
 }
 
+/**
+ * @brief Increases an entity's attack damage
+ * 
+ * Adds the specified damage increase to the entity's attack component
+ * and logs the upgrade to console.
+ * 
+ * @param upgraded The entity to upgrade
+ * @param increase Amount of damage to add
+ */
 void UpgradeDamage(Entity upgraded, int increase) {
     if(!upgraded.HasComponent<AttackComponent>()) return;
     upgraded.GetComponent<AttackComponent>().damage += increase;
@@ -174,6 +264,14 @@ void UpgradeDamage(Entity upgraded, int increase) {
         " a " << upgraded.GetComponent<AttackComponent>().damage << std::endl;
 }
 
+/**
+ * @brief Increases an entity's shot quantity or damage if at maximum
+ * 
+ * Upgrades the entity's attack by increasing the number of simultaneous
+ * shots. If already at maximum shot quantity (3), upgrades damage instead.
+ * 
+ * @param upgraded The entity to upgrade
+ */
 void UpgradeAmount(Entity upgraded) {
     if(!upgraded.HasComponent<AttackComponent>()) return;
     auto& attack = upgraded.GetComponent<AttackComponent>();
@@ -188,21 +286,41 @@ void UpgradeAmount(Entity upgraded) {
         " a " << upgraded.GetComponent<AttackComponent>().shotQuantity << std::endl;
 }
 
+/**
+ * @brief Increases an entity's movement speed
+ * 
+ * Adds the specified speed increase to the entity's rigid body velocity.
+ * 
+ * @param upgraded The entity to upgrade
+ * @param increase Amount of speed to add
+ */
 void UpgradeSpeed(Entity upgraded, int increase) {
     if(!upgraded.HasComponent<RigidBodyComponent>()) return;
     auto& rigidBody = upgraded.GetComponent<RigidBodyComponent>();
     rigidBody.velocity += static_cast<double>(increase);
 }
 
-// Scenes
-
+/**
+ * @brief Transitions to a different game scene
+ * 
+ * Sets the next scene to load and stops the current scene,
+ * triggering a scene transition.
+ * 
+ * @param sceneName Name of the scene to transition to
+ */
 void GoToScene(const std::string& sceneName) {
     Game::GetInstance().sceneManager->SetNextScene(sceneName);
     Game::GetInstance().sceneManager->StopScene();
 }
 
-// Background Move
-
+/**
+ * @brief Implements bouncing movement for background elements
+ * 
+ * Reverses the entity's velocity when it reaches screen boundaries,
+ * creating a bouncing effect typically used for background decorations.
+ * 
+ * @param a The entity to apply bouncing movement to
+ */
 void BackgroundMove(Entity a) {
     int positionX = a.GetComponent<TransformComponent>().position.x;
     int positionY = a.GetComponent<TransformComponent>().position.x;
@@ -219,11 +337,29 @@ void BackgroundMove(Entity a) {
     SetVelocity(a, currentX, currentY);
 }
 
+/**
+ * @brief Triggers a boss spawn event
+ * 
+ * Emits a boss spawn event through the event system and logs
+ * the spawn to console.
+ * 
+ * @param a The entity that triggers the boss spawn
+ */
 void SpawnBoss(Entity a) {
     Game::GetInstance().eventManager->EmitEvent<BossSpawnEvent>(a);
     std::cout << "Se spawnea el jefe";
 }
 
+/**
+ * @brief Sets entity rotation based on direction vector
+ * 
+ * Calculates and sets the entity's rotation angle based on the
+ * provided direction components, normalizing to 0-360 degree range.
+ * 
+ * @param a The entity to rotate
+ * @param x Horizontal direction component
+ * @param y Vertical direction component
+ */
 void SetRotation(Entity a, float x, float y) {
     auto& transform = a.GetComponent<TransformComponent>();
     if (x != 0 || y != 0) {
@@ -236,10 +372,30 @@ void SetRotation(Entity a, float x, float y) {
     }
 }
 
+/**
+ * @brief Calculates Euclidean distance between two points
+ * 
+ * Computes the straight-line distance between two 2D coordinates
+ * using the Pythagorean theorem.
+ * 
+ * @param x1 X coordinate of first point
+ * @param y1 Y coordinate of first point
+ * @param x2 X coordinate of second point
+ * @param y2 Y coordinate of second point
+ * @return double The distance between the two points
+ */
 double CalculateDistance(float x1, float y1, float x2, float y2) {
     return sqrt(static_cast<double>(((x1-x2)*(x1-x2))+((y1-y2)*(y1-y2))));
 } 
 
+/**
+ * @brief Sets entity movement direction toward the nearest player
+ * 
+ * Finds the closest player entity and sets the entity's velocity to move
+ * toward that player with appropriate speed limits and rotation.
+ * 
+ * @param a The entity that will move toward the player
+ */
 void SetDirectionToPlayer(Entity a) {
     float enemyX = a.GetComponent<TransformComponent>().position.x;
     float enemyY = a.GetComponent<TransformComponent>().position.y;
@@ -291,6 +447,14 @@ void SetDirectionToPlayer(Entity a) {
     SetRotation(a, speedX, speedY);
 }
 
+/**
+ * @brief Sets boss entity movement direction toward the nearest player
+ * 
+ * Similar to SetDirectionToPlayer but with slower movement speed (25 units)
+ * specifically designed for boss entities without rotation updates.
+ * 
+ * @param a The boss entity that will move toward the player
+ */
 void SetDirectionToPlayerBoss(Entity a) {
     float enemyX = a.GetComponent<TransformComponent>().position.x;
     float enemyY = a.GetComponent<TransformComponent>().position.y;
@@ -341,6 +505,14 @@ void SetDirectionToPlayerBoss(Entity a) {
     SetVelocity(a, speedX, speedY);
 }
 
+/**
+ * @brief Initiates player following behavior when entity is stationary
+ * 
+ * Checks if the entity has zero velocity and, if so, sets its direction
+ * toward the nearest player. Used for simple AI behavior.
+ * 
+ * @param a The entity that should follow the player
+ */
 void FollowPlayerSimple(Entity a) {
     float velX = a.GetComponent<RigidBodyComponent>().velocity.x;
     float velY = a.GetComponent<RigidBodyComponent>().velocity.y;
