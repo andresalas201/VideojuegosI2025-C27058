@@ -10,6 +10,7 @@
 #include "../Components/ClickableComponent.hpp"
 #include "../Components/CameraFollowComponent.hpp"
 #include "../Components/BoxColliderComponent.hpp"
+#include "../Components/TagComponent.hpp"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -180,12 +181,18 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
             //* ScriptComponent
             sol::optional<sol::table> hasScript = components["script"];
             if (hasScript != sol::nullopt) {
+                lua["onCollision"] = sol::nil;
                 lua["update"] = sol::nil;
                 lua["onClick"] = sol::nil;
                 std::string path = components["script"]["path"];
                 lua.script_file(path);
 
-                
+                sol::optional<sol::function> hasOnCollision = lua["on_collision"];
+                sol::function onCollision = sol::nil;
+                if (hasOnCollision != sol::nullopt) {
+                    onCollision = lua["on_collision"];
+                }
+
                 sol::optional<sol::function> hasOnClick = lua["on_click"];
                 sol::function onClick = sol::nil;
                 if (hasOnClick != sol::nullopt) {
@@ -198,7 +205,7 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
                     update = lua["update"];
                 }
 
-                newEntity.AddComponent<ScriptComponent>(update, onClick);
+                newEntity.AddComponent<ScriptComponent>(onCollision, update, onClick);
             }
 
             //* SpriteComponent
@@ -258,6 +265,14 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
                         components["box_collider"]["offset"]["y"])
                 );
             }
+
+            //* TagComponent
+            sol::optional<sol::table> hasTag = components["tag"];
+            if (hasTag != sol::nullopt) {
+                std::string tag = components["tag"]["tag"];
+                newEntity.AddComponent<TagComponent>(tag);
+            }   
+
 
             //* ClickableComponent
             sol::optional<sol::table> hasClickable = components["clickable"];

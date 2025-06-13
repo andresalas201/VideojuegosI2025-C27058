@@ -99,6 +99,12 @@ scene = {
                 rigidBody = {
                     velocity = {x = -50, y = 0}
                 },
+                script = {
+                    path = "assets/scripts/enemy_alan.lua"
+                },
+                tag = {
+                    tag = "Enemy 01"
+                },
                 sprite = {
                     assetId = "enemy_alan",
                     width = 16,
@@ -122,6 +128,12 @@ scene = {
                 },
                 rigidBody = {
                     velocity = {x = 50, y = 0}
+                },
+                script = {
+                    path = "assets/scripts/enemy_alan.lua"
+                },
+                tag = {
+                    tag = "Enemy 02"
                 },
                 sprite = {
                     assetId = "enemy_alan",

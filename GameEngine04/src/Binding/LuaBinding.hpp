@@ -8,6 +8,7 @@
 #include "../ECS/ECS.hpp"
 #include "../Game/Game.hpp"
 #include "../Components/RigidBodyComponent.hpp"
+#include "../Components/TagComponent.hpp"
 
 bool IsActionActivated(const std::string& action) {
     return Game::GetInstance().controllerManager->IsActionActivated(action);
@@ -17,6 +18,10 @@ void SetVelocity(Entity entity, float x, float y) {
     auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
     rigidBody.velocity.x = x;
     rigidBody.velocity.y = y;
+}
+
+std::string GetTag(Entity entity) {
+    return entity.GetComponent<TagComponent>().tag;
 }
 
 // Scenes

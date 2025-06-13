@@ -6,6 +6,7 @@
 #include "../ECS/ECS.hpp"
 #include "../Components/BoxColliderComponent.hpp"
 #include "../Components/TransformComponent.hpp"
+#include "../Components/ScriptComponent.hpp"
 
 class BoxCollisionSystem : public System {
     private:
@@ -26,7 +27,7 @@ class BoxCollisionSystem : public System {
             RequireComponent<TransformComponent>();
         }
 
-        void Update() {
+        void Update(sol::state& lua) {
             auto entities = GetSystemEntities();
 
                 for (auto i = entities.begin(); i != entities.end(); i++) {
@@ -53,6 +54,22 @@ class BoxCollisionSystem : public System {
 
                         if (collision) {
                             std::cout << a.GetId() << " colisiona con " << b.GetId() << std::endl;
+                            if (a.HasComponent<ScriptComponent>()) {
+                                const auto& script = a.GetComponent<ScriptComponent>();
+                                if (script.onCollision != sol::nil) {
+                                    lua["this"] = a; 
+                                    
+                                    script.onCollision(b);
+                                }
+                            }
+
+                            if (b.HasComponent<ScriptComponent>()) {
+                                const auto& scriptB = b.GetComponent<ScriptComponent>();
+                                if (scriptB.onCollision != sol::nil) {
+                                    lua["this"] = b; 
+                                    scriptB.onCollision(a);
+                                }
+                            }
                         }
 
                     }

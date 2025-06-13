@@ -168,7 +168,7 @@ void Game::Update() {
     registry->GetSystem<MovementSystem>().Update(deltaTime);
     registry->GetSystem<CircleCollisionSystem>().Update(eventManager);
     registry->GetSystem<AnimationSystem>().Update();
-    registry->GetSystem<BoxCollisionSystem>().Update();
+    registry->GetSystem<BoxCollisionSystem>().Update(lua);
 }
 
 void Game::Setup() {
