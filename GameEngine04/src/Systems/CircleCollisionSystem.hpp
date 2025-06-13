@@ -1,5 +1,5 @@
-#ifndef COLLISIONSYSTEM_HPP
-#define COLLISIONSYSTEM_HPP
+#ifndef CIRCLECOLLISIONSYSTEM_HPP
+#define CIRCLECOLLISIONSYSTEM_HPP
 
 #include <glm/glm.hpp>
 
@@ -9,9 +9,9 @@
 #include "../EventManager/EventManager.hpp"
 #include "../Events/CollisionEvent.hpp"
 
-class CollisionSystem : public System {
+class CircleCollisionSystem : public System {
     public:
-        CollisionSystem() {
+        CircleCollisionSystem() {
             RequireComponent<CircleColliderComponent>();
         }
 
@@ -65,4 +65,4 @@ class CollisionSystem : public System {
         }
 };
 
-#endif // COLLISIONSYSTEM_HPP
+#endif // CIRCLECOLLISIONSYSTEM_HPP

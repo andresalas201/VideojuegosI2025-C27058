@@ -5,7 +5,7 @@
 #include "../Events/ClickEvent.hpp"
 
 #include "../Systems/RenderSystem.hpp"
-#include "../Systems/CollisionSystem.hpp"
+#include "../Systems/CircleCollisionSystem.hpp"
 #include "../Systems/MovementSystem.hpp"
 #include "../Systems/DamageSystem.hpp"
 #include "../Systems/AnimationSystem.hpp"
@@ -13,6 +13,7 @@
 #include "../Systems/RenderTextSystem.hpp"
 #include "../Systems/UISystem.hpp"
 #include "../Systems/CameraMovementSystem.hpp"
+#include "../Systems/BoxCollisionSystem.hpp"
 
 
 Game::Game() {
@@ -165,20 +166,22 @@ void Game::Update() {
     registry->GetSystem<ScriptSystem>().Update(lua);
     registry->GetSystem<CameraMovementSystem>().Update(this->camera);
     registry->GetSystem<MovementSystem>().Update(deltaTime);
-    registry->GetSystem<CollisionSystem>().Update(eventManager);
+    registry->GetSystem<CircleCollisionSystem>().Update(eventManager);
     registry->GetSystem<AnimationSystem>().Update();
+    registry->GetSystem<BoxCollisionSystem>().Update();
 }
 
 void Game::Setup() {
     registry->AddSystem<RenderSystem>();
     registry->AddSystem<MovementSystem>();
-    registry->AddSystem<CollisionSystem>();
+    registry->AddSystem<CircleCollisionSystem>();
     registry->AddSystem<DamageSystem>();
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<ScriptSystem>();
     registry->AddSystem<RenderTextSystem>();
     registry->AddSystem<UISystem>();
     registry->AddSystem<CameraMovementSystem>();
+    registry->AddSystem<BoxCollisionSystem>();
     
     sceneManager->LoadSceneFromScript("assets/scripts/scenes.lua", lua);
 

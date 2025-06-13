@@ -9,6 +9,7 @@
 #include "../Components/TextComponent.hpp"
 #include "../Components/ClickableComponent.hpp"
 #include "../Components/CameraFollowComponent.hpp"
+#include "../Components/BoxColliderComponent.hpp"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -245,6 +246,17 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
             sol::optional<sol::table> hasCameraFollow = components["camera_follow"];
             if (hasCameraFollow != sol::nullopt) {
                 newEntity.AddComponent<CameraFollowComponent>();
+            }
+
+            //* BoxColliderComponent
+            sol::optional<sol::table> hasBoxCollider = components["box_collider"];
+            if (hasBoxCollider != sol::nullopt) {
+                newEntity.AddComponent<BoxColliderComponent>(
+                    components["box_collider"]["width"],
+                    components["box_collider"]["height"],
+                    glm::vec2(components["box_collider"]["offset"]["x"],
+                        components["box_collider"]["offset"]["y"])
+                );
             }
 
             //* ClickableComponent

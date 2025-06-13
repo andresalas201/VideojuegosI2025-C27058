@@ -88,6 +88,55 @@ scene = {
                 }
             }
         },
+        -- Enemy 01
+        {
+            components = {
+                box_collider = {
+                    width = 16 * 2,
+                    height = 16 * 2,
+                    offset = { x = 0, y = 0 }
+                },
+                rigidBody = {
+                    velocity = {x = -50, y = 0}
+                },
+                sprite = {
+                    assetId = "enemy_alan",
+                    width = 16,
+                    height = 16,
+                    src_rect = {x = 0, y = 0 }
+                },
+                transform = {
+                    position = {x = 200.0, y = 100.0},
+                    scale = {x = 2.0, y = 2.0},
+                    rotation = 0.0
+                }
+            }
+        },
+        -- Enemy 02
+        {
+            components = {
+                box_collider = {
+                    width = 16 * 2,
+                    height = 16 * 2,
+                    offset = { x = 0, y = 0 }
+                },
+                rigidBody = {
+                    velocity = {x = 50, y = 0}
+                },
+                sprite = {
+                    assetId = "enemy_alan",
+                    width = 16,
+                    height = 16,
+                    src_rect = {x = 0, y = 0 }
+                },
+                transform = {
+                    position = {x = 50.0, y = 100.0},
+                    scale = {x = 2.0, y = 2.0},
+                    rotation = 0.0
+                }
+            }
+        },
+
         {
             components = {
                 text = {
