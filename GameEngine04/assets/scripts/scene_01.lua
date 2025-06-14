@@ -12,7 +12,11 @@ scene = {
         {
             assetId = "background",
             filePath = "assets/images/background_space_oil6.png"
-        }
+        },
+        {
+            assetId = "barrier_gem",
+            filePath = "assets/images/barrier_gem.png"
+        },
     },
     -- Tabla de fuentes
 
@@ -112,13 +116,12 @@ scene = {
                     src_rect = {x = 0, y = 0 }
                 },
                 transform = {
-                    position = {x = 200.0, y = 100.0},
+                    position = {x = 500.0, y = 100.0},
                     scale = {x = 2.0, y = 2.0},
                     rotation = 0.0
                 }
             }
         },
-        -- Enemy 02
         {
             components = {
                 box_collider = {
@@ -126,30 +129,47 @@ scene = {
                     height = 16 * 2,
                     offset = { x = 0, y = 0 }
                 },
-                rigidBody = {
-                    velocity = {x = 50, y = 0}
-                },
-                script = {
-                    path = "assets/scripts/enemy_alan.lua"
-                },
-                tag = {
-                    tag = "Enemy 02"
-                },
                 sprite = {
-                    assetId = "enemy_alan",
+                    assetId = "barrier_gem",
                     width = 16,
                     height = 16,
                     src_rect = {x = 0, y = 0 }
                 },
                 transform = {
-                    position = {x = 50.0, y = 100.0},
+                    position = {x = 400.0, y = 100.0},
                     scale = {x = 2.0, y = 2.0},
                     rotation = 0.0
-                }
+                },
+                tag = {
+                    tag = "barrier"
+                },
             }
         },
-
         {
+            components = {
+                box_collider = {
+                    width = 16 * 2,
+                    height = 16 * 2,
+                    offset = { x = 0, y = 0 }
+                },
+                sprite = {
+                    assetId = "barrier_gem",
+                    width = 16,
+                    height = 16,
+                    src_rect = {x = 0, y = 0 }
+                },
+                transform = {
+                    position = {x = 600.0, y = 100.0},
+                    scale = {x = 2.0, y = 2.0},
+                    rotation = 0.0
+                },
+                tag = {
+                    tag = "barrier"
+                },
+            }
+        },
+        {
+
             components = {
                 text = {
                     text = "Score: 100",
