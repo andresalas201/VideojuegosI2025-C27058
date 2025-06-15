@@ -14,6 +14,7 @@
 #include "../Systems/UISystem.hpp"
 #include "../Systems/CameraMovementSystem.hpp"
 #include "../Systems/BoxCollisionSystem.hpp"
+#include "../Systems/RenderBoxColliderSystem.hpp"
 
 
 Game::Game() {
@@ -48,9 +49,6 @@ void Game::Init() {
 
     this->windowWidth = 800;
     this->windowHeight = 600;
-
-    this->mapHeight = 2000;
-    this->mapWidth = 2000;
 
     this->window = SDL_CreateWindow(
         "Motor de juegos",
@@ -117,6 +115,9 @@ void Game::ProcessInput() {
                     sceneManager->StopScene();
                     break;
                 }
+                if (sdlEvent.key.keysym.sym == SDLK_i) {
+                    this->isDebugMode = !this->isDebugMode;
+                }
                 controllerManager->KeyDown(sdlEvent.key.keysym.sym);
                 break;
             case SDL_KEYUP:
@@ -182,6 +183,7 @@ void Game::Setup() {
     registry->AddSystem<UISystem>();
     registry->AddSystem<CameraMovementSystem>();
     registry->AddSystem<BoxCollisionSystem>();
+    registry->AddSystem<RenderBoxColliderSystem>();
     
     sceneManager->LoadSceneFromScript("assets/scripts/scenes.lua", lua);
 
@@ -194,6 +196,9 @@ void Game::Render() {
     SDL_RenderClear(this->renderer);
     registry->GetSystem<RenderSystem>().Update(renderer, camera, assetManager);
     registry->GetSystem<RenderTextSystem>().update(renderer, assetManager);
+    if (isDebugMode) {
+        registry->GetSystem<RenderBoxColliderSystem>().update(renderer, camera);
+    }
     SDL_RenderPresent(this->renderer);
 }
 

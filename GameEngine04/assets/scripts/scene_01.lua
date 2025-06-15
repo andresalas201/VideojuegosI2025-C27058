@@ -18,6 +18,10 @@ scene = {
             filePath = "assets/images/barrier_gem.png"
         },
     },
+    maps = {
+        width = 2000,
+        height = 2000
+    },
     -- Tabla de fuentes
 
     fonts = {

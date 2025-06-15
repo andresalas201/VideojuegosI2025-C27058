@@ -2,6 +2,7 @@
 #define SCENELOADER_HPP
 
 #include <SDL2/SDL.h>
+#include <tinyxml/tinyxml2.h>
 
 #include <memory>
 #include <sol/sol.hpp>
@@ -30,6 +31,12 @@ class SceneLoader {
         void LoadEntities(sol::state& lua, const sol::table& entities,
             std::unique_ptr<Registry>& registry);
 
+        void LoadMap(const sol::table map, std::unique_ptr<Registry>& registry);
+        
+        void LoadLayer(std::unique_ptr<Registry>& registry, tinyxml2::XMLElement* layer,
+            int tWidth, int tHeight, int mWidth, const std::string& tileSet, int columns);
+        void LoadColliders(std::unique_ptr<Registry>& registry,
+            tinyxml2::XMLElement* objectGroup);
 
     public:
         SceneLoader();

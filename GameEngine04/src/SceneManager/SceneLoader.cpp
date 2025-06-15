@@ -11,8 +11,10 @@
 #include "../Components/CameraFollowComponent.hpp"
 #include "../Components/BoxColliderComponent.hpp"
 #include "../Components/TagComponent.hpp"
+#include "../Game/Game.hpp"
 
 #include <iostream>
+#include <sstream>
 #include <glm/glm.hpp>
 
 SceneLoader::SceneLoader() {
@@ -49,6 +51,9 @@ void SceneLoader::LoadScene(const std::string& scenePath, sol::state& lua,
     
     sol::table keys = scene["keys"];
     this->LoadKeys(keys, controllerManager);
+
+    sol::table maps = scene["maps"];
+    this->LoadMap(maps, registry);
 
     sol::table entities = scene["entities"];
     LoadEntities(lua, entities, registry);
@@ -135,6 +140,153 @@ void SceneLoader::LoadButtons(const sol::table& buttons,
         index++;
     }
     
+}
+
+void SceneLoader::LoadMap(const sol::table map, std::unique_ptr<Registry>& registry) {
+    sol::optional<int> hasWidth = map["width"];
+    if (hasWidth != sol::nullopt) {
+        Game::GetInstance().mapWidth = map["width"];
+    }
+
+    sol::optional<int> hasHeight = map["height"];
+    if (hasHeight != sol::nullopt) {
+        Game::GetInstance().mapHeight = map["height"];
+    }
+
+    sol::optional<std::string> hasPath = map["map_path"];
+    if (hasPath != sol::nullopt) {
+        std::string mapPath = map["map_path"];
+        std::string tileName = map ["tile_name"];
+
+        // Se carga el xml
+        tinyxml2::XMLDocument xmlMap;
+        xmlMap.LoadFile(mapPath.c_str());
+
+        // Extraer la raiz del documento xml
+        tinyxml2::XMLElement* xmlRoot = xmlMap.RootElement();
+
+        // Extraer dimensiones
+        int tWidth, tHeight, mWidth, mHeight;
+        xmlRoot->QueryIntAttribute("tilewidth", &tWidth);
+        xmlRoot->QueryIntAttribute("tileheight", &tHeight);
+        xmlRoot->QueryIntAttribute("width", &mWidth);
+        xmlRoot->QueryIntAttribute("height", &mHeight);
+
+        // Calcular width y height del mapa
+        Game::GetInstance().mapWidth = mWidth * tWidth;
+        Game::GetInstance().mapHeight = mHeight * tHeight;
+
+        // Se carga el documento con el tileset
+        std::string tilePath = map["tile_path"];
+        
+        tinyxml2::XMLDocument xmlTileSet;
+        xmlTileSet.LoadFile(tilePath.c_str());
+
+        // Se obtiene el root del tileset
+        tinyxml2::XMLElement* xmlTileRoot = xmlTileSet.RootElement();
+        
+        // Extraer cant de columnas
+        int columns;
+        xmlTileRoot->QueryIntAttribute("columns", &columns);
+
+        // Se obtiene el primer elemento de tipo layer
+        tinyxml2::XMLElement* xmlLayer = xmlRoot->FirstChildElement("layer");
+
+        while(xmlLayer != nullptr) {
+            LoadLayer(registry, xmlLayer, tWidth, tHeight, mWidth, tileName, columns);
+            xmlLayer = xmlLayer->NextSiblingElement("layer");
+        }
+
+        // Se obtiene el primer elemento de tipo objectGroup
+        tinyxml2::XMLElement* xmlObjectGroup = xmlRoot->FirstChildElement("objectgroup");
+
+        while (xmlObjectGroup != nullptr) {
+            const char* objectGroupName;
+            std::string name;
+            xmlObjectGroup->QueryStringAttribute("name", &objectGroupName);
+            name = objectGroupName;
+            if (name.compare("colliders") == 0) {
+                LoadColliders(registry, xmlObjectGroup);
+            }
+
+            xmlObjectGroup = xmlObjectGroup->NextSiblingElement("objectgroup");
+        }
+        
+    }
+}
+        
+void SceneLoader::LoadLayer(std::unique_ptr<Registry>& registry, tinyxml2::XMLElement* layer,
+    int tWidth, int tHeight, int mWidth, const std::string& tileSet, int columns) {
+
+    tinyxml2::XMLElement* xmlData = layer->FirstChildElement("data");
+    const char* data = xmlData->GetText();
+
+    std::stringstream tmpNumber;
+    int pos = 0;
+    int tileNumber = 0;
+    while (true) {
+        if (data[pos] == '\0') {
+            break;
+        }
+        if (isdigit(data[pos])) {
+            tmpNumber << data[pos];
+        } else if (!isdigit(data[pos]) && tmpNumber.str().length() != 0) {
+            int tileId = std::stoi(tmpNumber.str());
+            if (tileId > 0) {
+                Entity tile = registry->CreateEntity();
+                tile.AddComponent<TransformComponent>( 
+                    glm::vec2(
+                        (tileNumber % mWidth) * tWidth,
+                        (tileNumber / mWidth) * tHeight
+                    )
+                );
+                tile.AddComponent<SpriteComponent>(
+                    tileSet,
+                    tWidth,
+                    tHeight,
+                    ((tileId-1) % columns) * tWidth,
+                    ((tileId-1) / columns) * tHeight
+                );
+                registry->AddEntityToSystems(tile);
+            }
+            tileNumber++;
+            tmpNumber.str("");
+        }
+        pos++;
+    }
+
+}
+
+void SceneLoader::LoadColliders(std::unique_ptr<Registry>& registry,
+    tinyxml2::XMLElement* objectGroup) {
+        
+    tinyxml2::XMLElement* object = objectGroup->FirstChildElement("object");
+    while (object != nullptr) {
+        const char* name;
+        std::string tag;
+        int x, y, w, h;
+
+        // Obtener el tag
+        object->QueryStringAttribute("name", &name);
+        tag = name;
+
+        // obtener la posiciion
+        object->QueryIntAttribute("x", &x);
+        object->QueryIntAttribute("y", &y);
+
+        // Obtener la dimension
+        object->QueryIntAttribute("width", &w);
+        object->QueryIntAttribute("height", &h);
+
+        // Crear entidad
+
+        Entity collider = registry->CreateEntity();
+        collider.AddComponent<TagComponent>(tag);
+        collider.AddComponent<TransformComponent>(glm::vec2(x, y));
+        collider.AddComponent<BoxColliderComponent>(w, h);
+        registry->AddEntityToSystems(collider);
+        object = object->NextSiblingElement("object");
+    }
 }
 
 

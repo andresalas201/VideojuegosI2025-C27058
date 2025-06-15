@@ -25,6 +25,7 @@ class Game {
         int milisecsPreviousFrame = 0;
 
         bool isRunning = false;
+        bool isDebugMode = false;
         
         void Setup();
         void RunScene();

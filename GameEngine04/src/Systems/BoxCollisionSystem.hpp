@@ -53,7 +53,6 @@ class BoxCollisionSystem : public System {
                             static_cast<float>(bCollider.height));
 
                         if (collision) {
-                            std::cout << a.GetId() << " colisiona con " << b.GetId() << std::endl;
                             if (a.HasComponent<ScriptComponent>()) {
                                 const auto& script = a.GetComponent<ScriptComponent>();
                                 if (script.onCollision != sol::nil) {
