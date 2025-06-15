@@ -10,6 +10,7 @@
 
 #include "../AssetManager/AssetManager.hpp"
 #include "../EventManager/EventManager.hpp"
+#include "../AnimationManager/AnimationManager.hpp"
 #include "../ControllerManager/ControllerManager.hpp"
 #include "../ECS/ECS.hpp"
 #include "../SceneManager/SceneManager.hpp"
@@ -38,6 +39,7 @@ class Game {
 
     public:
         
+        std::unique_ptr<AnimationManager> animationManager;
         std::unique_ptr<AssetManager> assetManager;
         std::unique_ptr<EventManager> eventManager;
         std::unique_ptr<Registry> registry;

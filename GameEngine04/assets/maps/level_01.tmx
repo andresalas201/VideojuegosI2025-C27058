@@ -82,18 +82,18 @@
  </layer>
  <objectgroup id="3" name="colliders">
   <object id="1" name="Wall" x="0" y="320" width="16" height="458"/>
-  <object id="2" x="16" y="480" width="48" height="69"/>
-  <object id="3" x="64" y="496" width="48" height="69"/>
-  <object id="4" x="159.875" y="528.125" width="48" height="69"/>
-  <object id="5" x="112" y="512" width="48" height="69"/>
-  <object id="6" x="208" y="560" width="48" height="69"/>
-  <object id="7" x="256" y="592" width="48" height="69"/>
-  <object id="8" x="303" y="625" width="1840" height="32"/>
-  <object id="9" x="2144" y="592" width="48" height="69"/>
-  <object id="10" x="2192" y="560" width="48" height="69"/>
-  <object id="11" x="2240" y="512" width="48" height="69"/>
-  <object id="12" x="2288" y="496" width="48" height="69"/>
-  <object id="13" x="2336" y="480" width="48" height="69"/>
+  <object id="2" name="floor" x="16" y="480" width="48" height="69"/>
+  <object id="3" name="floor" x="64" y="496" width="48" height="69"/>
+  <object id="4" name="floor" x="160" y="528" width="48" height="69"/>
+  <object id="5" name="floor" x="112" y="512" width="48" height="69"/>
+  <object id="6" name="floor" x="208" y="560" width="48" height="69"/>
+  <object id="7" name="floor" x="256" y="592" width="48" height="69"/>
+  <object id="8" name="floor" x="304" y="624" width="1840" height="32"/>
+  <object id="9" name="floor" x="2144" y="592" width="48" height="69"/>
+  <object id="10" name="floor" x="2192" y="560" width="48" height="69"/>
+  <object id="11" name="floor" x="2240" y="512" width="48" height="69"/>
+  <object id="12" name="floor" x="2288" y="496" width="48" height="69"/>
+  <object id="13" name="floor" x="2336" y="480" width="48" height="69"/>
   <object id="14" name="Wall" x="2384" y="320" width="16" height="458"/>
  </objectgroup>
 </map>

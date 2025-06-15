@@ -29,6 +29,7 @@ void SceneLoader::LoadScene(const std::string& scenePath, sol::state& lua,
     std::unique_ptr<AssetManager>& assetManager,
     std::unique_ptr<ControllerManager>& controllerManager,
     std::unique_ptr<Registry>& registry,
+    std::unique_ptr<AnimationManager>& animationManager,
     SDL_Renderer* renderer) {
 
     std::cout << "[SCENELOADER] Se carga la escena " << scenePath << std::endl;
@@ -48,6 +49,9 @@ void SceneLoader::LoadScene(const std::string& scenePath, sol::state& lua,
     
     sol::table sprites = scene["sprites"];
     this->LoadSprites(renderer, sprites, assetManager);
+
+    sol::table animations = scene["animations"];
+    this->LoadAnimations(animations, animationManager);
     
     sol::table keys = scene["keys"];
     this->LoadKeys(keys, controllerManager);
@@ -81,6 +85,30 @@ void SceneLoader::LoadSprites(SDL_Renderer* renderer,
         std::string filePath = sprite["filePath"];
 
         assetManager->AddTexture(renderer, assetId, filePath);
+        index++;
+    }
+}
+
+void SceneLoader::LoadAnimations(const sol::table& animations, 
+    std::unique_ptr<AnimationManager>& animationManager) {
+    
+    int index = 0;
+    while (true) {
+        sol::optional<sol::table> hasAnimation = animations[index];
+        if (hasAnimation == sol::nullopt) {
+            break;
+        }
+
+        sol::table animation = animations[index];
+        std::string animationId = animation["animation_id"];
+        std::string textureId = animation["texture_id"];
+        int w = animation["w"];
+        int h = animation["h"];
+        int numFrames = animation["num_frames"];
+        int speedRate = animation["speed_rate"];
+        bool isLoop = animation["is_loop"];
+        animationManager->AddAnimation(animationId, textureId, w, h, 
+            numFrames, speedRate, isLoop);
         index++;
     }
 }
@@ -284,6 +312,7 @@ void SceneLoader::LoadColliders(std::unique_ptr<Registry>& registry,
         collider.AddComponent<TagComponent>(tag);
         collider.AddComponent<TransformComponent>(glm::vec2(x, y));
         collider.AddComponent<BoxColliderComponent>(w, h);
+        collider.AddComponent<RigidBodyComponent>(false, 99999999999.0f, true);
         registry->AddEntityToSystems(collider);
         object = object->NextSiblingElement("object");
     }
@@ -307,6 +336,13 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
             sol::table components = entity["components"];
 
             //* AnimationComponent
+            sol::optional<sol::table> hasAnimation = components["animation"];
+            if (hasAnimation != sol::nullopt) {
+                newEntity.AddComponent<AnimationComponent>(
+                    components["animation"]["num_frames"],
+                    components["animation"]["speed_rate"],
+                    components["animation"]["is_loop"]);
+            }
 
             //* CircleColliderComponent
             sol::optional<sol::table> hasCircleCollider = components["circle_collider"];
@@ -321,43 +357,11 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
             //* RigidBodyComponent
             sol::optional<sol::table> hasRigidBody = components["rigidBody"];
             if (hasRigidBody != sol::nullopt) {
-                
                 newEntity.AddComponent<RigidBodyComponent>(
-                    glm::vec2{
-                        components["rigidBody"]["velocity"]["x"],
-                        components["rigidBody"]["velocity"]["y"]
-                    }
+                    components["rigidBody"]["is_dynamic"],
+                    components["rigidBody"]["mass"],
+                    components["rigidBody"]["is_solid"]
                 );
-            }
-
-            //* ScriptComponent
-            sol::optional<sol::table> hasScript = components["script"];
-            if (hasScript != sol::nullopt) {
-                lua["onCollision"] = sol::nil;
-                lua["update"] = sol::nil;
-                lua["onClick"] = sol::nil;
-                std::string path = components["script"]["path"];
-                lua.script_file(path);
-
-                sol::optional<sol::function> hasOnCollision = lua["on_collision"];
-                sol::function onCollision = sol::nil;
-                if (hasOnCollision != sol::nullopt) {
-                    onCollision = lua["on_collision"];
-                }
-
-                sol::optional<sol::function> hasOnClick = lua["on_click"];
-                sol::function onClick = sol::nil;
-                if (hasOnClick != sol::nullopt) {
-                    onClick = lua["on_click"];
-                }
-                
-                sol::optional<sol::function> hasUpdate = lua["update"];
-                sol::function update = sol::nil;
-                if (hasUpdate != sol::nullopt) {
-                    update = lua["update"];
-                }
-
-                newEntity.AddComponent<ScriptComponent>(onCollision, update, onClick);
             }
 
             //* SpriteComponent
@@ -430,6 +434,44 @@ void SceneLoader::LoadEntities(sol::state& lua, const sol::table& entities,
             sol::optional<sol::table> hasClickable = components["clickable"];
             if (hasClickable != sol::nullopt) {
                 newEntity.AddComponent<ClickableComponent>();
+            }
+
+            //* ScriptComponent
+            sol::optional<sol::table> hasScript = components["script"];
+            if (hasScript != sol::nullopt) {
+                lua["on_collision"] = sol::nil;
+                lua["update"] = sol::nil;
+                lua["on_click"] = sol::nil;
+                lua["on_awake"] = sol::nil;
+                std::string path = components["script"]["path"];
+                lua.script_file(path);
+
+                sol::optional<sol::function> hasOnAwake = lua["on_awake"];
+                if (hasOnAwake != sol::nullopt) {
+                    lua["this"] = newEntity;
+                    sol::function OnAwake = lua["on_awake"];
+                    OnAwake();
+                }
+
+                sol::optional<sol::function> hasOnCollision = lua["on_collision"];
+                sol::function onCollision = sol::nil;
+                if (hasOnCollision != sol::nullopt) {
+                    onCollision = lua["on_collision"];
+                }
+
+                sol::optional<sol::function> hasOnClick = lua["on_click"];
+                sol::function onClick = sol::nil;
+                if (hasOnClick != sol::nullopt) {
+                    onClick = lua["on_click"];
+                }
+                
+                sol::optional<sol::function> hasUpdate = lua["update"];
+                sol::function update = sol::nil;
+                if (hasUpdate != sol::nullopt) {
+                    update = lua["update"];
+                }
+
+                newEntity.AddComponent<ScriptComponent>(onCollision, update, onClick);
             }
         }
 

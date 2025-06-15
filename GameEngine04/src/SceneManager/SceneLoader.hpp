@@ -9,6 +9,7 @@
 #include <string>
 
 #include "../AssetManager/AssetManager.hpp"
+#include "../AnimationManager/AnimationManager.hpp"
 #include "../ControllerManager/ControllerManager.hpp"
 #include "../ECS/ECS.hpp"
 
@@ -37,6 +38,8 @@ class SceneLoader {
             int tWidth, int tHeight, int mWidth, const std::string& tileSet, int columns);
         void LoadColliders(std::unique_ptr<Registry>& registry,
             tinyxml2::XMLElement* objectGroup);
+        void LoadAnimations(const sol::table& animations, 
+            std::unique_ptr<AnimationManager>& animationManager);
 
     public:
         SceneLoader();
@@ -45,6 +48,7 @@ class SceneLoader {
             std::unique_ptr<AssetManager>& assetManager,
             std::unique_ptr<ControllerManager>& controllerManager,
             std::unique_ptr<Registry>& registry,
+            std::unique_ptr<AnimationManager>& animationManager,
             SDL_Renderer* renderer);
 
 };

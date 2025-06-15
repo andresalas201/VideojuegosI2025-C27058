@@ -41,7 +41,7 @@ void SceneManager::LoadScene() {
     std::string scenePath = scenes[nextScene];
     sceneLoader->LoadScene(scenePath, game.lua, 
         game.assetManager, game.controllerManager,
-        game.registry, game.renderer);
+        game.registry, game.animationManager, game.renderer);
 }
 
 std::string SceneManager::GetNextScene() const {

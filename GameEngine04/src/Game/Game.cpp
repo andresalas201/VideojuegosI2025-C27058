@@ -15,6 +15,8 @@
 #include "../Systems/CameraMovementSystem.hpp"
 #include "../Systems/BoxCollisionSystem.hpp"
 #include "../Systems/RenderBoxColliderSystem.hpp"
+#include "../Systems/PhysicsSystem.hpp"
+#include "../Systems/OverlapSystem.hpp"
 
 
 Game::Game() {
@@ -25,10 +27,12 @@ Game::Game() {
     eventManager = std::make_unique<EventManager>();
     controllerManager = std::make_unique<ControllerManager>();
     sceneManager = std::make_unique<SceneManager>();
+    animationManager = std::make_unique<AnimationManager>();
 }
 
 Game::~Game() {
     registry.reset();
+    animationManager.reset();
     assetManager.reset();
     controllerManager.reset();
     sceneManager.reset();
@@ -160,16 +164,20 @@ void Game::Update() {
 
     // Reiniciar las subscripciones
     eventManager->Reset();
-    registry->GetSystem<DamageSystem>().SubscribeToCollisionEvent(eventManager);
+    //registry->GetSystem<DamageSystem>().SubscribeToCollisionEvent(eventManager);
     registry->GetSystem<UISystem>().SubscribeToClicEvent(eventManager);
+    registry->GetSystem<OverlapSystem>().SubscribeToCollisionEvent(eventManager);
 
     registry->Update();
     registry->GetSystem<ScriptSystem>().Update(lua);
-    registry->GetSystem<CameraMovementSystem>().Update(this->camera);
+
+    registry->GetSystem<PhysicsSystem>().Update();
     registry->GetSystem<MovementSystem>().Update(deltaTime);
+    registry->GetSystem<BoxCollisionSystem>().Update(lua, eventManager);
     registry->GetSystem<CircleCollisionSystem>().Update(eventManager);
+
     registry->GetSystem<AnimationSystem>().Update();
-    registry->GetSystem<BoxCollisionSystem>().Update(lua);
+    registry->GetSystem<CameraMovementSystem>().Update(this->camera);
 }
 
 void Game::Setup() {
@@ -184,6 +192,8 @@ void Game::Setup() {
     registry->AddSystem<CameraMovementSystem>();
     registry->AddSystem<BoxCollisionSystem>();
     registry->AddSystem<RenderBoxColliderSystem>();
+    registry->AddSystem<PhysicsSystem>();
+    registry->AddSystem<OverlapSystem>();
     
     sceneManager->LoadSceneFromScript("assets/scripts/scenes.lua", lua);
 

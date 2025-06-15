@@ -38,6 +38,9 @@ class ScriptSystem : public System {
             lua.set_function("set_position", setPosition);
             lua.set_function("get_size", GetSize);
             lua.set_function("get_velocity", GetVelocity);
+            lua.set_function("add_force", AddForce);
+            lua.set_function("change_animation", ChangeAnimation);
+            lua.set_function("flip_sprite", FlipSprite);
         }
 };
 

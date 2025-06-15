@@ -4,13 +4,42 @@
 #include <string>
 #include <iostream>
 #include <glm/glm.hpp>
+#include <SDL2/SDL.h>
 
 #include "../ECS/ECS.hpp"
 #include "../Game/Game.hpp"
+#include "../AnimationManager/AnimationManager.hpp"
 #include "../Components/RigidBodyComponent.hpp"
 #include "../Components/TagComponent.hpp"
 #include "../Components/BoxColliderComponent.hpp"
 #include "../Components/SpriteComponent.hpp"
+#include "../Components/AnimationComponent.hpp"
+
+
+//* Animations
+
+void ChangeAnimation(Entity entity, const std::string& animationId) {
+    auto& animation = entity.GetComponent<AnimationComponent>();
+    auto& sprite = entity.GetComponent<SpriteComponent>();
+    AnimationData animationData;
+    animationData = Game::GetInstance().animationManager->GetAnimation(animationId);
+    sprite.textureId = animationData.textureId;
+    sprite.width = animationData.width;
+    sprite.height = animationData.height;
+    sprite.srcRect.x = 0;
+    sprite.srcRect.y = 0;
+
+    animation.currentFrame = 1;
+    animation.numFrames = animationData.numFrames;
+    animation.frameSpeedRate = animationData.frameSpeedRate;
+    animation.isLoop = animationData.isLoop;
+    animation.startTime = SDL_GetTicks();
+}
+
+void FlipSprite (Entity entity, bool flip) {
+    auto& sprite = entity.GetComponent<SpriteComponent>();
+    sprite.flip = flip;
+}
 
 bool IsActionActivated(const std::string& action) {
     return Game::GetInstance().controllerManager->IsActionActivated(action);
@@ -28,6 +57,11 @@ std::tuple<int, int> GetVelocity(Entity entity) {
         static_cast<int>(rigidBody.velocity.x),
         static_cast<int>(rigidBody.velocity.y)
     };
+}
+
+void AddForce(Entity entity, float x, float y) {
+    auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
+    rigidBody.sumForces += glm::vec2(x, y);
 }
 
 // TransformComponent
@@ -54,6 +88,8 @@ std::tuple<int, int> GetSize(Entity entity) {
     int height = sprite.height * transform.scale.y;
     return {width, height};
 }
+
+//* TagComponent
 
 std::string GetTag(Entity entity) {
     return entity.GetComponent<TagComponent>().tag;
